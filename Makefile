@@ -1,4 +1,4 @@
-MODULES=main test
+MODULES=main
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
@@ -8,6 +8,8 @@ OCAMLBUILD=ocamlbuild -use-ocamlfind
 
 default: build
 	utop
+
+install:
 
 build:
 	$(OCAMLBUILD) $(OBJECTS)
