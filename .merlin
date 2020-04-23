@@ -2,4 +2,4 @@ B _build
 PKG oUnit
 PKG yojson
 PKG ANSITerminal
-PKG lablgtk2
+PKG graphics

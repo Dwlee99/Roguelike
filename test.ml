@@ -1,12 +1,11 @@
 open OUnit2
-open Yojson.Basic
 
 let tests = [
 
 ]
 
 let suite =
-  "test suite for A-team Roguelike!"  >::: List.flatten [
+  "test suite for our project"  >::: List.flatten [
     tests;
   ]
 

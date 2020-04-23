@@ -60,7 +60,6 @@ else
   cat <<EOF
 ===========================================================
 WARNING
-
 Your OCaml environment looks broken to me.  Check the error 
 messages above carefully to determine what is wrong with 
 your environment.  Please see a consultant for help if you 

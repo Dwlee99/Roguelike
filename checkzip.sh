@@ -23,7 +23,6 @@ if [[ "$zip" == good ]]; then
 ===========================================================
 Your zip file looks good to me.  Congratulations!
 ===========================================================
-
 I checked to make sure your zip contains at least one of
 your source files, but I can't check to make sure it contains
 all of them, because I can't know what modules or test files
@@ -36,7 +35,6 @@ else
   cat <<EOF
 ===========================================================
 WARNING
-
 Your zip file looks broken to me.  The code that
 you submit might not compile on the grader's machine,
 leading to heavy penalties.  Please fix your zip file.

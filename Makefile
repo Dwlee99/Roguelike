@@ -9,8 +9,8 @@ OCAMLBUILD=ocamlbuild -use-ocamlfind
 default: build
 	utop
 
-install:
-	sudo apt-get install -y pkg-config libx11-dev && opam install conf-pkg-config graphics
+install: 
+	sudo apt-get install -y pkg-config libx11-dev && opam install -y yojson ansiterminal conf-pkg-config conf-libX11 dune dune-configurator graphics
 
 build:
 	$(OCAMLBUILD) $(OBJECTS)
@@ -29,7 +29,7 @@ finalcheck: check
 	bash finalcheck.sh
 
 zip:
-	zip game.zip *.ml* *.json _tags Makefile
+	zip adventure.zip *.ml* *.json _tags Makefile
 	
 docs: docs-public docs-private
 	
@@ -46,4 +46,4 @@ docs-private: build
 
 clean:
 	ocamlbuild -clean
-	rm -rf doc.public doc.private game.zip
+	rm -rf doc.public doc.private adventure.zip
