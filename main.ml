@@ -3,8 +3,8 @@ open Graphics
 
 (** [play_game f] starts the game using file [f]. *)
 let play_game f =
-  print_string "Welcome to our roguelike! it's still being implemented.\n";
-  open_graph " 300x200"
+  open_graph " 1280x720";
+  print_string ((Printf.sprintf "%c" (read_key ()))^"\n")
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
