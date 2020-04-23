@@ -3,19 +3,32 @@ open Graphics
 
 exception End
 
+type state = {
+  max_x: int;
+  max_y: int;
+  mutable x: int;
+  mutable y: int;
+  x_scale: int;
+  y_scale: int;
+  back_c: color;
+  fore_c: color;
+  point_c: color;
+}
+
 let init = 
+  open_graph " 1280x720"
+
+let terminate s =
+  close_graph ();
+  print_string "Thanks for playing... \n"
+
+let res_key c s =
   failwith "unimplemented"
 
-let terminate =
+let res_mouse x y s =
   failwith "unimplemented"
 
-let res_key c =
-  failwith "unimplemented"
-
-let res_mouse x y =
-  failwith "unimplemented"
-
-let res_exn ex = 
+let res_exn ex s = 
   failwith "unimplemented"
 
 let game_loop f_init f_end f_key f_mouse f_exn = 
@@ -38,8 +51,7 @@ let game_loop f_init f_end f_key f_mouse f_exn =
 
 
 (** [play_game f] starts the game using file [f]. *)
-let play_game f =
-  open_graph " 1280x720";
+let play_game =
   game_loop init terminate res_key res_mouse res_exn
 
 (** [main ()] prompts for the game to play, then starts it. *)
