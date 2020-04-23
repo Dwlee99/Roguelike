@@ -24,10 +24,6 @@ val stop_game : state -> unit
 (** [res_key] contains the logic behind responding to a user key-press [c]*)
 val res_key : char -> state -> unit
 
-(** [res_mouse] contains the logic behind responding to a user mouse event 
-    at x,y*)
-val res_mouse : int -> int -> state -> unit
-
 (** [res_exn] contains the logic behind responding to an exception besides End*)
 val res_exn : exn -> state -> unit
 
@@ -37,7 +33,6 @@ val res_exn : exn -> state -> unit
     responds to that event according to f_mouse and f_key respectively. *)
 val game_loop : (state -> unit) -> 
   (state -> unit) -> 
-  (char -> state -> unit) -> 
-  (int -> int -> state -> unit) -> 
+  (char -> state -> unit) ->  
   (exn -> state -> unit) ->
   unit
