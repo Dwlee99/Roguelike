@@ -27,6 +27,9 @@ let init_state : state = {
   point_c = Graphics.white;
 }
 
+(* [draw_point] draws a rectangle at [x*xs], [y*ys] where xs and ys 
+   represent the scale of our unit of screen in the [x] and [y] direction 
+   respectively using color [c]*)
 let draw_point x y xs ys c =
   Graphics.set_color c;
   Graphics.fill_rect (xs * x) (ys * y) xs ys
