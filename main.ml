@@ -27,12 +27,15 @@ let init_state : state = {
   point_c = Graphics.white;
 }
 
-(* [draw_point] draws a rectangle at [x*xs], [y*ys] where xs and ys 
-   represent the scale of our unit of screen in the [x] and [y] direction 
-   respectively using color [c]*)
 let draw_point x y xs ys c =
   Graphics.set_color c;
   Graphics.fill_rect (xs * x) (ys * y) xs ys
+
+let draw_char x y xs ys col chr = 
+  failwith "unimplemented"
+
+let clear_area x1 y1 x2 y2 c = 
+  failwith "unimplemented"
 
 let init_game s = 
   open_graph (" "^(string_of_int (s.x_scale * s.max_x))

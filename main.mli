@@ -4,6 +4,15 @@ type state
 
 exception End
 
+(* [draw_point] draws a rectangle at [x*xs], [y*ys] where xs and ys 
+   represent the scale of our unit of screen in the [x] and [y] direction 
+   respectively using color [c]*)
+val draw_point : int -> int -> int -> int -> color -> unit
+
+val draw_char : int -> int -> int -> int -> color -> char -> unit
+
+val clear_area : int -> int -> int -> int -> color -> unit
+
 (** [init] initializes the game and contains all the actions that need to
     happen before entering the main game loop.*)
 val init_game : state -> unit
