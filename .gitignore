@@ -1,29 +1,20 @@
-*.annot
+# assignment
+doc.public
+doc.private
+adventure.zip
+
+# ocaml
 *.cmo
 *.cma
 *.cmi
-*.a
-*.o
+*.out
 *.cmx
-*.cmxs
-*.cmxa
-
-# ocamlbuild working directory
-_build/
-
-# ocamlbuild targets
-*.byte
 *.native
+*.byte
+_build
 
-# oasis generated files
-setup.data
-setup.log
-
-# Merlin configuring file for Vim and Emacs
-.merlin
-
-# Dune generated files
-*.install
-
-# Local OPAM switch
-_opam/
+# temporary files
+*.swp
+*~
+\#*\#
+.DS_Store
