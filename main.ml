@@ -15,7 +15,7 @@ type state = {
   point_c: Graphics.color;
 }
 
-let init_state : state = {
+let st : state = {
   max_x = 71;
   max_y = 30;
   x = ref 0;
@@ -28,8 +28,8 @@ let init_state : state = {
 }
 
 let draw_point x y xs ys c =
-  Graphics.set_color c;
-  Graphics.fill_rect (xs * x) (ys * y) xs ys
+  set_color c;
+  fill_rect (xs * x) (ys * y) xs ys
 
 let draw_char x y xs ys col chr = 
   failwith "unimplemented"
@@ -51,34 +51,29 @@ let stop_game s =
 let res_key c s =
   failwith "unimplemented"
 
-let res_mouse x y s =
-  failwith "unimplemented"
-
 let res_exn ex s = 
   failwith "unimplemented"
 
-let game_loop f_init f_end f_key f_mouse f_exn = 
-  f_init init_state;
+let game_loop f_init f_end f_key f_exn = 
+  f_init st;
   try
     while true do
       try
-        let s = wait_next_event [Button_down; Key_pressed] in
+        let s = wait_next_event [Key_pressed] in
         if s.Graphics.keypressed 
-        then f_key s.Graphics.key init_state
-        else if s.Graphics.button 
-        then f_mouse s.Graphics.mouse_x s.Graphics.mouse_y init_state
+        then f_key s.Graphics.key st
       with
       |End -> raise End
-      | e -> f_exn e init_state
+      | e -> f_exn e st
     done
   with
-  |End -> f_end init_state
+  |End -> f_end st
 
 
 
 (** [play_game f] starts the game. *)
 let play_game () =
-  game_loop (init_game) (stop_game) (res_key) (res_mouse) (res_exn)
+  game_loop (init_game) (stop_game) (res_key) (res_exn)
 
 (* Execute the game engine. *)
 let () = play_game ()
