@@ -1,14 +1,16 @@
+open Graphics
+
 type state
 
 exception End
 
 (** [init] initializes the game and contains all the actions that need to
     happen before entering the main game loop.*)
-val init : unit -> state -> 'a
+val init_game : state -> unit
 
 (** [terminate] contains all the actions that need to happen right before
     exiting the program. This is a safe exit from the game.*)
-val terminate : unit -> state -> unit
+val stop_game : state -> unit
 
 (** [res_key] contains the logic behind responding to a user key-press [c]*)
 val res_key : char -> state -> unit
@@ -24,9 +26,9 @@ val res_exn : exn -> state -> unit
     represent the different stages of the game and polls for user input. When
     some user input is detected (i.e. mouse press/button down) then the loop
     responds to that event according to f_mouse and f_key respectively. *)
-val game_loop : (unit -> state -> 'a) -> 
-  (unit -> state -> unit) -> 
+val game_loop : (state -> unit) -> 
+  (state -> unit) -> 
   (char -> state -> unit) -> 
   (int -> int -> state -> unit) -> 
-  (exn -> state -> unit) -> 
+  (exn -> state -> unit) ->
   unit

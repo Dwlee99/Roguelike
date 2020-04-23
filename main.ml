@@ -6,19 +6,39 @@ exception End
 type state = {
   max_x: int;
   max_y: int;
-  mutable x: int;
-  mutable y: int;
+  x: int ref;
+  y: int ref;
   x_scale: int;
   y_scale: int;
-  back_c: color;
-  fore_c: color;
-  point_c: color;
+  back_c: Graphics.color;
+  fore_c: Graphics.color;
+  point_c: Graphics.color;
 }
 
-let init = 
-  open_graph " 1280x720"
+let init_state : state = {
+  max_x = 142;
+  max_y = 60;
+  x = ref 0;
+  y = ref 0;
+  x_scale = 9;
+  y_scale = 12;
+  back_c = Graphics.black;
+  fore_c = Graphics.green;
+  point_c = Graphics.white;
+}
 
-let terminate s =
+let draw_point x y xs ys c =
+  Graphics.set_color c;
+  Graphics.fill_rect (xs * x) (ys * y) xs ys
+
+let init_game s = 
+  open_graph (" "^(string_of_int (s.x_scale * s.max_x))
+              ^"x"^(string_of_int(s.y_scale * s.max_y)));
+  set_color s.back_c;
+  fill_rect 0 0 (s.x_scale * s.max_x + 1) (s.y_scale * s.max_y + 1);
+  draw_point !(s.x) !(s.y) s.x_scale s.y_scale s.point_c
+
+let stop_game s =
   close_graph ();
   print_string "Thanks for playing... \n"
 
@@ -50,13 +70,9 @@ let game_loop f_init f_end f_key f_mouse f_exn =
 
 
 
-(** [play_game f] starts the game using file [f]. *)
+(** [play_game f] starts the game. *)
 let play_game =
-  game_loop init terminate res_key res_mouse res_exn
-
-(** [main ()] prompts for the game to play, then starts it. *)
-let main () =
-  play_game
+  game_loop (init_game) (stop_game) (res_key) (res_mouse) (res_exn)
 
 (* Execute the game engine. *)
-let () = main ()
+let () = play_game ()
