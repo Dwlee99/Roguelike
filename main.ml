@@ -52,26 +52,26 @@ let res_exn ex s =
   failwith "unimplemented"
 
 let game_loop f_init f_end f_key f_mouse f_exn = 
-  f_init ();
+  f_init init_state;
   try
     while true do
       try
         let s = wait_next_event [Button_down; Key_pressed] in
         if s.Graphics.keypressed 
-        then f_key s.Graphics.key
+        then f_key s.Graphics.key init_state
         else if s.Graphics.button 
-        then f_mouse s.Graphics.mouse_x s.Graphics.mouse_y
+        then f_mouse s.Graphics.mouse_x s.Graphics.mouse_y init_state
       with
       |End -> raise End
-      | e -> f_exn e
+      | e -> f_exn e init_state
     done
   with
-  |End -> f_end
+  |End -> f_end init_state
 
 
 
 (** [play_game f] starts the game. *)
-let play_game =
+let play_game () =
   game_loop (init_game) (stop_game) (res_key) (res_mouse) (res_exn)
 
 (* Execute the game engine. *)
