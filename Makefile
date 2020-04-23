@@ -10,6 +10,7 @@ default: build
 	utop
 
 install:
+	sudo apt-get install -y pkg-config libx11-dev && opam install conf-pkg-config graphics
 
 build:
 	$(OCAMLBUILD) $(OBJECTS)
