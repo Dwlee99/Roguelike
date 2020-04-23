@@ -16,12 +16,12 @@ type state = {
 }
 
 let init_state : state = {
-  max_x = 142;
-  max_y = 60;
+  max_x = 71;
+  max_y = 30;
   x = ref 0;
   y = ref 0;
-  x_scale = 9;
-  y_scale = 12;
+  x_scale = 18;
+  y_scale = 24;
   back_c = Graphics.black;
   fore_c = Graphics.green;
   point_c = Graphics.white;
