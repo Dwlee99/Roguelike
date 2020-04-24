@@ -6,15 +6,15 @@ open Graphics
 type game_unit = {
   char_width : int;
   char_height : int;
-  font_size : int;
 }
 
 (** Holds information imporant to the ASCII Panel *)
 type t
 
-(** [open_window width height] opens the window with [width]x[height]
-    resolution and is the default state for the panel. *)
-val open_window : int -> int -> t
+(** [open_window width height bcolor ] opens the window with [width]x[height]
+    resolution, [bcolor] as the background color and is the default state for 
+    the panel. *)
+val open_window : int -> int -> color ->  t
 
 (** [draw_point x y width height color t] fills in the game coordinate 
     ([x], [y]) of the screen with [color]. Note: [x] and [y] are not pixels, but 
