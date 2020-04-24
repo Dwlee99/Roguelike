@@ -38,6 +38,9 @@ let draw_char x y c chr t =
 
 let fill_rect x y w h c t =
   set_color c;
-  fill_rect (t.sizes.char_width * x) (t.sizes.char_height * y) (t.sizes.char_width * w)
-    (t.sizes.char_width * h);
-  t;
+  fill_rect (t.sizes.char_width * x) (t.sizes.char_height * y) 
+    (t.sizes.char_width * w) (t.sizes.char_width * h);
+  t
+
+let clear_graph t =
+  clear_graph (); t

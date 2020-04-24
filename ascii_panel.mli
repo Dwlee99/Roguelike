@@ -29,3 +29,6 @@ val draw_char : int -> int -> color -> char -> t -> t
     width [w], height [h] and [color]. All numerical inputs are measured in
     [game_unit]s, not pixels.*)
 val fill_rect : int -> int -> int -> int -> color -> t -> t
+
+(** [clear_graph t] clears the screen of all things drawn. *)
+val clear_graph : t -> t
