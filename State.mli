@@ -9,7 +9,6 @@ type tile =
 (** The current data in the game. *)
 type t
 
-
 (** [update t action] is the new state of the world following [action] being
     performed. *)
 val update : t -> Action.t -> t
