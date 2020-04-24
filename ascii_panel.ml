@@ -13,7 +13,7 @@ type t = {
 }
 
 let open_window w h = 
-  open_graph ((string_of_int w) ^ "x" ^ (string_of_int h));
+  open_graph (" " ^ (string_of_int w) ^ "x" ^ (string_of_int h));
   {
     screen_width = w;
     screen_height = h;
@@ -26,17 +26,18 @@ let open_window w h =
 
 let draw_point x y c t =
   set_color c;
-  fill_rect (t.char_width * x) (t.char_height * y) t.char_width t.char_height;
+  fill_rect (t.sizes.char_width * x) (t.sizes.char_height * y) 
+    t.sizes.char_width t.sizes.char_height;
   t
 
 let draw_char x y c chr t = 
   set_color c;
-  moveto (t.char_width * x) (t.char_height * y);
+  moveto (t.sizes.char_width * x) (t.sizes.char_height * y);
   draw_char chr;
   t
 
 let fill_rect x y w h c t =
   set_color c;
-  fill_rect (t.char_width * x) (t.char_height * y) (t.char_width * w)
-    (t.char_width * h);
+  fill_rect (t.sizes.char_width * x) (t.sizes.char_height * y) (t.sizes.char_width * w)
+    (t.sizes.char_width * h);
   t;
