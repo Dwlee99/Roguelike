@@ -4,16 +4,39 @@ exception End
 
 
 type color_palette = {
-
   back_c: Graphics.color;
   fore_c: Graphics.color;
-  point_c: Graphics.color;
+
+  black : Graphics.color;
+  gray : Graphics.color;
+  light_gray : Graphics.color;
+  white : Graphics.color;
+  yellow : Graphics.color;
+  green : Graphics.color;
+  orange : Graphics.color;
+  violet : Graphics.color;
+  magenta : Graphics.color;
+  red : Graphics.color;
+  blue : Graphics.color;
+  cyan : Graphics.color;
 }
 
 let pal : color_palette = {
-  back_c = Graphics.black;
-  fore_c = Graphics.green;
-  point_c = Graphics.white;
+  black = rgb 39 40 34;
+  gray = rgb 62 61 50;
+  light_gray = rgb 117 113 94;
+  white = rgb 248 248 242;
+  yellow = rgb 230 219 116;
+  green = rgb 166 226 46;
+  orange = rgb 253 151 31;
+  violet = rgb 174 129 255;
+  magenta = rgb 253 95 240;
+  red = rgb 249 38 114;
+  cyan = rgb 161 239 228;
+  blue = rgb 102 217 239;
+
+  back_c = rgb 39 40 34;
+  fore_c = rgb 166 266 46;
 }
 
 let init_screen_width = 1280
@@ -29,12 +52,12 @@ let draw_game panel game =
   ignore(panel |> Ascii_panel.clear_graph);
   for col = 0 to init_column_count - 1 do
     for row = 0 to init_row_count - 1 do
-      let charToDraw = match board.(col).(row) with
-        | Player -> '@'
-        | Wall -> '#'
-        | Empty -> ' '
+      let charAndCol = match board.(col).(row) with
+        | Player -> ('@', pal.green)
+        | Wall -> ('#', pal.blue)
+        | Empty -> ('`', pal.gray)
       in 
-      ignore(Ascii_panel.draw_char col row pal.fore_c charToDraw panel)
+      ignore(Ascii_panel.draw_char col row (snd charAndCol) (fst charAndCol) panel)
     done
   done;
   synchronize ()
@@ -43,7 +66,7 @@ let init_game () =
   let t = Ascii_panel.open_window (init_screen_width) (init_screen_height) 
       pal.back_c 
           |> Ascii_panel.clear_graph 
-          |> Ascii_panel.draw_point 0 0 pal.point_c 
+          |> Ascii_panel.draw_point 0 0 pal.white 
   in draw_game t !game_state; t
 
 let update action = 
