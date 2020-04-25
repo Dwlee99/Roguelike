@@ -39,10 +39,27 @@ let update t action =
   in if get_tile t new_pos = Empty then (move_player t new_pos; t) else
     t
 
+(** [add_outer_walls board] is a board identical to [board] except with
+    each of the tiles that form the outer loop of the board being a wall. *)
+let add_outer_walls board = 
+  let width = Array.length board in
+  let height = Array.length board.(0) in
+  for x = 0 to width - 1 do
+    board.(x).(0) <- Wall;
+    board.(x).(height - 1) <- Wall;
+  done;
+  for y = 1 to height - 2 do
+    board.(0).(y) <- Wall;
+    board.(width - 1).(y) <- Wall;
+  done;
+  board
+
+
 let init_game width height =
   (** Make the game state random. Put walls in. Maybe randomize player spawn.  
   *)
   let board = Array.make_matrix width height Empty in
+  let board = add_outer_walls board in
   board.(width / 2).(height / 2) <- Player; 
   {
     board = board;
