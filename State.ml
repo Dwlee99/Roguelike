@@ -42,10 +42,10 @@ let update t action =
 let init_game width height =
   (** Make the game state random. Put walls in. Maybe randomize player spawn.  
   *)
-  let game = Array.make_matrix width height Empty in
-  game.(width / 2).(height / 2) <- Player; 
+  let board = Array.make_matrix width height Empty in
+  board.(width / 2).(height / 2) <- Player; 
   {
-    board = game;
+    board = board;
     player_position = (width / 2, height / 2)
   }
 
