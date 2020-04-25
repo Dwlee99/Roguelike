@@ -64,6 +64,10 @@ let game_loop f_init f_end f_key f_exn =
     while true do
       try
         let s = wait_next_event [Key_pressed] in
+        let _ = if not (size_x () = init_screen_width) || 
+                   not (size_y () = init_screen_height) 
+          then resize_window init_screen_width init_screen_height 
+          else () in
         game_state := res_key s.Graphics.key panel_info;
         draw_game panel_info !game_state;
         (*if s.Graphics.keypressed 
