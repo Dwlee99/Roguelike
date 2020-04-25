@@ -36,7 +36,8 @@ let draw_game panel game =
       in 
       ignore(Ascii_panel.draw_char col row pal.fore_c charToDraw panel)
     done
-  done
+  done;
+  synchronize ()
 
 let init_game () = 
   let t = Ascii_panel.open_window (init_screen_width) (init_screen_height) 
