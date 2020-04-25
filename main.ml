@@ -25,11 +25,11 @@ let init_row_count = 40
 let game_state = ref (State.init_game init_column_count init_row_count)
 
 let draw_game panel game =
-  let x = State.tile_board game in
+  let board = State.tile_board game in
   ignore(panel |> Ascii_panel.clear_graph);
   for col = 0 to init_column_count - 1 do
     for row = 0 to init_row_count - 1 do
-      let charToDraw = match x.(col).(row) with
+      let charToDraw = match board.(col).(row) with
         | Player -> '@'
         | Wall -> '#'
         | Empty -> ' '
