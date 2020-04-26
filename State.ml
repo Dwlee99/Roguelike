@@ -112,7 +112,7 @@ let randomize_tiles board =
   let height = Array.length board.(0) in
   for x = 0 to width - 1 do
     for y = 0 to height - 1 do
-      board.(x).(y) <- if Random.bool () = true then Empty else Wall true;
+      board.(x).(y) <- if Random.float 1.0 < 0.52 then Empty else Wall true;
     done;
   done;
   board
