@@ -28,6 +28,7 @@ let break_cost = 10
 
 type t = {
   board: tile array array;
+  messages: (string*Graphics.color) list;
   player: player;
 }
 
@@ -98,6 +99,7 @@ let update t action =
       done;
       inc_turns t |> set_energy new_energy
     )
+  | Help -> t
   | Rest -> 
     let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
     inc_turns t |> set_energy new_energy
@@ -213,6 +215,7 @@ let init_game width height =
   let player_loc = snd player_and_board in
   {
     board = board;
+    messages = [];
     player = {
       position = player_loc;
       level = 1;
@@ -229,3 +232,5 @@ let init_game width height =
 let tile_board t = Array.map Array.copy t.board
 
 let get_player t = t.player
+
+let get_msgs t = t.messages

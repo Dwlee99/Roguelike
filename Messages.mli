@@ -14,9 +14,8 @@ open State
 
 (** writes a message [string] to the terminal and it displays it to the player
     near the top of the screen*)
-val write_msg : string -> Graphics.color -> unit
+val write_msg : string -> Graphics.color -> (string*Graphics.color) list -> (string*Graphics.color) list
 
-(** Takes in the current state of the game and updates the player's stats*)
-val update_stats : State.player -> Graphics.color -> unit
-
-val draw_ui : State.player -> Graphics.color -> Graphics.color -> Graphics.color -> unit
+(** Draws the entire top area in the game including the dividers, player stats
+    and messages*)
+val draw_ui : State.player -> (string*Graphics.color) list -> Graphics.color -> Graphics.color -> unit

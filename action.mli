@@ -10,6 +10,7 @@ type t =
   | Move of direction
   | Break
   | Rest
+  | Help
 
 (** [parse c] is the action to be taken when the character [c] is 
     pressed. *)

@@ -38,3 +38,7 @@ val tile_board : t -> tile array array
 (** [get_player t] is the record representing data of the player in the
     state t*)
 val get_player : t -> player
+
+(** [get_msgs t] is the list of strings to be displayed in the messages
+    panel in the UI*)
+val get_msgs : t -> (string*Graphics.color) list

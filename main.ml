@@ -59,7 +59,7 @@ let draw_game panel game =
       ignore(Ascii_panel.draw_char col row (snd charAndCol) (fst charAndCol) panel)
     done
   done;
-  Messages.draw_ui (State.get_player game) pal.white pal.white pal.light_gray;
+  Messages.draw_ui (State.get_player game) (State.get_msgs game) pal.white pal.light_gray;
   synchronize ()
 
 let init_game () = 
