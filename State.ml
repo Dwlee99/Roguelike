@@ -44,6 +44,18 @@ let get_stats player = {
   turns_played = player.turns_played
 }
 
+let tile_board t = Array.map Array.copy t.board
+
+let get_player t = t.player
+
+let get_msgs t = t.messages
+
+let write_msg t msg = {
+  board = t.board;
+  messages = Messages.write_msg msg (get_msgs t);
+  player = t.player;
+}
+
 (** Sets the tile at [(x, y)] to [tile]. *)
 let set_tile t (x, y) tile =
   let width = Array.length t.board in
@@ -84,7 +96,9 @@ let update t action =
   (* Attack if enemy present. *)
   match action with
   | Move direction -> 
-    if t.player.energy < move_cost then t else (
+    if t.player.energy < move_cost 
+    then write_msg t "You do not have enough energy to move. Try resting."
+    else (
       let new_energy = t.player.energy - move_cost in
       let new_pos = match direction with
         | Up -> up_one t.player.position
@@ -97,7 +111,10 @@ let update t action =
       else t 
     )
   | Break ->
-    if t.player.energy < break_cost then t else (
+    if t.player.energy < break_cost 
+    then 
+      write_msg t "You do not have enough energy to break walls. Try resting."
+    else (
       let new_energy = t.player.energy - break_cost in
       for row = -1 to 1 do
         let (x, y) = t.player.position in
@@ -240,15 +257,3 @@ let init_game width height =
       turns_played = 0;
     }
   }
-
-let tile_board t = Array.map Array.copy t.board
-
-let get_player t = t.player
-
-let get_msgs t = t.messages
-
-let write_msg t msg = {
-  board = t.board;
-  messages = Messages.write_msg msg (get_msgs t);
-  player = t.player;
-}
