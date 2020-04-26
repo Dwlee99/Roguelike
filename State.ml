@@ -130,16 +130,52 @@ let gen_board width height =
   let board_with_walls = add_outer_walls !random_board in
   board_with_walls
 
+(** A type representing a direciton on the board. *)
+type direction = Up | Down | Left | Right
+
+(** [next_direction dir] is the direction obtained by rotating 90 degrees CCW 
+    from [dir]. *)
+let next_direction dir =
+  match dir with 
+  | Up -> Left
+  | Left -> Down
+  | Down -> Right
+  | Right -> Up
+
+(** [player_location board] is a location that is surrounded by a layer of empty 
+    tiles, which thus would be suitable for the player to spawn on. *)
+let rec player_location board =
+  Random.self_init ();
+  let width = Array.length board in
+  let height = Array.length board.(0) in
+  let x = 1 + (Random.int (width - 2)) in 
+  let y = 1 + (Random.int (height - 2)) in 
+  let suitable = ref true in 
+  for ox = -1 to 1 do
+    for oy = -1 to 1 do
+      suitable := (board.(x + ox).(y + oy) = Empty) && !suitable
+    done
+  done;
+  if !suitable then (x,y) else player_location board
+
+(** [place_player board] is the board [board] with a player added in a location 
+    suitable location (one in which the player is not surrounded by walls). *)
+let place_player board =
+  let position = player_location board in 
+  let x = fst position in 
+  let y  = snd position in
+  board.(x).(y) <- Player;
+  (board, (x,y))
 
 let init_game width height =
-  (** Make the game state random. Put walls in. Maybe randomize player spawn.  
-  *)
-  let board = gen_board width height in
-  board.(width / 2).(height / 2) <- Player; 
+  let raw_board = gen_board width height in
+  let player_and_board = place_player raw_board in 
+  let board = fst player_and_board in 
+  let player_loc = snd player_and_board in
   {
     board = board;
     player = {
-      position = (width / 2, height / 2);
+      position = player_loc;
       level = 1;
       exp = 0;
       max_exp = 10;
