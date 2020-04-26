@@ -28,8 +28,6 @@ type player_stats = {
     near the top of the screen*)
 val write_msg : string -> string list -> string list
 
-(** *)
-
 (** Draws the entire top area in the game including the dividers, player stats
     and messages*)
 val draw_ui : player_stats -> string list -> Graphics.color -> Graphics.color 

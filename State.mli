@@ -49,3 +49,10 @@ val get_msgs : t -> string list
 (** [write_msg t msg] is the new state produced after the message [msg] has been 
     added to [t]. *)
 val write_msg : t -> string -> t
+
+(** [write_msgs t msgs] is the new state produced after the messages [msgs] has been 
+    appended to [t.messages]. *)
+val write_msgs : t -> string list -> t
+
+(** The strings for the help screen*)
+val help_strings : string list

@@ -65,6 +65,7 @@ let draw_game panel game =
   synchronize ()
 
 let init_game () = 
+  game_state := State.write_msgs !game_state (State.help_strings);
   let t = Ascii_panel.open_window (init_screen_width) (init_screen_height) 
       pal.back_c 
           |> Ascii_panel.clear_graph 
@@ -86,7 +87,6 @@ let res_exn ex : unit =
 
 let game_loop f_init f_end f_key f_exn = 
   let panel_info = f_init () in
-  game_state := State.write_msg !game_state "Press h for help.";
   try
     while true do
       try

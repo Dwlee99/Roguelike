@@ -27,6 +27,13 @@ let rest_gain = 1
 
 let break_cost = 10
 
+let help_strings = 
+  ["INSTRUCTIONS/CONTROLS:"; 
+   "Press i,j,k,l to move up, left, down, right"; 
+   "Press b to break the 4 walls near you"; 
+   "Press [spacebar] to rest"; 
+   "Press h to see instructions again."]
+
 type t = {
   board: tile array array;
   messages: string list;
@@ -55,6 +62,12 @@ let write_msg t msg = {
   messages = Messages.write_msg msg (get_msgs t);
   player = t.player;
 }
+
+let write_msgs t msgs = 
+  let rec helper t = function
+    | [] -> t;
+    | h :: tail -> helper (write_msg t h) tail
+  in helper t msgs
 
 (** Sets the tile at [(x, y)] to [tile]. *)
 let set_tile t (x, y) tile =
@@ -128,7 +141,7 @@ let update t action =
       done;
       inc_turns t |> set_energy new_energy
     )
-  | Help -> t
+  | Help -> write_msgs t (help_strings);
   | Rest -> 
     let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
     inc_turns t |> set_energy new_energy
