@@ -42,3 +42,7 @@ val get_player : t -> player
 (** [get_msgs t] is the list of strings to be displayed in the messages
     panel in the UI*)
 val get_msgs : t -> string list
+
+(** [write_msg t msg] is the new state produced after the message [msg] has been 
+    added to [t]. *)
+val write_msg : t -> string -> t

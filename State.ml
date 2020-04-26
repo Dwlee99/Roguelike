@@ -234,3 +234,9 @@ let tile_board t = Array.map Array.copy t.board
 let get_player t = t.player
 
 let get_msgs t = t.messages
+
+let write_msg t msg = {
+  board = t.board;
+  messages = Messages.write_msg msg (get_msgs t);
+  player = t.player;
+}
