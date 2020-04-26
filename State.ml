@@ -110,7 +110,7 @@ let smooth board =
           then ()
           else if (board.(x + ox).(y + oy) = Empty)
           then empties := 1 + !empties
-          else walls := 1 + !empties
+          else walls := 1 + !walls
         done
       done;
       new_board.(x).(y) <- if empties >= walls then Empty else Wall;
@@ -124,7 +124,7 @@ let smooth board =
 let gen_board width height =
   let empty_board = empty_board width height in
   let random_board = ref (randomize_tiles empty_board) in
-  for i = 0 to 7 do
+  for i = 0 to 5 do
     random_board := smooth !random_board; 
   done;
   let board_with_walls = add_outer_walls !random_board in
