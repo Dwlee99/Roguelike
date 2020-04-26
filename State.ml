@@ -98,6 +98,7 @@ let update t action =
       done;
       inc_turns t |> set_energy new_energy
     )
+  | Help -> t
   | Rest -> 
     let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
     inc_turns t |> set_energy new_energy

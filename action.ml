@@ -8,6 +8,7 @@ type t =
   | Move of direction
   | Break
   | Rest
+  | Help
 
 
 let parse = function
@@ -16,4 +17,5 @@ let parse = function
   | 'k' -> Move Down
   | 'l' -> Move Right
   | 'b' -> Break
+  | 'h' -> Help
   | _ -> Rest
