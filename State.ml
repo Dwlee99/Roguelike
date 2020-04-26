@@ -92,7 +92,7 @@ let randomize_tiles board =
 (** [smooth board] is the board [board] after undergoing one iteration of a 
     wall-smoothing algorithm. 
 
-    NOTE: This function was inspired by the roguelike board generating algorithm
+    NOTE: This function was inspired by the cave generating algorithm
     described on a blog post in Trystan's Blog 
     (http://trystans.blogspot.com/2011/08/roguelike-tutorial-03-scrolling-through.html). *)
 let smooth board = 

@@ -6,6 +6,17 @@ type tile =
   | Wall
   | Empty
 
+type player = {
+  mutable position : (int*int);
+  mutable level : int;
+  mutable exp : int;
+  mutable max_exp : int;
+  mutable health : int;
+  mutable max_health : int;
+  mutable energy : int;
+  mutable max_energy : int;
+}
+
 (** The current data in the game. *)
 type t
 
