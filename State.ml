@@ -17,6 +17,7 @@ type player = {
   mutable max_health : int;
   mutable energy : int;
   mutable max_energy : int;
+  mutable turns_player : int;
 }
 
 type t = {
@@ -199,6 +200,7 @@ let init_game width height =
       max_health = 10;
       energy = 100;
       max_energy = 100;
+      turns_played = 0;
     }
   }
 

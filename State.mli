@@ -17,6 +17,7 @@ type player = {
   mutable max_health : int;
   mutable energy : int;
   mutable max_energy : int;
+  mutable turns_played : int;
 }
 
 (** The current data in the game. *)

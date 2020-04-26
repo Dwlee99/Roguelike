@@ -17,6 +17,6 @@ open State
 val write_msg : string -> Graphics.color -> unit
 
 (** Takes in the current state of the game and updates the player's stats*)
-val update_stats : State.t -> unit
+val update_stats : State.t -> Graphics.color -> unit
 
 val draw_ui : State.t -> Graphics.color -> Graphics.color -> Graphics.color -> unit
