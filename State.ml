@@ -5,9 +5,20 @@ type tile =
   | Wall
   | Empty
 
+type player = {
+  mutable position : (int*int);
+  mutable level : int;
+  mutable exp : int;
+  mutable max_exp : int;
+  mutable health : int;
+  mutable max_health : int;
+  mutable energy : int;
+  mutable max_energy : int;
+}
+
 type t = {
-  mutable board: tile array array;
-  mutable player_position: (int * int);
+  board: tile array array;
+  player: player;
 }
 
 (** Sets the tile at [(x, y)] to [tile]. *)
@@ -25,17 +36,17 @@ let get_tile t (x, y) =
 (**[move_player t (x, y)] moves the player to [(x, y)].
    Requires: [(x, y)] is empty. *)
 let move_player t (x, y) =
-  set_tile t t.player_position Empty; set_tile t (x, y) Player;
-  t.player_position <- (x, y)
+  set_tile t t.player.position Empty; set_tile t (x, y) Player;
+  t.player.position <- (x, y)
 
 let update t action =
   (* Attack if enemy present. *)
   let new_pos = match action with
-    | Up -> ((fun (x, y) -> (x, y + 1)) t.player_position)
-    | Down -> ((fun (x, y) -> (x, y - 1)) t.player_position)
-    | Left -> ((fun (x, y) -> (x - 1, y )) t.player_position)
-    | Right -> ((fun (x, y) -> (x + 1, y)) t.player_position)
-    | Rest -> t.player_position
+    | Up -> ((fun (x, y) -> (x, y + 1)) t.player.position)
+    | Down -> ((fun (x, y) -> (x, y - 1)) t.player.position)
+    | Left -> ((fun (x, y) -> (x - 1, y )) t.player.position)
+    | Right -> ((fun (x, y) -> (x + 1, y)) t.player.position)
+    | Rest -> t.player.position
   in if get_tile t new_pos = Empty then (move_player t new_pos; t) else
     t
 
@@ -63,7 +74,16 @@ let init_game width height =
   board.(width / 2).(height / 2) <- Player; 
   {
     board = board;
-    player_position = (width / 2, height / 2)
+    player = {
+      position = (width / 2, height / 2);
+      level = 1;
+      exp = 0;
+      max_exp = 10;
+      health = 10;
+      max_health = 10;
+      energy = 100;
+      max_energy = 100;
+    }
   }
 
 let tile_board t = t.board
