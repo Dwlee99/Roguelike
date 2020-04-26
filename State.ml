@@ -43,6 +43,7 @@ let move_player t (x, y) =
   set_tile t t.player.position Empty; set_tile t (x, y) Player;
   t.player.position <- (x, y)
 
+(** These functions have self-documenting names. *)
 let up_one (x, y) = (x, y + 1)
 
 let down_one (x, y) = (x, y - 1)
@@ -50,7 +51,6 @@ let down_one (x, y) = (x, y - 1)
 let right_one (x, y) = (x + 1, y)
 
 let left_one (x, y) = (x - 1, y)
-
 
 let update t action =
   (* Attack if enemy present. *)
@@ -73,11 +73,6 @@ let update t action =
     done;
     t
   | Rest -> t
-
-
-
-
-
 
 (** [add_outer_walls board] is a board identical to [board] except with
     each of the tiles that form the outer loop of the board being a wall. *)
