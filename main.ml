@@ -1,4 +1,3 @@
-open Yojson.Basic
 open Graphics
 exception End
 
@@ -60,7 +59,7 @@ let draw_game panel game =
       ignore(Ascii_panel.draw_char col row (snd charAndCol) (fst charAndCol) panel)
     done
   done;
-  Messages.draw_ui game pal.white pal.white pal.light_gray;
+  Messages.draw_ui (State.get_player game) pal.white pal.white pal.light_gray;
   synchronize ()
 
 let init_game () = 
@@ -81,7 +80,7 @@ let res_key c (panel_info : Ascii_panel.t) =
   c |> Action.parse |> update
 
 let res_exn ex : unit = 
-  failwith "unimplemented"
+  failwith "Game ending..."
 
 let game_loop f_init f_end f_key f_exn = 
   let panel_info = f_init () in

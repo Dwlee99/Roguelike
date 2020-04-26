@@ -17,7 +17,7 @@ type player = {
   mutable max_health : int;
   mutable energy : int;
   mutable max_energy : int;
-  mutable turns_player : int;
+  mutable turns_played : int;
 }
 
 type t = {
@@ -46,6 +46,9 @@ let move_player t (x, y) =
   set_tile t t.player.position Empty; set_tile t (x, y) Player;
   t.player.position <- (x, y)
 
+let inc_turns t =
+  t.player.turns_played <- (t.player.turns_played + 1)
+
 (** These functions have self-documenting names. *)
 let up_one (x, y) = (x, y + 1)
 
@@ -64,7 +67,7 @@ let update t action =
       | Down -> down_one t.player.position
       | Left -> left_one t.player.position
       | Right -> right_one t.player.position
-    in if get_tile t new_pos = Empty then (move_player t new_pos; t) else
+    in if get_tile t new_pos = Empty then (move_player t new_pos; inc_turns t; t) else
       t
   | Break ->
     for row = -1 to 1 do
@@ -77,8 +80,9 @@ let update t action =
       let changed_pos = (x + col, y) in
       if get_tile t changed_pos = Wall true then set_tile t changed_pos Empty
     done;
+    inc_turns t;
     t
-  | Rest -> t
+  | Rest -> inc_turns t; t
 
 (** [add_outer_walls board] is a board identical to [board] except with
     each of the tiles that form the outer loop of the board being a wall. *)
@@ -205,3 +209,5 @@ let init_game width height =
   }
 
 let tile_board t = t.board
+
+let get_player t = t.player

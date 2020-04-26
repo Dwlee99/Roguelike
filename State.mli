@@ -34,3 +34,7 @@ val init_game : int -> int -> t
     place. If the returned array is board, then board.(x).(y) will give the tile
     at coordinate (x, y). *)
 val tile_board : t -> tile array array
+
+(** [get_player t] is the record representing data of the player in the
+    state t*)
+val get_player : t -> player
