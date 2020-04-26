@@ -9,15 +9,15 @@ type tile =
   | Empty
 
 type player = {
-  mutable position : (int*int);
-  mutable level : int;
-  mutable exp : int;
-  mutable max_exp : int;
-  mutable health : int;
-  mutable max_health : int;
-  mutable energy : int;
-  mutable max_energy : int;
-  mutable turns_played : int;
+  position : (int*int);
+  level : int;
+  exp : int;
+  max_exp : int;
+  health : int;
+  max_health : int;
+  energy : int;
+  max_energy : int;
+  turns_played : int;
 }
 
 let move_cost = 1
@@ -50,10 +50,13 @@ let get_tile t (x, y) =
    Requires: [(x, y)] is empty. *)
 let move_player t (x, y) =
   set_tile t t.player.position Empty; set_tile t (x, y) Player;
-  t.player.position <- (x, y)
+  {t with player = {t.player with position = (x, y)}}
 
 let inc_turns t =
-  t.player.turns_played <- (t.player.turns_played + 1)
+  {t with player = {t.player with turns_played = t.player.turns_played + 1}}
+
+let set_energy e t = 
+  {t with player = {t.player with energy = e}}
 
 (** These functions have self-documenting names. *)
 let up_one (x, y) = (x, y + 1)
@@ -69,19 +72,20 @@ let update t action =
   match action with
   | Move direction -> 
     if t.player.energy < move_cost then t else (
-      t.player.energy <- t.player.energy - move_cost;
+      let new_energy = t.player.energy - move_cost in
       let new_pos = match direction with
         | Up -> up_one t.player.position
         | Down -> down_one t.player.position
         | Left -> left_one t.player.position
         | Right -> right_one t.player.position
       in 
-      if get_tile t new_pos = Empty then (move_player t new_pos; inc_turns t; t)
+      if get_tile t new_pos = Empty then 
+        move_player t new_pos |> inc_turns |> set_energy new_energy
       else t 
     )
   | Break ->
     if t.player.energy < break_cost then t else (
-      t.player.energy <- t.player.energy - break_cost;
+      let new_energy = t.player.energy - break_cost in
       for row = -1 to 1 do
         let (x, y) = t.player.position in
         let changed_pos = (x, y + row) in
@@ -92,12 +96,11 @@ let update t action =
         let changed_pos = (x + col, y) in
         if get_tile t changed_pos = Wall true then set_tile t changed_pos Empty
       done;
-      inc_turns t;
-      t
+      inc_turns t |> set_energy new_energy
     )
   | Rest -> 
-    t.player.energy <- min (t.player.energy + rest_gain) t.player.max_energy;
-    inc_turns t; t
+    let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
+    inc_turns t |> set_energy new_energy
 
 (** [add_outer_walls board] is a board identical to [board] except with
     each of the tiles that form the outer loop of the board being a wall. *)
@@ -223,6 +226,6 @@ let init_game width height =
     }
   }
 
-let tile_board t = t.board
+let tile_board t = Array.map Array.copy t.board
 
 let get_player t = t.player

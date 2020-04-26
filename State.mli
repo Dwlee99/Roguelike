@@ -9,15 +9,15 @@ type tile =
   | Empty
 
 type player = {
-  mutable position : (int*int);
-  mutable level : int;
-  mutable exp : int;
-  mutable max_exp : int;
-  mutable health : int;
-  mutable max_health : int;
-  mutable energy : int;
-  mutable max_energy : int;
-  mutable turns_played : int;
+  position : (int*int);
+  level : int;
+  exp : int;
+  max_exp : int;
+  health : int;
+  max_health : int;
+  energy : int;
+  max_energy : int;
+  turns_played : int;
 }
 
 (** The current data in the game. *)
