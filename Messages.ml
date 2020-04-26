@@ -1,5 +1,15 @@
 open Graphics
-open State
+
+type player_stats = {
+  level : int;
+  exp : int;
+  max_exp : int;
+  health : int;
+  max_health : int;
+  energy : int;
+  max_energy : int;
+  turns_played : int;
+}
 
 let msg_x = 400
 let msg_y = 700
@@ -23,8 +33,6 @@ let update_stats player col =
                         (string_of_int player.max_energy));
   Graphics.moveto 150 700;
   Graphics.draw_string ("Turns Lived: " ^ (string_of_int player.turns_played))
-
-let write_help col = failwith "unimplemented"
 
 let show_messages lst col =
   Graphics.set_color col;

@@ -2,7 +2,19 @@
     updates, health bar, food, etc*)
 
 open Graphics
-open State
+
+(** A type representing the player data that the system needs to print the
+    player's information. *)
+type player_stats = {
+  level : int;
+  exp : int;
+  max_exp : int;
+  health : int;
+  max_health : int;
+  energy : int;
+  max_energy : int;
+  turns_played : int;
+}
 
 (** 
    MSG are messages that are meant to display some information about the
@@ -20,4 +32,5 @@ val write_msg : string -> string list -> string list
 
 (** Draws the entire top area in the game including the dividers, player stats
     and messages*)
-val draw_ui : State.player -> string list -> Graphics.color -> Graphics.color -> unit
+val draw_ui : player_stats -> string list -> Graphics.color -> Graphics.color 
+  -> unit

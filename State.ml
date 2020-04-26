@@ -1,5 +1,6 @@
 open Action
 open Random
+open Messages
 
 type breakable = bool
 
@@ -30,6 +31,17 @@ type t = {
   board: tile array array;
   messages: string list;
   player: player;
+}
+
+let get_stats player = {
+  level = player.level;
+  exp = player.exp;
+  max_exp = player.max_exp;
+  health = player.health;
+  max_health = player.max_health;
+  energy = player.energy;
+  max_energy = player.max_energy;
+  turns_played = player.turns_played
 }
 
 (** Sets the tile at [(x, y)] to [tile]. *)

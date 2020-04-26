@@ -23,6 +23,9 @@ type player = {
 (** The current data in the game. *)
 type t
 
+(** [get_stats player] is a record holding the stats of [player] *)
+val get_stats : player -> Messages.player_stats
+
 (** [update t action] is the new state of the world following [action] being
     performed. *)
 val update : t -> Action.t -> t
