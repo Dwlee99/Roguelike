@@ -1,9 +1,11 @@
 open Action
 open Random
 
+type breakable = bool
+
 type tile = 
   | Player
-  | Wall
+  | Wall of breakable
   | Empty
 
 type player = {
@@ -35,7 +37,7 @@ let get_tile t (x, y) =
   let width = Array.length t.board in
   let height = Array.length t.board.(0) in 
   if x >= 0 && x < width && y >= 0 && y < height 
-  then t.board.(x).(y) else Wall
+  then t.board.(x).(y) else Wall false
 
 (**[move_player t (x, y)] moves the player to [(x, y)].
    Requires: [(x, y)] is empty. *)
@@ -64,12 +66,15 @@ let update t action =
     in if get_tile t new_pos = Empty then (move_player t new_pos; t) else
       t
   | Break ->
+    for row = -1 to 1 do
+      let (x, y) = t.player.position in
+      let changed_pos = (x, y + row) in
+      if get_tile t changed_pos = Wall true then set_tile t changed_pos Empty
+    done;
     for col = -1 to 1 do
-      for row = -1 to 1 do
-        let (x, y) = t.player.position in
-        let changed_pos = (x + col, y + row) in
-        if get_tile t changed_pos = Wall then set_tile t changed_pos Empty
-      done
+      let (x, y) = t.player.position in
+      let changed_pos = (x + col, y) in
+      if get_tile t changed_pos = Wall true then set_tile t changed_pos Empty
     done;
     t
   | Rest -> t
@@ -80,12 +85,12 @@ let add_outer_walls board =
   let width = Array.length board in
   let height = Array.length board.(0) in
   for x = 0 to width - 1 do
-    board.(x).(0) <- Wall;
-    board.(x).(height - 1) <- Wall;
+    board.(x).(0) <- Wall false;
+    board.(x).(height - 1) <- Wall false;
   done;
   for y = 1 to height - 2 do
-    board.(0).(y) <- Wall;
-    board.(width - 1).(y) <- Wall;
+    board.(0).(y) <- Wall false;
+    board.(width - 1).(y) <- Wall false;
   done;
   board
 
@@ -107,7 +112,7 @@ let randomize_tiles board =
   let height = Array.length board.(0) in
   for x = 0 to width - 1 do
     for y = 0 to height - 1 do
-      board.(x).(y) <- if Random.bool () = true then Empty else Wall;
+      board.(x).(y) <- if Random.bool () = true then Empty else Wall true;
     done;
   done;
   board
@@ -136,7 +141,7 @@ let smooth board =
           else walls := 1 + !walls
         done
       done;
-      new_board.(x).(y) <- if empties >= walls then Empty else Wall;
+      new_board.(x).(y) <- if empties >= walls then Empty else Wall true;
     done
   done;
   new_board

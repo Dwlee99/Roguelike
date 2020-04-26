@@ -54,7 +54,7 @@ let draw_game panel game =
     for row = 0 to init_row_count - 1 do
       let charAndCol = match board.(col).(row) with
         | Player -> ('@', pal.green)
-        | Wall -> ('#', pal.blue)
+        | Wall _ -> ('#', pal.blue)
         | Empty -> ('`', pal.gray)
       in 
       ignore(Ascii_panel.draw_char col row (snd charAndCol) (fst charAndCol) panel)
