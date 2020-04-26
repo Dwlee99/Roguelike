@@ -43,7 +43,7 @@ let init_screen_width = 1280
 let init_screen_height = 720
 
 let init_column_count = 80
-let init_row_count = 40
+let init_row_count = 36
 
 let game_state = ref (State.init_game init_column_count init_row_count)
 
@@ -54,12 +54,13 @@ let draw_game panel game =
     for row = 0 to init_row_count - 1 do
       let charAndCol = match board.(col).(row) with
         | Player -> ('@', pal.green)
-        | Wall _ -> ('#', pal.blue)
-        | Empty -> ('`', pal.gray)
+        | Wall _ -> (Char.chr 141, pal.blue)
+        | Empty -> (Char.chr 183, pal.gray)
       in 
       ignore(Ascii_panel.draw_char col row (snd charAndCol) (fst charAndCol) panel)
     done
   done;
+  Messages.draw_ui game pal.white pal.white pal.light_gray;
   synchronize ()
 
 let init_game () = 

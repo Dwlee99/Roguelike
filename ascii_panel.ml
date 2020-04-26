@@ -24,7 +24,7 @@ let open_window w h bcolor =
     background_color = bcolor;
     sizes = {
       char_width = w / 80;
-      char_height = w / 80;
+      char_height = h / 40;
     }
   }
 
