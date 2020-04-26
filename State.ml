@@ -20,6 +20,12 @@ type player = {
   mutable turns_played : int;
 }
 
+let move_cost = 1
+
+let rest_gain = 1
+
+let break_cost = 10
+
 type t = {
   board: tile array array;
   player: player;
@@ -62,27 +68,36 @@ let update t action =
   (* Attack if enemy present. *)
   match action with
   | Move direction -> 
-    let new_pos = match direction with
-      | Up -> up_one t.player.position
-      | Down -> down_one t.player.position
-      | Left -> left_one t.player.position
-      | Right -> right_one t.player.position
-    in if get_tile t new_pos = Empty then (move_player t new_pos; inc_turns t; t) else
-      t
+    if t.player.energy < move_cost then t else (
+      t.player.energy <- t.player.energy - move_cost;
+      let new_pos = match direction with
+        | Up -> up_one t.player.position
+        | Down -> down_one t.player.position
+        | Left -> left_one t.player.position
+        | Right -> right_one t.player.position
+      in 
+      if get_tile t new_pos = Empty then (move_player t new_pos; inc_turns t; t)
+      else t 
+    )
   | Break ->
-    for row = -1 to 1 do
-      let (x, y) = t.player.position in
-      let changed_pos = (x, y + row) in
-      if get_tile t changed_pos = Wall true then set_tile t changed_pos Empty
-    done;
-    for col = -1 to 1 do
-      let (x, y) = t.player.position in
-      let changed_pos = (x + col, y) in
-      if get_tile t changed_pos = Wall true then set_tile t changed_pos Empty
-    done;
-    inc_turns t;
-    t
-  | Rest -> inc_turns t; t
+    if t.player.energy < break_cost then t else (
+      t.player.energy <- t.player.energy - break_cost;
+      for row = -1 to 1 do
+        let (x, y) = t.player.position in
+        let changed_pos = (x, y + row) in
+        if get_tile t changed_pos = Wall true then set_tile t changed_pos Empty
+      done;
+      for col = -1 to 1 do
+        let (x, y) = t.player.position in
+        let changed_pos = (x + col, y) in
+        if get_tile t changed_pos = Wall true then set_tile t changed_pos Empty
+      done;
+      inc_turns t;
+      t
+    )
+  | Rest -> 
+    t.player.energy <- min (t.player.energy + rest_gain) t.player.max_energy;
+    inc_turns t; t
 
 (** [add_outer_walls board] is a board identical to [board] except with
     each of the tiles that form the outer loop of the board being a wall. *)
