@@ -41,4 +41,4 @@ val get_player : t -> player
 
 (** [get_msgs t] is the list of strings to be displayed in the messages
     panel in the UI*)
-val get_msgs : t -> (string*Graphics.color) list
+val get_msgs : t -> string list

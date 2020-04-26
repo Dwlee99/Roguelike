@@ -28,7 +28,7 @@ let break_cost = 10
 
 type t = {
   board: tile array array;
-  messages: (string*Graphics.color) list;
+  messages: string list;
   player: player;
 }
 
