@@ -158,18 +158,6 @@ let gen_board width height =
   let board_with_walls = add_outer_walls !random_board in
   board_with_walls
 
-(** A type representing a direciton on the board. *)
-type direction = Up | Down | Left | Right
-
-(** [next_direction dir] is the direction obtained by rotating 90 degrees CCW 
-    from [dir]. *)
-let next_direction dir =
-  match dir with 
-  | Up -> Left
-  | Left -> Down
-  | Down -> Right
-  | Right -> Up
-
 (** [player_location board] is a location that is surrounded by a layer of empty 
     tiles, which thus would be suitable for the player to spawn on. *)
 let rec player_location board =
