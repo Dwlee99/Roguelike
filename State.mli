@@ -1,9 +1,11 @@
 (** Represents the state of the game. *)
 
+type breakable = bool
+
 (** The things that can occupy coordinates on the board. *)
 type tile = 
   | Player
-  | Wall
+  | Wall of breakable
   | Empty
 
 type player = {

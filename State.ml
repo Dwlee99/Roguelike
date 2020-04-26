@@ -1,9 +1,11 @@
 open Action
 open Random
 
+type breakable = bool
+
 type tile = 
   | Player
-  | Wall
+  | Wall of breakable
   | Empty
 
 type player = {
@@ -24,7 +26,10 @@ type t = {
 
 (** Sets the tile at [(x, y)] to [tile]. *)
 let set_tile t (x, y) tile =
-  t.board.(x).(y) <- tile
+  let width = Array.length t.board in
+  let height = Array.length t.board.(0) in 
+  if x >= 0 && x < width && y >= 0 && y < height 
+  then t.board.(x).(y) <- tile
 
 (** Gets the contents of the tile at [(x, y)].
     If [(x, y)] is out of bounds, the result is [Wall]. *)
@@ -32,7 +37,7 @@ let get_tile t (x, y) =
   let width = Array.length t.board in
   let height = Array.length t.board.(0) in 
   if x >= 0 && x < width && y >= 0 && y < height 
-  then t.board.(x).(y) else Wall
+  then t.board.(x).(y) else Wall false
 
 (**[move_player t (x, y)] moves the player to [(x, y)].
    Requires: [(x, y)] is empty. *)
@@ -40,16 +45,39 @@ let move_player t (x, y) =
   set_tile t t.player.position Empty; set_tile t (x, y) Player;
   t.player.position <- (x, y)
 
+(** These functions have self-documenting names. *)
+let up_one (x, y) = (x, y + 1)
+
+let down_one (x, y) = (x, y - 1)
+
+let right_one (x, y) = (x + 1, y)
+
+let left_one (x, y) = (x - 1, y)
+
 let update t action =
   (* Attack if enemy present. *)
-  let new_pos = match action with
-    | Up -> ((fun (x, y) -> (x, y + 1)) t.player.position)
-    | Down -> ((fun (x, y) -> (x, y - 1)) t.player.position)
-    | Left -> ((fun (x, y) -> (x - 1, y )) t.player.position)
-    | Right -> ((fun (x, y) -> (x + 1, y)) t.player.position)
-    | Rest -> t.player.position
-  in if get_tile t new_pos = Empty then (move_player t new_pos; t) else
+  match action with
+  | Move direction -> 
+    let new_pos = match direction with
+      | Up -> up_one t.player.position
+      | Down -> down_one t.player.position
+      | Left -> left_one t.player.position
+      | Right -> right_one t.player.position
+    in if get_tile t new_pos = Empty then (move_player t new_pos; t) else
+      t
+  | Break ->
+    for row = -1 to 1 do
+      let (x, y) = t.player.position in
+      let changed_pos = (x, y + row) in
+      if get_tile t changed_pos = Wall true then set_tile t changed_pos Empty
+    done;
+    for col = -1 to 1 do
+      let (x, y) = t.player.position in
+      let changed_pos = (x + col, y) in
+      if get_tile t changed_pos = Wall true then set_tile t changed_pos Empty
+    done;
     t
+  | Rest -> t
 
 (** [add_outer_walls board] is a board identical to [board] except with
     each of the tiles that form the outer loop of the board being a wall. *)
@@ -57,12 +85,12 @@ let add_outer_walls board =
   let width = Array.length board in
   let height = Array.length board.(0) in
   for x = 0 to width - 1 do
-    board.(x).(0) <- Wall;
-    board.(x).(height - 1) <- Wall;
+    board.(x).(0) <- Wall false;
+    board.(x).(height - 1) <- Wall false;
   done;
   for y = 1 to height - 2 do
-    board.(0).(y) <- Wall;
-    board.(width - 1).(y) <- Wall;
+    board.(0).(y) <- Wall false;
+    board.(width - 1).(y) <- Wall false;
   done;
   board
 
@@ -84,7 +112,7 @@ let randomize_tiles board =
   let height = Array.length board.(0) in
   for x = 0 to width - 1 do
     for y = 0 to height - 1 do
-      board.(x).(y) <- if Random.bool () = true then Empty else Wall;
+      board.(x).(y) <- if Random.bool () = true then Empty else Wall true;
     done;
   done;
   board
@@ -113,7 +141,7 @@ let smooth board =
           else walls := 1 + !walls
         done
       done;
-      new_board.(x).(y) <- if empties >= walls then Empty else Wall;
+      new_board.(x).(y) <- if empties >= walls then Empty else Wall true;
     done
   done;
   new_board
@@ -130,16 +158,40 @@ let gen_board width height =
   let board_with_walls = add_outer_walls !random_board in
   board_with_walls
 
+(** [player_location board] is a location that is surrounded by a layer of empty 
+    tiles, which thus would be suitable for the player to spawn on. *)
+let rec player_location board =
+  Random.self_init ();
+  let width = Array.length board in
+  let height = Array.length board.(0) in
+  let x = 1 + (Random.int (width - 2)) in 
+  let y = 1 + (Random.int (height - 2)) in 
+  let suitable = ref true in 
+  for ox = -1 to 1 do
+    for oy = -1 to 1 do
+      suitable := (board.(x + ox).(y + oy) = Empty) && !suitable
+    done
+  done;
+  if !suitable then (x,y) else player_location board
+
+(** [place_player board] is the board [board] with a player added in a location 
+    suitable location (one in which the player is not surrounded by walls). *)
+let place_player board =
+  let position = player_location board in 
+  let x = fst position in 
+  let y  = snd position in
+  board.(x).(y) <- Player;
+  (board, (x,y))
 
 let init_game width height =
-  (** Make the game state random. Put walls in. Maybe randomize player spawn.  
-  *)
-  let board = gen_board width height in
-  board.(width / 2).(height / 2) <- Player; 
+  let raw_board = gen_board width height in
+  let player_and_board = place_player raw_board in 
+  let board = fst player_and_board in 
+  let player_loc = snd player_and_board in
   {
     board = board;
     player = {
-      position = (width / 2, height / 2);
+      position = player_loc;
       level = 1;
       exp = 0;
       max_exp = 10;
