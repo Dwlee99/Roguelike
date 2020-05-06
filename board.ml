@@ -6,6 +6,7 @@ type tile =
   | Wall of breakable
   | Empty
   | Monster
+  | Stairs
 
 type t = tile array array
 
@@ -165,7 +166,6 @@ let direction_to board cpos fpos max_dist =
   !dir
 
 (* Path finding algorithm 2. *)
-
 
 type distance = 
   | Int of int

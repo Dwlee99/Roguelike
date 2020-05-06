@@ -53,5 +53,5 @@ val write_help : t -> t
     executed on which the player did the action [action]. *)
 val do_turn : t -> Action.t -> t
 
-(** [init_game width height] is a randomized world with [width] and [height]. *)
-val init_game : int -> t
+(** [init_level width height] is a randomized world with [width] and [height]. *)
+val init_level : int -> t

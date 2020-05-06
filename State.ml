@@ -116,9 +116,11 @@ let do_player_turn t action =
         | Left -> left_one t.player.position
         | Right -> right_one t.player.position
       in 
-      if Board.get_tile t.board new_pos = Empty then 
+      let attempt_tile = Board.get_tile t.board new_pos in
+      if attempt_tile = Empty then 
         move_player t new_pos |> inc_turns |> set_energy new_energy
-      else t 
+      else if attempt_tile = Stairs then init_level (t.floor + 1)
+      else t
     )
   | Break ->
     if t.player.energy < break_cost 
@@ -224,7 +226,12 @@ let get_floor floor_num =
     num_monsters = num_monsters;
   }
 
-let init_game floor_num =
+let add_stairs t =
+  let stairs_board = place_entity Stairs t.board in 
+  let new_board = fst stairs_board in 
+  {t with board = new_board}
+
+let init_level floor_num =
   let floor = get_floor 5 in
   let width = floor.board_width in 
   let height = floor.board_height in 
@@ -252,4 +259,5 @@ let init_game floor_num =
     } in 
   let state_with_monsters = add_monsters 
       (create_monsters floor.num_monsters floor.monster_strength) init_state in 
-  state_with_monsters
+  let state_with_stairs = add_stairs state_with_monsters in
+  state_with_stairs

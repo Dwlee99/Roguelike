@@ -9,6 +9,7 @@ type tile =
   | Wall of breakable
   | Empty
   | Monster
+  | Stairs
 
 (** The game board. *)
 type t = tile array array
