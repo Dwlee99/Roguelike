@@ -8,7 +8,7 @@ module Swordsman : Edit_Monster = Make_Monster (
 
     let create_monster floor = {
       name = "Swordsman";
-      position = None;
+      position = (-1, -1);
       max_health = max_health floor;
       health = max_health floor;
       damage = damage floor;
@@ -21,7 +21,11 @@ module Swordsman : Edit_Monster = Make_Monster (
 
     let move_function move_to m _ _ = m
 
-    let edit_queue monster board p_pos = [Wait wait_function]
+    let edit_queue monster board p_pos =
+      let path_list = Board.path_to board monster.position p_pos in
+      match path_list with
+      | Some (h::t) -> [Move (move_function h)]
+      | _ -> [Wait (wait_function)]
 
   end
   )

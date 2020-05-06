@@ -5,7 +5,7 @@ type monster_type =
 
 type monster = {
   name : string;
-  position : State.coordinate option;
+  position : (int * int);
   health : int;
   max_health : int;
   damage : int;

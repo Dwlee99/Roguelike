@@ -137,43 +137,47 @@ let (+<) dist1 dist2 =
 
 exception Exit_array
 
-let path_to board c_pos t_pos = 
+let path_to board c_pos t_pos =
   let queue = Queue.create () in
   let (sX, sY) = c_pos in
-  let nodeArray = Array.mapi (fun x a -> Array.mapi (fun y b -> 
-      let node = {x = x; y = y; prev = None; dist = Infinity; 
-                  weight = if board.(x).(y) = Empty then Int 1 else Infinity}
-      in Queue.add node queue; node
-    ) a) board in
-  let source = nodeArray.(sX).(sY) in
-  source.dist <- Int 0;
-  let current = ref source in
-  try
-    while not (Queue.is_empty queue) do
-      let n = Queue.pop queue in
-      current := n;
-      let (cX, cY) = (!current.x, !current.y) in
-      if (cX, cY) = t_pos then raise Exit_array else
-        let neighbors = get_neighbors nodeArray (cX, cY) in
-        List.iter (fun node -> 
-            match node with
-            | None -> ()
-            | Some n -> begin
-                let new_dist = !current.dist ++ !current.weight in
-                if new_dist +< n.dist then (n.dist <- new_dist; n.prev <- Some !current) 
-              end
-          ) neighbors
-    done;
-    None
-  with Exit_array -> 
-    let list = ref [] in 
-    while (!current) <> source do
-      let prev = match !current.prev with
-        | None -> failwith "This can't happen"
-        | Some n -> n
-      in
-      current := prev;
-      let (x, y) = (prev.x, prev.y) in
-      list := (x, y) :: !list;
-    done;
-    Some !list
+  let width = Array.length board in
+  let height = Array.length board.(0) in 
+  if sX < 0 || sX >= width || sY < 0 || sY >= height 
+  then None else 
+    let nodeArray = Array.mapi (fun x a -> Array.mapi (fun y b -> 
+        let node = {x = x; y = y; prev = None; dist = Infinity; 
+                    weight = if board.(x).(y) = Empty then Int 1 else Infinity}
+        in Queue.add node queue; node
+      ) a) board in
+    let source = nodeArray.(sX).(sY) in
+    source.dist <- Int 0;
+    let current = ref source in
+    try
+      while not (Queue.is_empty queue) do
+        let n = Queue.pop queue in
+        current := n;
+        let (cX, cY) = (!current.x, !current.y) in
+        if (cX, cY) = t_pos then raise Exit_array else
+          let neighbors = get_neighbors nodeArray (cX, cY) in
+          List.iter (fun node -> 
+              match node with
+              | None -> ()
+              | Some n -> begin
+                  let new_dist = !current.dist ++ !current.weight in
+                  if new_dist +< n.dist then (n.dist <- new_dist; n.prev <- Some !current) 
+                end
+            ) neighbors
+      done;
+      None
+    with Exit_array -> 
+      let list = ref [] in 
+      while (!current) <> source do
+        let prev = match !current.prev with
+          | None -> failwith "This can't happen"
+          | Some n -> n
+        in
+        current := prev;
+        let (x, y) = (prev.x, prev.y) in
+        list := (x, y) :: !list;
+      done;
+      Some !list
