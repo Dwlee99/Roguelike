@@ -41,22 +41,25 @@ let pal : color_palette = {
 let init_screen_width = 1280
 let init_screen_height = 720
 
-let init_column_count = 80
-let init_row_count = 36
+let init_floor = 0
 
-let game_state = ref (State.init_game init_column_count init_row_count)
+let game_state = ref (State.init_game init_floor)
 
 let draw_game panel game =
   let board = State.tile_board game in
+  let column_count = Array.length board in 
+  let row_count = Array.length board.(0) in
   ignore(panel |> Ascii_panel.clear_graph);
-  for col = 0 to init_column_count - 1 do
-    for row = 0 to init_row_count - 1 do
+  for col = 0 to column_count - 1 do
+    for row = 0 to row_count - 1 do
       let charAndCol = match board.(col).(row) with
         | Player -> ('@', pal.green)
         | Wall _ -> (Char.chr 141, pal.blue)
         | Empty -> (Char.chr 183, pal.gray)
+        | Monster -> (Char.chr 116, pal.red)
       in 
-      ignore(Ascii_panel.draw_char col row (snd charAndCol) (fst charAndCol) panel)
+      ignore(Ascii_panel.draw_char col row (snd charAndCol) 
+               (fst charAndCol) panel)
     done
   done;
   Messages.draw_ui (State.get_stats (State.get_player game)) 

@@ -7,11 +7,11 @@ type player
 (** Type representing the monster. *)
 type monster
 
+(** Type representing the floor, which holds important stats. *)
+type floor 
+
 (** Represents the current player's level. *)
 type player_level = int
-
-(** Represents the floor the player is on. *)
-type floor = int
 
 (** Represents the coordinate system for the board. *)
 type coordinate = (int * int)
@@ -48,4 +48,4 @@ val write_help : t -> t
 val do_turn : t -> Action.t -> t
 
 (** [init_game width height] is a randomized world with [width] and [height]. *)
-val init_game : int -> int -> t
+val init_game : int -> t

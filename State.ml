@@ -11,8 +11,6 @@ let rest_gain = 1
 (** The energy cost of executing a break action. *)
 let break_cost = 10
 
-type floor = int
-
 type player_level = int
 
 type coordinate = (int * int)
@@ -37,12 +35,20 @@ type monster = {
   damage : int;
 }
 
+type floor = {
+  floor_num : int;
+  board_width : int;
+  board_height : int;
+  monster_strength: int;
+  num_monsters: int;
+}
+
 type t = {
-  floor : floor;
   board : Board.t;
   messages : Messages.msgs;
   player : player;
   monsters : monster list;
+  floor : floor;
 }
 
 
@@ -137,15 +143,15 @@ let do_player_turn t action =
     inc_turns t |> set_energy new_energy
 
 
-
 let do_turn t action = 
   let player_turn = do_player_turn t action in 
   player_turn
 
 
-(** [player_location board] is a location that is surrounded by a layer of empty 
-    tiles, which thus would be suitable for the player to spawn on. *)
-let rec player_location board =
+(** [spawn_location board] is a location that is surrounded by a layer of 
+    empty tiles, which thus would be suitable for the player or monster to 
+    spawn on. *)
+let rec spawn_location board =
   Random.self_init ();
   let width = Array.length board in
   let height = Array.length board.(0) in
@@ -157,37 +163,92 @@ let rec player_location board =
       suitable := (board.(x + ox).(y + oy) = Empty) && !suitable
     done
   done;
-  if !suitable then (x,y) else player_location board
+  if !suitable then (x,y) else spawn_location board
 
 (** [place_player board] is the board [board] with a player added in a location 
     suitable location (one in which the player is not surrounded by walls). *)
-let place_player board =
-  let position = player_location board in 
+let place_entity tile_type board =
+  let position = spawn_location board in 
   let x = fst position in 
   let y  = snd position in
-  board.(x).(y) <- Player;
+  board.(x).(y) <- tile_type;
   (board, (x,y))
 
+(** [add_monsters monsters t] is the state [t] updated with the monsters 
+    [monsters] added to the game. *)
+let rec add_monsters (monsters : monster list) (state : t) =
+  match monsters with 
+  | [] -> state
+  | h::t -> add_monsters t 
+              (let monster_board = place_entity Monster state.board in 
+               let board = fst monster_board in 
+               let monster_loc = snd monster_board in 
+               let monster = {h with position = monster_loc} in 
+               let new_state = 
+                 {state with board = board; 
+                             monsters = monster::(state.monsters)} in 
+               new_state)
 
-let init_game width height =
+(** [random_monster_name ()] is a random name for a monster. *)
+let random_monster_name () = "Bob"
+
+(** [create_monsters num strength] is a list of [num] monsters with level 
+    strength parameter [strength]. *)
+let rec create_monsters num strength =
+  if num < 0 then failwith "Cannot have a negative number of monsters!"
+  else match num with 
+    | 0 -> []
+    | k -> 
+      let monster = {
+        name = random_monster_name ();
+        position = (0, 0);
+        health = 10 * strength;
+        max_health = 10 * strength;
+        damage = 2 * strength;
+      } in 
+      monster :: (create_monsters (num - 1) strength)
+
+(** [get_floor floor_num] is the floor corresponding to the floor number
+    [floor_num]. *)
+let get_floor floor_num = 
+  let board_width = 80 + floor_num * 5 in 
+  let board_height = 36 + floor_num * 2 in
+  let monster_strength = 10 + floor_num in 
+  let num_monsters = 10 + 2 * floor_num in
+  {
+    floor_num = floor_num;
+    board_width = board_width;
+    board_height = board_height;
+    monster_strength = monster_strength;
+    num_monsters = num_monsters;
+  }
+
+let init_game floor_num =
+  let floor = get_floor 0 in
+  let width = floor.board_width in 
+  let height = floor.board_height in 
   let raw_board = Board.gen_board width height in
-  let player_and_board = place_player raw_board in 
+  let player_and_board = place_entity Player raw_board in 
   let board = fst player_and_board in 
   let player_loc = snd player_and_board in
-  {
-    floor = 1;
-    board = board;
-    messages = [];
-    player = {
-      position = player_loc;
-      level = 1;
-      exp = 0;
-      max_exp = 10;
-      health = 10;
-      max_health = 10;
-      energy = 100;
-      max_energy = 100;
-      turns_played = 0;
-    };
-    monsters = [];
-  }
+  let init_state =
+    {
+      board = board;
+      messages = [];
+      player = {
+        position = player_loc;
+        level = 1;
+        exp = 0;
+        max_exp = 10;
+        health = 10;
+        max_health = 10;
+        energy = 100;
+        max_energy = 100;
+        turns_played = 0;
+      };
+      monsters = [];
+      floor = floor;
+    } in 
+  let state_with_monsters = add_monsters 
+      (create_monsters floor.num_monsters floor.monster_strength) init_state in 
+  state_with_monsters

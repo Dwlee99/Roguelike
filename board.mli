@@ -8,6 +8,7 @@ type tile =
   | Player
   | Wall of breakable
   | Empty
+  | Monster
 
 (** The game board. *)
 type t = tile array array
