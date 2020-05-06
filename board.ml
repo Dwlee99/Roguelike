@@ -105,12 +105,12 @@ let gen_board width height =
 (* Path finding algorithm 1. *)
 
 (** Node used for searching for path. *)
-type node =
+type node1 =
   {
     x : int;
     y : int;
     dist : int;
-    prev: node option;
+    prev: node1 option;
   }
 
 let direction_to board cpos fpos max_dist =
