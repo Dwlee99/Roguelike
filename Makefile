@@ -1,4 +1,4 @@
-MODULES=main monster messages name state action authors board ascii_panel swordsman
+MODULES=main monster name swordsman
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)

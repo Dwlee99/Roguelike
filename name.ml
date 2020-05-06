@@ -18,7 +18,7 @@ let get_names_list () =
   json |> member "names" |> to_list |> parse_list to_string
 
 
-(** [random_monster_name ()] is a random name for a monster. *)
+(** [random_name ()] is a random name for a monster. *)
 let random_name () = 
   let names = get_names_list () in 
   let num = List.length names in

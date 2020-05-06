@@ -63,6 +63,10 @@ let get_stats player : Messages.player_stats = {
   turns_played = player.turns_played
 }
 
+let get_player_pos t = t.player.position
+
+let get_board_size t = (t.floor.board_width, t.floor.board_height)
+
 let get_player t = t.player
 
 let tile_board t = Array.map Array.copy t.board
@@ -221,7 +225,7 @@ let get_floor floor_num =
   }
 
 let init_game floor_num =
-  let floor = get_floor 0 in
+  let floor = get_floor 5 in
   let width = floor.board_width in 
   let height = floor.board_height in 
   let raw_board = Board.gen_board width height in
@@ -239,8 +243,8 @@ let init_game floor_num =
         max_exp = 10;
         health = 10;
         max_health = 10;
-        energy = 100;
-        max_energy = 100;
+        energy = 10000;
+        max_energy = 10000;
         turns_played = 0;
       };
       monsters = [];
