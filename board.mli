@@ -3,12 +3,14 @@
 (** Whether a wall is breakable. *)
 type breakable = bool
 
-(** The things that can occupy coordinates on the board. *)
+type monster_type = 
+  | Swordsman
+  (** The things that can occupy coordinates on the board. *)
 type tile = 
   | Player
   | Wall of breakable
   | Empty
-  | Monster
+  | Monster of monster_type
   | Stairs
 
 (** The game board. *)
@@ -29,6 +31,8 @@ val tile_board : t -> tile array array
 (** [gen_board width height] is a randomly generated board with dimensions 
     [width] and [height]. *)
 val gen_board : int -> int -> t
+
+val in_bound : t -> (int * int) -> bool
 
 (** [direction_to board cpos fpos max_dist] is [Some dir] if dir is the 
     direction that one would move to get from [cpos] to [fpos] on the board 

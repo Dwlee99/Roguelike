@@ -1,4 +1,4 @@
-MODULES=main monster name swordsman
+MODULES=main monster name swordsman State board
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
