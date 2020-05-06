@@ -45,26 +45,44 @@ let init_floor = 0
 
 let game_state = ref (State.init_game init_floor)
 
+let get_borders player_coords map_size= 
+  let llx = (fst player_coords) - 40 in
+  let lly = (snd player_coords) - 18 in
+  let max_x = (fst map_size) - 80 in
+  let max_y = (snd map_size) - 36 in
+  let final_x = match llx with
+    | x when x < 0 -> 0
+    | x when x > max_x -> max_x
+    | x -> x
+  in
+  let final_y = match lly with
+    | y when y < 0 -> 0
+    | y when y > max_y -> max_y
+    | y -> y
+  in (final_x, final_y)
+
+
 let draw_game panel game =
   let board = State.tile_board game in
-  let column_count = Array.length board in 
-  let row_count = Array.length board.(0) in
-  ignore(panel |> Ascii_panel.clear_graph);
-  for col = 0 to column_count - 1 do
-    for row = 0 to row_count - 1 do
-      let charAndCol = match board.(col).(row) with
-        | Player -> ('@', pal.green)
-        | Wall _ -> (Char.chr 141, pal.blue)
-        | Empty -> (Char.chr 183, pal.gray)
-        | Monster -> (Char.chr 116, pal.red)
-      in 
-      ignore(Ascii_panel.draw_char col row (snd charAndCol) 
-               (fst charAndCol) panel)
-    done
-  done;
-  Messages.draw_ui (State.get_stats (State.get_player game)) 
-    (State.get_msgs game) pal.white pal.light_gray;
-  synchronize ()
+  match get_borders (State.get_player_pos game) (State.get_board_size game) 
+  with
+  | (start_col, start_row) -> 
+    ignore(panel |> Ascii_panel.clear_graph);
+    for col = start_col to start_col + 79 do
+      for row = start_row to start_row + 35 do
+        let charAndCol = match board.(col).(row) with
+          | Player -> ('@', pal.green)
+          | Wall _ -> (Char.chr 141, pal.blue)
+          | Monster -> (Char.chr 116, pal.red)
+          | Empty -> (Char.chr 183, pal.gray)
+        in 
+        ignore(Ascii_panel.draw_char (col-start_col) (row-start_row) 
+                 (snd charAndCol) (fst charAndCol) panel)
+      done
+    done;
+    Messages.draw_ui (State.get_stats (State.get_player game)) 
+      (State.get_msgs game) pal.white pal.light_gray;
+    synchronize ()
 
 let init_game () = 
   game_state := State.write_help !game_state;

@@ -31,6 +31,12 @@ val tile_board : t -> Board.t
     state t*)
 val get_player : t -> player
 
+(** [get_player_pos t] returns the coordinates of the player*)
+val get_player_pos : t -> int*int
+
+(** [get_board_size t] is the size of the board*)
+val get_board_size : t -> int*int
+
 (** [get_msgs t] is the list of strings to be displayed in the messages
     panel in the UI*)
 val get_msgs : t -> Messages.msgs

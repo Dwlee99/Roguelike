@@ -5,7 +5,7 @@ type monster_type =
 
 type monster = {
   name : string;
-  position : State.coordinate option;
+  position : (int * int);
   health : int;
   max_health : int;
   damage : int;
@@ -51,4 +51,4 @@ module Make_Monster (M : Monster_Type) : Edit_Monster = struct
 
 end
 
-let path_to board m_pos n_pos = failwith "Unimplemented"
+

@@ -5,7 +5,7 @@ type monster_type =
 
 type monster = {
   name : string;
-  position : State.coordinate option;
+  position : (int * int);
   health : int;
   max_health : int;
   damage : int;
@@ -34,7 +34,3 @@ module type Edit_Monster = sig
 end
 
 module Make_Monster (M : Monster_Type) : Edit_Monster
-
-(** [path_to_player board m_pos n_pos] is the shortest path to n_pos from m_pos.
-*)
-val path_to : Board.t -> State.coordinate -> State.coordinate -> State.coordinate list
