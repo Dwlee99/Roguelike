@@ -189,12 +189,31 @@ let rec add_monsters (monsters : monster list) (state : t) =
                              monsters = monster::(state.monsters)} in 
                new_state)
 
+(** [random_monster_name ()] is a random name for a monster. *)
+let random_monster_name () = "Bob"
+
+(** [create_monsters num strength] is a list of [num] monsters with level 
+    strength parameter [strength]. *)
+let rec create_monsters num strength =
+  if num < 0 then failwith "Cannot have a negative number of monsters!"
+  else match num with 
+    | 0 -> []
+    | k -> 
+      let monster = {
+        name = random_monster_name ();
+        position = (0, 0);
+        health = 10 * strength;
+        max_health = 10 * strength;
+        damage = 2 * strength;
+      } in 
+      monster :: (create_monsters (num - 1) strength)
+
 (** [get_floor floor_num] is the floor corresponding to the floor number
     [floor_num]. *)
 let get_floor floor_num = 
   let board_width = 80 + floor_num * 5 in 
   let board_height = 36 + floor_num * 2 in
-  let monster_strength = 5 + floor_num in 
+  let monster_strength = 10 + floor_num in 
   let num_monsters = 10 + 2 * floor_num in
   {
     floor_num = floor_num;
@@ -212,20 +231,24 @@ let init_game floor_num =
   let player_and_board = place_entity Player raw_board in 
   let board = fst player_and_board in 
   let player_loc = snd player_and_board in
-  {
-    board = board;
-    messages = [];
-    player = {
-      position = player_loc;
-      level = 1;
-      exp = 0;
-      max_exp = 10;
-      health = 10;
-      max_health = 10;
-      energy = 100;
-      max_energy = 100;
-      turns_played = 0;
-    };
-    monsters = [];
-    floor = floor;
-  }
+  let init_state =
+    {
+      board = board;
+      messages = [];
+      player = {
+        position = player_loc;
+        level = 1;
+        exp = 0;
+        max_exp = 10;
+        health = 10;
+        max_health = 10;
+        energy = 100;
+        max_energy = 100;
+        turns_played = 0;
+      };
+      monsters = [];
+      floor = floor;
+    } in 
+  let state_with_monsters = add_monsters 
+      (create_monsters floor.num_monsters floor.monster_strength) init_state in 
+  state_with_monsters
