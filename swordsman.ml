@@ -32,7 +32,8 @@ module Swordsman : Edit_Monster = Make_Monster (
 
     let left_one (x, y) = (x - 1, y)
 
-    let edit_queue monster board p_pos =
+    let edit_queue monster board (px, py) =
+      let p_pos = (px, py) in
       let direction = Board.direction_to board monster.position p_pos 10 in
       let c_p = monster.position in
       match direction with

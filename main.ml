@@ -73,7 +73,7 @@ let draw_game panel game =
         let charAndCol = match board.(col).(row) with
           | Player -> ('@', pal.green)
           | Wall _ -> (Char.chr 141, pal.blue)
-          | Monster -> (Char.chr 116, pal.red)
+          | Monster m -> (Char.chr 116, pal.red)
           | Empty -> (Char.chr 183, pal.gray)
           | Stairs -> (Char.chr 35, pal.yellow)
         in 

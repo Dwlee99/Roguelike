@@ -6,6 +6,7 @@ type monster_type =
 type monster = {
   name : string;
   position : (int * int);
+  m_type : Board.monster_type;
   health : int;
   max_health : int;
   damage : int;
@@ -14,14 +15,14 @@ type monster = {
 and
   m_action = 
   | Wait of (monster -> monster)
-  | Move of (monster -> Board.t -> State.coordinate -> (monster))
-  | Attack of (monster -> Board.t -> State.coordinate -> (monster * damage))
+  | Move of (monster -> Board.t -> (int * int) -> (monster))
+  | Attack of (monster -> Board.t -> (int * int) -> (monster * damage))
 
 module type Monster_Type = sig
 
   val create_monster : int -> monster
 
-  val edit_queue : monster -> Board.t -> State.coordinate -> m_action list
+  val edit_queue : monster -> Board.t -> (int * int) -> m_action list
 
 end
 
@@ -29,7 +30,7 @@ module type Edit_Monster = sig
 
   val create_monster : int -> monster
 
-  val do_turn : monster -> Board.t -> State.coordinate -> (monster * damage)
+  val do_turn : monster -> Board.t -> (int * int) -> (monster * damage)
 
 end
 
@@ -50,5 +51,7 @@ module Make_Monster (M : Monster_Type) : Edit_Monster = struct
     | h::t -> do_action h {monster with action_queue = t} board p_pos
 
 end
+
+let get_type m = m.m_type
 
 
