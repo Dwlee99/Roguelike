@@ -43,7 +43,7 @@ let init_screen_height = 720
 
 let init_floor = 0
 
-let game_state = ref (State.init_level init_floor)
+let game_state = ref (State.init_level)
 
 let get_borders player_coords map_size= 
   let llx = (fst player_coords) - 40 in
@@ -81,7 +81,7 @@ let draw_game panel game =
                  (snd charAndCol) (fst charAndCol) panel)
       done
     done;
-    Messages.draw_ui (State.get_stats (State.get_player game)) 
+    Messages.draw_ui (State.get_stats game) 
       (State.get_msgs game) pal.white pal.light_gray;
     synchronize ()
 

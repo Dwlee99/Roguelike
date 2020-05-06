@@ -14,6 +14,7 @@ type player_stats = {
   energy : int;
   max_energy : int;
   turns_played : int;
+  floor : int;
 }
 
 (** The list of recent messages. *)
