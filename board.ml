@@ -3,6 +3,7 @@ type breakable = bool
 
 type monster_type = 
   | Swordsman
+  | Ranger
 
 (** The things that can occupy coordinates on the board. *)
 type tile = 

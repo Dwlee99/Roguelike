@@ -58,7 +58,11 @@ let get_stats t : Messages.player_stats = {
   floor = t.floor.floor_num
 }
 
-let types_of_monsters = [Board.Swordsman]
+let types_of_monsters = 
+  Array.of_list [
+    Board.Swordsman; 
+    Board.Ranger
+  ]
 
 let get_player_pos t = t.player.position
 
@@ -131,7 +135,7 @@ let rec add_monsters (monsters : Monster.monster list) (state : t) =
   match monsters with 
   | [] -> state
   | h::t -> add_monsters t 
-              (let monster_board = place_entity (Monster Swordsman) state.board in 
+              (let monster_board = place_entity (Monster (Monster.get_type h)) state.board in 
                let board = fst monster_board in 
                let monster_loc = snd monster_board in 
                let monster = {h with position = monster_loc} in 
@@ -140,15 +144,25 @@ let rec add_monsters (monsters : Monster.monster list) (state : t) =
                              monsters = monster::(state.monsters)} in 
                new_state)
 
+let random_element arr =
+  Array.get arr (Random.int (Array.length arr))
+
 (** [create_monsters num strength] is a list of [num] monsters with level 
     strength parameter [strength]. *)
 let rec create_monsters num strength =
   if num < 0 then failwith "Cannot have a negative number of monsters!"
   else match num with 
     | 0 -> []
-    | k -> 
-      let monster = Swordsman.Swordsman.create_monster strength in 
-      monster :: (create_monsters (num - 1) strength)
+    | k -> begin
+        let monster_type = random_element types_of_monsters in
+        match monster_type with
+        | Board.Swordsman ->
+          let monster = Swordsman.Swordsman.create_monster strength in 
+          monster :: (create_monsters (num - 1) strength)
+        | Board.Ranger ->
+          let monster = Ranger.Ranger.create_monster strength in 
+          monster :: (create_monsters (num - 1) strength)
+      end
 
 (** [get_floor floor_num] is the floor corresponding to the floor number
     [floor_num]. *)
@@ -281,7 +295,6 @@ let move_monster c_pos (x, y) m_type (m : Monster.monster) t =
   else
     {m with position = c_pos}
 
-
 let do_monster_turn t =
   let rec turns t monsters acc =
     match monsters with
@@ -290,6 +303,9 @@ let do_monster_turn t =
         | Board.Swordsman ->
           let (new_m, damage) = Swordsman.Swordsman.do_turn h t.board t.player.position in
           specific_turn h tail new_m damage t Board.Swordsman acc
+        | Board.Ranger ->
+          let (new_m, damage) = Ranger.Ranger.do_turn h t.board t.player.position in
+          specific_turn h tail new_m damage t Board.Ranger acc
       end
     | [] -> (t, acc)
   and specific_turn m tail new_m damage t m_type acc =

@@ -7,7 +7,7 @@ module Swordsman : Edit_Monster = Make_Monster (
     let damage floor = floor / 10 * 2 + 1
 
     let create_monster floor = {
-      name = "Swordsman";
+      name = Name.random_name ();
       position = (-1, -1);
       m_type = Board.Swordsman;
       max_health = max_health floor;
@@ -24,7 +24,6 @@ module Swordsman : Edit_Monster = Make_Monster (
       {m with position = move_to}
 
     let attack_function m _ _ =
-      print_int m.damage;
       (m, m.damage)
 
     (** These functions have self-documenting names. *)

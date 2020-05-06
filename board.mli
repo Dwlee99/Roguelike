@@ -5,7 +5,9 @@ type breakable = bool
 
 type monster_type = 
   | Swordsman
-  (** The things that can occupy coordinates on the board. *)
+  | Ranger
+
+(** The things that can occupy coordinates on the board. *)
 type tile = 
   | Player
   | Wall of breakable
