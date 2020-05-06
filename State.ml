@@ -46,15 +46,16 @@ type t = {
 
 
 
-let get_stats player : Messages.player_stats = {
-  level = player.level;
-  exp = player.exp;
-  max_exp = player.max_exp;
-  health = player.health;
-  max_health = player.max_health;
-  energy = player.energy;
-  max_energy = player.max_energy;
-  turns_played = player.turns_played
+let get_stats t : Messages.player_stats = {
+  level = t.player.level;
+  exp = t.player.exp;
+  max_exp = t.player.max_exp;
+  health = t.player.health;
+  max_health = t.player.max_health;
+  energy = t.player.energy;
+  max_energy = t.player.max_energy;
+  turns_played = t.player.turns_played;
+  floor = t.floor.floor_num
 }
 
 let types_of_monsters = [Board.Swordsman]
@@ -62,8 +63,6 @@ let types_of_monsters = [Board.Swordsman]
 let get_player_pos t = t.player.position
 
 let get_board_size t = (t.floor.board_width, t.floor.board_height)
-
-let get_player t = t.player
 
 let tile_board t = Array.map Array.copy t.board
 
@@ -171,8 +170,28 @@ let add_stairs t =
   let new_board = fst stairs_board in 
   {t with board = new_board}
 
-let init_level floor_num =
-  let floor = get_floor 5 in
+let next_level t =
+  let floor = get_floor (t.floor.floor_num + 1) in
+  let width = floor.board_width in 
+  let height = floor.board_height in 
+  let raw_board = Board.gen_board width height in
+  let player_and_board = place_entity Player raw_board in 
+  let board = fst player_and_board in 
+  let player_loc = snd player_and_board in
+  let new_state = {
+    player = {t.player with position = player_loc};
+    board = board;
+    messages = [];
+    floor = floor;
+    monsters = [];
+  } in
+  let state_with_monsters = add_monsters 
+      (create_monsters floor.num_monsters floor.monster_strength) new_state in 
+  let state_with_stairs = add_stairs state_with_monsters in
+  state_with_stairs
+
+let init_level =
+  let floor = get_floor 1 in
   let width = floor.board_width in 
   let height = floor.board_height in 
   let raw_board = Board.gen_board width height in
@@ -225,7 +244,7 @@ let do_player_turn t action =
       let attempt_tile = Board.get_tile t.board new_pos in
       if attempt_tile = Empty then 
         move_player t new_pos |> inc_turns |> set_energy new_energy
-      else if attempt_tile = Stairs then init_level (t.floor.floor_num + 1)
+      else if attempt_tile = Stairs then next_level t
       else t
     )
   | Break ->

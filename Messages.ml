@@ -9,6 +9,7 @@ type player_stats = {
   energy : int;
   max_energy : int;
   turns_played : int;
+  floor : int;
 }
 
 type msgs = string list
@@ -17,7 +18,8 @@ type msgs = string list
 let help_strings = 
   ["INSTRUCTIONS/CONTROLS:"; 
    "Press i,j,k,l to move up, left, down, right"; 
-   "Press b to break the 4 walls near you"; 
+   "Press b to break the 4 walls near you. "^ 
+   "Walk into the staircase ('#') to advance to the next level"; 
    "Press [spacebar] to rest"; 
    "Press h to see instructions again."]
 
@@ -48,7 +50,10 @@ let update_stats stats col =
   Graphics.draw_string ("Energy: " ^ (string_of_int stats.energy) ^ "/" ^ 
                         (string_of_int stats.max_energy));
   Graphics.moveto 150 700;
-  Graphics.draw_string ("Turns Lived: " ^ (string_of_int stats.turns_played))
+  Graphics.draw_string ("Turns Lived: " ^ (string_of_int stats.turns_played));
+
+  Graphics.moveto 150 688;
+  Graphics.draw_string ("Difficulty: " ^ (string_of_int stats.floor))
 
 (** [show_messages msgs col] shows the messages in the specified color [col]. *)
 let show_messages msgs col =
@@ -77,7 +82,7 @@ let write_msgs new_msgs old_msgs =
 
 let write_help msgs = write_msgs help_strings msgs
 
-let draw_ui player msgs text_col div_col = 
+let draw_ui p_stats msgs text_col div_col = 
   draw_divider div_col;
-  update_stats player text_col;
+  update_stats p_stats text_col;
   ignore(show_messages msgs text_col)

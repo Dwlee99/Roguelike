@@ -17,16 +17,12 @@ type coordinate = (int * int)
 type t
 
 (** [get_stats player] is a record holding the stats of [player] *)
-val get_stats : player -> Messages.player_stats
+val get_stats : t -> Messages.player_stats
 
 (** [tile_board t] is an array representing the board on which the game takes
     place. If the returned array is board, then board.(x).(y) will give the tile
     at coordinate (x, y). *)
 val tile_board : t -> Board.t
-
-(** [get_player t] is the record representing data of the player in the
-    state t*)
-val get_player : t -> player
 
 (** [get_player_pos t] returns the coordinates of the player*)
 val get_player_pos : t -> int*int
@@ -51,4 +47,4 @@ val write_help : t -> t
 val do_turn : t -> Action.t -> t
 
 (** [init_level width height] is a randomized world with [width] and [height]. *)
-val init_level : int -> t
+val init_level : t
