@@ -7,6 +7,12 @@ type player
 (** Type representing the monster. *)
 type monster
 
+(** Represents the current player's level. *)
+type player_level = int
+
+(** Represents the floor the player is on. *)
+type floor = int
+
 (** The current data in the game. *)
 type t
 
