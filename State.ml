@@ -100,59 +100,6 @@ let right_one (x, y) = (x + 1, y)
 
 let left_one (x, y) = (x - 1, y)
 
-(** [do_player_turn t action] is the state of the board after a player's turn
-    has been executed on which the player did the action [action]. *)
-let do_player_turn t action =
-  (* Attack if enemy present. *)
-  match action with
-  | Move direction -> 
-    if t.player.energy < move_cost 
-    then write_msgs t ["You do not have enough energy to move. Try resting."]
-    else (
-      let new_energy = t.player.energy - move_cost in
-      let new_pos = match direction with
-        | Up -> up_one t.player.position
-        | Down -> down_one t.player.position
-        | Left -> left_one t.player.position
-        | Right -> right_one t.player.position
-      in 
-      let attempt_tile = Board.get_tile t.board new_pos in
-      if attempt_tile = Empty then 
-        move_player t new_pos |> inc_turns |> set_energy new_energy
-      else if attempt_tile = Stairs then init_level (t.floor + 1)
-      else t
-    )
-  | Break ->
-    if t.player.energy < break_cost 
-    then 
-      write_msgs t 
-        ["You do not have enough energy to break walls. Try resting."]
-    else (
-      let new_energy = t.player.energy - break_cost in
-      for row = -1 to 1 do
-        let (x, y) = t.player.position in
-        let changed_pos = (x, y + row) in
-        if Board.get_tile t.board changed_pos = Wall true 
-        then Board.set_tile t.board changed_pos Empty
-      done;
-      for col = -1 to 1 do
-        let (x, y) = t.player.position in
-        let changed_pos = (x + col, y) in
-        if Board.get_tile t.board changed_pos = Wall true 
-        then Board.set_tile t.board changed_pos Empty
-      done;
-      inc_turns t |> set_energy new_energy
-    )
-  | Help -> write_help t;
-  | Rest -> 
-    let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
-    inc_turns t |> set_energy new_energy
-
-
-let do_turn t action = 
-  let player_turn = do_player_turn t action in 
-  player_turn
-
 
 (** [spawn_location board] is a location that is surrounded by a layer of 
     empty tiles, which thus would be suitable for the player or monster to 
@@ -261,3 +208,58 @@ let init_level floor_num =
       (create_monsters floor.num_monsters floor.monster_strength) init_state in 
   let state_with_stairs = add_stairs state_with_monsters in
   state_with_stairs
+
+
+
+(** [do_player_turn t action] is the state of the board after a player's turn
+    has been executed on which the player did the action [action]. *)
+let do_player_turn t action =
+  (* Attack if enemy present. *)
+  match action with
+  | Move direction -> 
+    if t.player.energy < move_cost 
+    then write_msgs t ["You do not have enough energy to move. Try resting."]
+    else (
+      let new_energy = t.player.energy - move_cost in
+      let new_pos = match direction with
+        | Up -> up_one t.player.position
+        | Down -> down_one t.player.position
+        | Left -> left_one t.player.position
+        | Right -> right_one t.player.position
+      in 
+      let attempt_tile = Board.get_tile t.board new_pos in
+      if attempt_tile = Empty then 
+        move_player t new_pos |> inc_turns |> set_energy new_energy
+      else if attempt_tile = Stairs then init_level (t.floor.floor_num + 1)
+      else t
+    )
+  | Break ->
+    if t.player.energy < break_cost 
+    then 
+      write_msgs t 
+        ["You do not have enough energy to break walls. Try resting."]
+    else (
+      let new_energy = t.player.energy - break_cost in
+      for row = -1 to 1 do
+        let (x, y) = t.player.position in
+        let changed_pos = (x, y + row) in
+        if Board.get_tile t.board changed_pos = Wall true 
+        then Board.set_tile t.board changed_pos Empty
+      done;
+      for col = -1 to 1 do
+        let (x, y) = t.player.position in
+        let changed_pos = (x + col, y) in
+        if Board.get_tile t.board changed_pos = Wall true 
+        then Board.set_tile t.board changed_pos Empty
+      done;
+      inc_turns t |> set_energy new_energy
+    )
+  | Help -> write_help t;
+  | Rest -> 
+    let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
+    inc_turns t |> set_energy new_energy
+
+
+let do_turn t action = 
+  let player_turn = do_player_turn t action in 
+  player_turn
