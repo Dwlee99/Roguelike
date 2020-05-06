@@ -23,10 +23,19 @@ type player = {
   turns_played : int;
 }
 
+type monster = {
+  name : string;
+  position : int * int;
+  health : int;
+  max_health : int;
+  damage : int;
+}
+
 type t = {
-  board: Board.t;
-  messages: Messages.msgs;
-  player: player;
+  board : Board.t;
+  messages : Messages.msgs;
+  player : player;
+  monsters : monster list;
 }
 
 let get_stats player : Messages.player_stats = {
@@ -46,17 +55,10 @@ let tile_board t = Array.map Array.copy t.board
 
 let get_msgs t = t.messages
 
-let write_msgs t msgs = {
-  board = t.board;
-  messages = Messages.write_msgs msgs t.messages;
-  player = t.player;
-}
+let write_msgs t msgs = 
+  { t with messages = Messages.write_msgs msgs t.messages; }
 
-let write_help t = {
-  board = t.board;
-  messages = Messages.write_help t.messages;
-  player = t.player
-}
+let write_help t = {t with messages = Messages.write_help t.messages}
 
 (**[move_player t (x, y)] moves the player to [(x, y)].
    Requires: [(x, y)] is empty. *)
@@ -125,9 +127,12 @@ let do_player_turn t action =
     let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
     inc_turns t |> set_energy new_energy
 
+
+
 let do_turn t action = 
   let player_turn = do_player_turn t action in 
   player_turn
+
 
 (** [player_location board] is a location that is surrounded by a layer of empty 
     tiles, which thus would be suitable for the player to spawn on. *)
@@ -154,6 +159,7 @@ let place_player board =
   board.(x).(y) <- Player;
   (board, (x,y))
 
+
 let init_game width height =
   let raw_board = Board.gen_board width height in
   let player_and_board = place_player raw_board in 
@@ -172,5 +178,6 @@ let init_game width height =
       energy = 100;
       max_energy = 100;
       turns_played = 0;
-    }
+    };
+    monsters = [];
   }

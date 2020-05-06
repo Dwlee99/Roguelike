@@ -1,18 +1,11 @@
 open Board
 (** Represents the state of the game. *)
 
-(** Data on the player. *)
-type player = {
-  position : (int*int);
-  level : int;
-  exp : int;
-  max_exp : int;
-  health : int;
-  max_health : int;
-  energy : int;
-  max_energy : int;
-  turns_played : int;
-}
+(** Type representing the player. *)
+type player 
+
+(** Type representing the monster. *)
+type monster
 
 (** The current data in the game. *)
 type t
