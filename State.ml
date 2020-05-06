@@ -26,13 +26,6 @@ type player = {
   turns_played : int;
 }
 
-type monster = {
-  name : string;
-  position : coordinate;
-  health : int;
-  max_health : int;
-  damage : int;
-}
 
 type floor = {
   floor_num : int;
@@ -46,11 +39,9 @@ type t = {
   board : Board.t;
   messages : Messages.msgs;
   player : player;
-  monsters : monster list;
+  monsters : Monster.monster list;
   floor : floor;
 }
-
-
 
 let get_stats player : Messages.player_stats = {
   level = player.level;
@@ -62,6 +53,9 @@ let get_stats player : Messages.player_stats = {
   max_energy = player.max_energy;
   turns_played = player.turns_played
 }
+
+
+let types_of_monsters = [Board.Swordsman]
 
 let get_player_pos t = t.player.position
 
@@ -90,6 +84,9 @@ let inc_turns t =
 
 let set_energy e t = 
   {t with player = {t.player with energy = e}}
+
+let take_damage t damage = 
+  {t with player = {t.player with health = t.player.health - damage}}
 
 (** These functions have self-documenting names. *)
 let up_one (x, y) = (x, y + 1)
@@ -146,10 +143,32 @@ let do_player_turn t action =
     let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
     inc_turns t |> set_energy new_energy
 
+let move_monster c_pos (x, y) m_type (m : Monster.monster) t =
+  if Board.get_tile t.board (x, y) = Empty then (
+    Board.set_tile t.board c_pos Empty; 
+    Board.set_tile t.board (x, y) (Monster m_type);
+    m)
+  else
+    {m with position = c_pos}
+
+
+let do_monster_turn t =
+  let rec turns t monsters acc =
+    match monsters with
+    | h::tail -> begin
+        match Monster.get_type h with
+        | Board.Swordsman ->
+          let (new_m, damage) = Swordsman.Swordsman.do_turn h t.board t.player.position in
+          let updated_t = take_damage t damage in
+          let final_monster = move_monster h.position new_m.position Board.Swordsman new_m updated_t in
+          turns updated_t tail (final_monster :: acc)
+      end
+    | [] -> acc
+  in
+  {t with monsters = turns t t.monsters []}
 
 let do_turn t action = 
-  let player_turn = do_player_turn t action in 
-  player_turn
+  (do_player_turn t action) |> do_monster_turn
 
 
 (** [spawn_location board] is a location that is surrounded by a layer of 
@@ -180,11 +199,11 @@ let place_entity tile_type board =
 
 (** [add_monsters monsters t] is the state [t] updated with the monsters 
     [monsters] added to the game. *)
-let rec add_monsters (monsters : monster list) (state : t) =
+let rec add_monsters (monsters : Monster.monster list) (state : t) =
   match monsters with 
   | [] -> state
   | h::t -> add_monsters t 
-              (let monster_board = place_entity Monster state.board in 
+              (let monster_board = place_entity (Monster Swordsman) state.board in 
                let board = fst monster_board in 
                let monster_loc = snd monster_board in 
                let monster = {h with position = monster_loc} in 
@@ -200,13 +219,7 @@ let rec create_monsters num strength =
   else match num with 
     | 0 -> []
     | k -> 
-      let monster = {
-        name = Name.random_name ();
-        position = (0, 0);
-        health = 10 * strength;
-        max_health = 10 * strength;
-        damage = 2 * strength;
-      } in 
+      let monster = Swordsman.Swordsman.create_monster strength in 
       monster :: (create_monsters (num - 1) strength)
 
 (** [get_floor floor_num] is the floor corresponding to the floor number

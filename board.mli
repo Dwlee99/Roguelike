@@ -3,12 +3,15 @@
 (** Whether a wall is breakable. *)
 type breakable = bool
 
+type monster_type = 
+  | Swordsman
+
 (** The things that can occupy coordinates on the board. *)
 type tile = 
   | Player
   | Wall of breakable
   | Empty
-  | Monster
+  | Monster of monster_type
 
 (** The game board. *)
 type t = tile array array
@@ -19,6 +22,8 @@ val set_tile : t -> int * int -> tile -> unit
 (** Gets the contents of the tile at [(x, y)].
     If [(x, y)] is out of bounds, the result is [Wall]. *)
 val get_tile : t -> int * int -> tile
+
+val in_bound : t -> (int * int) -> bool
 
 (** [tile_board t] is an array representing the board on which the game takes
     place. If the returned array is board, then board.(x).(y) will give the tile

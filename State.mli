@@ -4,9 +4,6 @@ open Board
 (** Type representing the player. *)
 type player 
 
-(** Type representing the monster. *)
-type monster
-
 (** Type representing the floor, which holds important stats. *)
 type floor 
 

@@ -1,11 +1,15 @@
 
 type breakable = bool
 
+type monster_type = 
+  | Swordsman
+
+(** The things that can occupy coordinates on the board. *)
 type tile = 
   | Player
   | Wall of breakable
   | Empty
-  | Monster
+  | Monster of monster_type
 
 type t = tile array array
 
@@ -112,6 +116,11 @@ type node = {
   mutable dist : distance;
   weight : distance;
 }
+
+let in_bound t (x, y) =   
+  let width = Array.length t in
+  let height = Array.length t.(0) in 
+  x >= 0 && x < width && y >= 0 && y < height 
 
 let get_node nodeArray (x, y) =
   let width = Array.length nodeArray in
