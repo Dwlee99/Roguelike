@@ -21,13 +21,29 @@ module Swordsman : Edit_Monster = Make_Monster (
     }
 
     let move_function move_to m _ _ = 
-      let (x, y) = m.position in
-      {m with position = (x, y + 1)}
+      {m with position = move_to}
+
+    (** These functions have self-documenting names. *)
+    let up_one (x, y) = (x, y + 1)
+
+    let down_one (x, y) = (x, y - 1)
+
+    let right_one (x, y) = (x + 1, y)
+
+    let left_one (x, y) = (x - 1, y)
+
     let edit_queue monster board p_pos =
-      let path_list = Some [5; 3] in
-      match path_list with
-      | Some (h::t) -> [Move (move_function h)]
-      | _ -> [Wait (wait_function)]
+      let direction = Board.direction_to board monster.position p_pos 10 in
+      let c_p = monster.position in
+      match direction with
+      | Some d -> begin
+          match d with
+          | Up -> [Move (move_function (up_one c_p))]    
+          | Down -> [Move (move_function (down_one c_p))]
+          | Left -> [Move (move_function (left_one c_p))]
+          | Right -> [Move (move_function (right_one c_p))]
+        end
+      | None -> [Wait (wait_function)]
 
   end
   )
