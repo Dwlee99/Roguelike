@@ -40,6 +40,8 @@ val in_bound : t -> (int * int) -> bool
 val direction_to : t -> (int * int) -> (int * int) -> int -> 
   Action.direction option
 
+(*
 (** [path_to_player board c_pos t_pos] is the shortest path to n_pos from m_pos.
     If there is no path, it returns [None]. *)
 val path_to : t -> (int * int) -> (int * int) -> (int * int) list option
+*)

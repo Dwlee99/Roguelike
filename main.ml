@@ -122,7 +122,7 @@ let game_loop f_init f_end f_key f_exn =
           then ignore(f_key s.Graphics.key panel_info)*)
       with
       | End -> raise End
-      | e -> f_exn e
+      | e -> res_exn e
     done
   with
   | End -> f_end panel_info

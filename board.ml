@@ -147,34 +147,38 @@ let direction_to board cpos fpos max_dist =
   let found = ref false in
   let visited_board = Array.map (fun a -> Array.map (fun b -> false) a) board in
 
-  let add_node q x y dist prev =
-    Queue.add {x = x; y = y; dist = dist; prev = Some prev} q
+  let add_node queue x y dist prev =
+    Queue.add {x = x; y = y; dist = dist; prev = Some prev} queue
   in
 
-  let add_neighbors board n q visited_board = 
+  let viable_node board visited_board x y distance prev =
+    let tile = get_tile board (x, y) in
+    let already_visited = visited_board.(x).(y) in 
+    not(already_visited) && not(tile = Wall true) && not(tile = Wall false) 
+    && (distance < max_dist)
+  in
+
+  let add_neighbors board n queue visited_board = 
     let coords x1 y1 = 
       [(x1 + 1, y1); (x1 - 1, y1); (x1, y1 + 1); (x1, y1 - 1)] in
     let coordinates = coords n.x n.y in
     List.iter (fun coord -> 
-        if visited_board.(fst coord).(snd coord) = false
-        then add_node q (fst coord) (snd coord) (n.dist + 1) n else ();
+        if (viable_node board visited_board (fst coord) 
+              (snd coord) (n.dist + 1) n)
+        then add_node queue (fst coord) (snd coord) (n.dist + 1) n else ();
       ) coordinates;
   in
 
-  while not (Queue.is_empty queue) && !found = false do
+  while (not (Queue.is_empty queue)) && !found = false do
     let cur_node = Queue.pop queue in 
-
-    if visited_board.(cur_node.x).(cur_node.y) then () else 
-      (visited_board.(cur_node.x).(cur_node.y) <- true;
-       if (cur_node.x = goal_x && cur_node.y = goal_y)
-       then (dir := (best_dir cur_node); found := true)
-       else if cur_node.dist >= max_dist then ()
-       else if get_tile board (cur_node.x, cur_node.y) != Empty then ()
-       else add_neighbors board cur_node queue visited_board;
-      )
+    visited_board.(cur_node.x).(cur_node.y) <- true;
+    if (cur_node.x = goal_x && cur_node.y = goal_y)
+    then (dir := (best_dir cur_node); found := true)
+    else add_neighbors board cur_node queue visited_board;
   done;
   !dir
 
+(*
 (* Path finding algorithm 2. *)
 
 type distance = 
@@ -257,3 +261,4 @@ let path_to board c_pos t_pos =
         list := (x, y) :: !list;
       done;
       Some !list
+*)
