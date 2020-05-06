@@ -24,6 +24,8 @@ type player = {
   energy : int;
   max_energy : int;
   turns_played : int;
+  attack: int;
+  defense: int;
 }
 
 type monster = {
@@ -246,6 +248,8 @@ let init_game floor_num =
         energy = 10000;
         max_energy = 10000;
         turns_played = 0;
+        attack = 3;
+        defense = 3;
       };
       monsters = [];
       floor = floor;
