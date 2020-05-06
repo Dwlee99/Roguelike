@@ -10,7 +10,7 @@ default: build
 	utop
 
 install: 
-	opam install -y conf-pkg-config conf-libX11 dune dune-configurator graphics
+	opam install -y conf-pkg-config conf-libX11 dune dune-configurator graphics yojson
 
 build:
 	$(OCAMLBUILD) $(OBJECTS)
@@ -35,12 +35,12 @@ docs: docs-public docs-private
 	
 docs-public: build
 	mkdir -p doc.public
-	ocamlfind ocamldoc -I _build -package ,graphics \
+	ocamlfind ocamldoc -I _build -package ,graphics, yojson \
 		-html -stars -d doc.public $(MLIS)
 
 docs-private: build
 	mkdir -p doc.private
-	ocamlfind ocamldoc -I _build -package ,graphics \
+	ocamlfind ocamldoc -I _build -package ,graphics, yojson \
 		-html -stars -d doc.private \
 		-inv-merge-ml-mli -m A $(MLIS) $(MLS)
 
