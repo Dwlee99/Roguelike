@@ -1,3 +1,4 @@
+open Yojson.Basic.Util
 open Action
 open Random
 open Board
@@ -120,7 +121,8 @@ let do_player_turn t action =
   | Break ->
     if t.player.energy < break_cost 
     then 
-      write_msgs t ["You do not have enough energy to break walls. Try resting."]
+      write_msgs t 
+        ["You do not have enough energy to break walls. Try resting."]
     else (
       let new_energy = t.player.energy - break_cost in
       for row = -1 to 1 do
@@ -189,9 +191,6 @@ let rec add_monsters (monsters : monster list) (state : t) =
                              monsters = monster::(state.monsters)} in 
                new_state)
 
-(** [random_monster_name ()] is a random name for a monster. *)
-let random_monster_name () = "Bob"
-
 (** [create_monsters num strength] is a list of [num] monsters with level 
     strength parameter [strength]. *)
 let rec create_monsters num strength =
@@ -200,7 +199,7 @@ let rec create_monsters num strength =
     | 0 -> []
     | k -> 
       let monster = {
-        name = random_monster_name ();
+        name = Name.random_name ();
         position = (0, 0);
         health = 10 * strength;
         max_health = 10 * strength;
