@@ -51,4 +51,4 @@ module Make_Monster (M : Monster_Type) : Edit_Monster = struct
 
 end
 
-let path_to board m_pos n_pos = failwith "Unimplemented"
+
