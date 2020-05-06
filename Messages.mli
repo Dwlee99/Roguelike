@@ -16,6 +16,9 @@ type player_stats = {
   turns_played : int;
 }
 
+(** The list of recent messages. *)
+type msgs = string list
+
 (** 
    MSG are messages that are meant to display some information about the
    actions of the player. Ex. 'You walk into a wall. It seems sturdy.' 
@@ -24,11 +27,15 @@ type player_stats = {
    health, food, level, experience, etc.
 *)
 
-(** writes a message [string] to the terminal and it displays it to the player
-    near the top of the screen*)
-val write_msg : string -> string list -> string list
+(** [write_msgs new_msgs old_msgs] is the new list of messages with the messages
+    in [new_messages] written to the message list [old_msgs]. *)
+val write_msgs : string list -> msgs -> msgs
+
+(** [write_help msgs] is the new list of messages with the help messages 
+    written to the current list [msgs]. *)
+val write_help : msgs -> msgs
 
 (** Draws the entire top area in the game including the dividers, player stats
     and messages*)
-val draw_ui : player_stats -> string list -> Graphics.color -> Graphics.color 
+val draw_ui : player_stats -> msgs -> Graphics.color -> Graphics.color 
   -> unit

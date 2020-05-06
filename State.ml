@@ -1,7 +1,15 @@
 open Action
 open Random
-open Messages
 open Board
+
+(** The energy cost of moving one tile. *)
+let move_cost = 1
+
+(** The energy gained by resting for a turn. *)
+let rest_gain = 1
+
+(** The energy cost of executing a break action. *)
+let break_cost = 10
 
 type player = {
   position : (int*int);
@@ -15,26 +23,15 @@ type player = {
   turns_played : int;
 }
 
-let move_cost = 1
-
-let rest_gain = 1
-
-let break_cost = 10
-
-let help_strings = 
-  ["INSTRUCTIONS/CONTROLS:"; 
-   "Press i,j,k,l to move up, left, down, right"; 
-   "Press b to break the 4 walls near you"; 
-   "Press [spacebar] to rest"; 
-   "Press h to see instructions again."]
-
 type t = {
   board: Board.t;
-  messages: string list;
+  messages: Messages.msgs;
   player: player;
 }
 
-let get_stats player = {
+(* Player. *)
+
+let get_stats player : Messages.player_stats = {
   level = player.level;
   exp = player.exp;
   max_exp = player.max_exp;
@@ -45,24 +42,25 @@ let get_stats player = {
   turns_played = player.turns_played
 }
 
-let tile_board t = Array.map Array.copy t.board
-
 let get_player t = t.player
+
+(* Board. *)
+
+let tile_board t = Array.map Array.copy t.board
 
 let get_msgs t = t.messages
 
-let write_msg t msg = {
+let write_msgs t msgs = {
   board = t.board;
-  messages = Messages.write_msg msg (get_msgs t);
+  messages = Messages.write_msgs msgs t.messages;
   player = t.player;
 }
 
-let write_msgs t msgs = 
-  let rec helper t = function
-    | [] -> t;
-    | h :: tail -> helper (write_msg t h) tail
-  in helper t msgs
-
+let write_help t = {
+  board = t.board;
+  messages = Messages.write_help t.messages;
+  player = t.player
+}
 
 (**[move_player t (x, y)] moves the player to [(x, y)].
    Requires: [(x, y)] is empty. *)
@@ -91,7 +89,7 @@ let update t action =
   match action with
   | Move direction -> 
     if t.player.energy < move_cost 
-    then write_msg t "You do not have enough energy to move. Try resting."
+    then write_msgs t ["You do not have enough energy to move. Try resting."]
     else (
       let new_energy = t.player.energy - move_cost in
       let new_pos = match direction with
@@ -107,7 +105,7 @@ let update t action =
   | Break ->
     if t.player.energy < break_cost 
     then 
-      write_msg t "You do not have enough energy to break walls. Try resting."
+      write_msgs t ["You do not have enough energy to break walls. Try resting."]
     else (
       let new_energy = t.player.energy - break_cost in
       for row = -1 to 1 do
@@ -124,7 +122,7 @@ let update t action =
       done;
       inc_turns t |> set_energy new_energy
     )
-  | Help -> write_msgs t (help_strings);
+  | Help -> write_help t;
   | Rest -> 
     let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
     inc_turns t |> set_energy new_energy
