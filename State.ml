@@ -29,8 +29,6 @@ type t = {
   player: player;
 }
 
-(* Player. *)
-
 let get_stats player : Messages.player_stats = {
   level = player.level;
   exp = player.exp;
@@ -43,8 +41,6 @@ let get_stats player : Messages.player_stats = {
 }
 
 let get_player t = t.player
-
-(* Board. *)
 
 let tile_board t = Array.map Array.copy t.board
 
@@ -84,7 +80,9 @@ let right_one (x, y) = (x + 1, y)
 
 let left_one (x, y) = (x - 1, y)
 
-let update t action =
+(** [do_player_turn t action] is the state of the board after a player's turn
+    has been executed on which the player did the action [action]. *)
+let do_player_turn t action =
   (* Attack if enemy present. *)
   match action with
   | Move direction -> 
@@ -127,6 +125,9 @@ let update t action =
     let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
     inc_turns t |> set_energy new_energy
 
+let do_turn t action = 
+  let player_turn = do_player_turn t action in 
+  player_turn
 
 (** [player_location board] is a location that is surrounded by a layer of empty 
     tiles, which thus would be suitable for the player to spawn on. *)

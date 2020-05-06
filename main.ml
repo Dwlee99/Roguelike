@@ -1,5 +1,4 @@
 open Graphics
-open State
 exception End
 
 
@@ -73,7 +72,7 @@ let init_game () =
   in draw_game t !game_state; t
 
 let update action = 
-  State.update (!game_state) action
+  State.do_turn (!game_state) action
 
 let stop_game panel =
   ignore(Ascii_panel.clear_graph panel);

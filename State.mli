@@ -41,9 +41,9 @@ val write_msgs : t -> string list -> t
     the message board. *)
 val write_help : t -> t
 
-(** [update t action] is the new state of the world following [action] being
-    performed. *)
-val update : t -> Action.t -> t
+(** [turn t action] is the new state of the world after a full turn has been 
+    executed on which the player did the action [action]. *)
+val do_turn : t -> Action.t -> t
 
 (** [init_game width height] is a randomized world with [width] and [height]. *)
 val init_game : int -> int -> t
