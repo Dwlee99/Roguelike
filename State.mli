@@ -7,6 +7,9 @@ type player
 (** Type representing the monster. *)
 type monster
 
+(** Type representing the floor, which holds important stats. *)
+type floor 
+
 (** The current data in the game. *)
 type t
 
@@ -39,4 +42,4 @@ val write_help : t -> t
 val do_turn : t -> Action.t -> t
 
 (** [init_game width height] is a randomized world with [width] and [height]. *)
-val init_game : int -> int -> t
+val init_game : int -> t

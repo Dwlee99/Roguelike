@@ -5,6 +5,7 @@ type tile =
   | Player
   | Wall of breakable
   | Empty
+  | Monster
 
 type t = tile array array
 
