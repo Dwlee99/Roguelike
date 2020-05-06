@@ -23,6 +23,10 @@ module Swordsman : Edit_Monster = Make_Monster (
     let move_function move_to m _ _ = 
       {m with position = move_to}
 
+    let attack_function m _ _ =
+      print_int m.damage;
+      (m, m.damage)
+
     (** These functions have self-documenting names. *)
     let up_one (x, y) = (x, y + 1)
 
@@ -32,19 +36,29 @@ module Swordsman : Edit_Monster = Make_Monster (
 
     let left_one (x, y) = (x - 1, y)
 
+    let square x = x * x
+
+    let distance_sq (x1, y1) (x2, y2) =
+      square (x2 - x1) + square (y2 - y1)
+
     let edit_queue monster board (px, py) =
       let p_pos = (px, py) in
-      let direction = Board.direction_to board monster.position p_pos 10 in
-      let c_p = monster.position in
-      match direction with
-      | Some d -> begin
-          match d with
-          | Up -> [Move (move_function (up_one c_p))]    
-          | Down -> [Move (move_function (down_one c_p))]
-          | Left -> [Move (move_function (left_one c_p))]
-          | Right -> [Move (move_function (right_one c_p))]
-        end
-      | None -> [Wait (wait_function)]
-
+      let m_pos = monster.position in
+      let dist_sq = distance_sq p_pos m_pos in
+      if dist_sq > 1 then
+        let direction = Board.direction_to board monster.position p_pos 10 in
+        let c_p = monster.position in
+        match direction with
+        | Some d -> begin
+            match d with
+            | Up -> [Move (move_function (up_one c_p))]    
+            | Down -> [Move (move_function (down_one c_p))]
+            | Left -> [Move (move_function (left_one c_p))]
+            | Right -> [Move (move_function (right_one c_p))]
+          end
+        | None -> [Wait (wait_function)]
+      else begin
+        [Attack attack_function]
+      end
   end
   )

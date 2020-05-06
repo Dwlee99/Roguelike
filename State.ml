@@ -289,13 +289,16 @@ let do_monster_turn t =
         match Monster.get_type h with
         | Board.Swordsman ->
           let (new_m, damage) = Swordsman.Swordsman.do_turn h t.board t.player.position in
-          let updated_t = take_damage t damage in
-          let final_monster = move_monster h.position new_m.position Board.Swordsman new_m updated_t in
-          turns updated_t tail (final_monster :: acc)
+          specific_turn h tail new_m damage t Board.Swordsman acc
       end
-    | [] -> acc
+    | [] -> (t, acc)
+  and specific_turn m tail new_m damage t m_type acc =
+    let updated_t = take_damage t damage in
+    let final_monster = move_monster m.position new_m.position m_type new_m updated_t in
+    turns updated_t tail (final_monster :: acc)
   in
-  {t with monsters = turns t t.monsters []}
+  let (new_t, new_monsters) = turns t t.monsters [] in
+  {new_t with monsters = new_monsters}
 
 let do_turn t action = 
   (do_player_turn t action) |> do_monster_turn
