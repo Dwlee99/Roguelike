@@ -34,6 +34,12 @@ val tile_board : t -> tile array array
     [width] and [height]. *)
 val gen_board : int -> int -> t
 
+(** [direction_to board cpos fpos max_dist] is [Some dir] if dir is the 
+    direction that one would move to get from [cpos] to [fpos] on the board 
+    [board]. Returns [None] if there is no parth within max_dist] moves. *)
+val direction_to : t -> (int * int) -> (int * int) -> int -> 
+  Action.direction option
+
 (** [path_to_player board c_pos t_pos] is the shortest path to n_pos from m_pos.
     If there is no path, it returns [None]. *)
 val path_to : t -> (int * int) -> (int * int) -> (int * int) list option

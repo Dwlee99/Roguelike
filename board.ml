@@ -105,6 +105,72 @@ let gen_board width height =
   let board_with_walls = add_outer_walls !random_board in
   board_with_walls
 
+
+(* Path finding algorithm 1. *)
+
+(** Node used for searching for path. *)
+type node1 =
+  {
+    x : int;
+    y : int;
+    dist : int;
+    prev: node1 option;
+  }
+
+let direction_to board cpos fpos max_dist =
+  let queue = Queue.create () in 
+  let (x, y) = cpos in 
+  let (goal_x, goal_y) = fpos in 
+  Queue.add {x = x; y = y; dist = 0; prev = None} queue;
+
+  let dir_to node1 node2 =
+    match node2.x - node1.x, node2.y - node1.y with
+    | 0, 1 -> Action.Up
+    | 1, 0 -> Action.Right
+    | -1, 0 -> Action.Left
+    | 0, -1 -> Action.Down
+    | _ -> failwith "Nodes are not adjacent."
+  in
+
+  let rec best_dir node = 
+    match node.prev with 
+    | None -> None
+    | Some n -> if n.prev = None then (Some (dir_to n node)) else best_dir n 
+  in
+
+  let dir = ref None in
+  let found = ref false in
+  let visited_board = Array.map (fun a -> Array.map (fun b -> false) a) board in
+
+  let add_node q x y dist prev =
+    Queue.add {x = x; y = y; dist = dist; prev = Some prev} q
+  in
+
+  let add_neighbors board n q visited_board = 
+    let coords x1 y1 = 
+      [(x1 + 1, y1); (x1 - 1, y1); (x1, y1 + 1); (x1, y1 - 1)] in
+    let coordinates = coords n.x n.y in
+    for x = 0 to 3 do 
+      let coord = List.nth coordinates x in
+      if visited_board.(fst coord).(snd coord) = false
+      then add_node q (fst coord) (snd coord) (n.dist + 1) n else ();
+    done 
+  in
+
+  while not (Queue.is_empty queue) && !found = false do
+    let cur_node = Queue.pop queue in 
+    visited_board.(cur_node.x).(cur_node.y) <- true;
+    if (cur_node.x = goal_x && cur_node.y = goal_y)
+    then (dir := (best_dir cur_node); found := true)
+    else if cur_node.dist >= max_dist then ()
+    else if get_tile board (cur_node.x, cur_node.y) != Empty then ()
+    else add_neighbors board cur_node queue visited_board;
+  done;
+  !dir
+
+(* Path finding algorithm 2. *)
+
+
 type distance = 
   | Int of int
   | Infinity
