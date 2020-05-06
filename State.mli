@@ -1,13 +1,7 @@
+open Board
 (** Represents the state of the game. *)
 
-type breakable = bool
-
-(** The things that can occupy coordinates on the board. *)
-type tile = 
-  | Player
-  | Wall of breakable
-  | Empty
-
+(** Data on the player. *)
 type player = {
   position : (int*int);
   level : int;
@@ -36,7 +30,7 @@ val init_game : int -> int -> t
 (** [tile_board t] is an array representing the board on which the game takes
     place. If the returned array is board, then board.(x).(y) will give the tile
     at coordinate (x, y). *)
-val tile_board : t -> tile array array
+val tile_board : t -> Board.t
 
 (** [get_player t] is the record representing data of the player in the
     state t*)
