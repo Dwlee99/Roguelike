@@ -102,6 +102,8 @@ let gen_board width height =
   board_with_walls
 
 
+(* Path finding algorithm 1. *)
+
 (** Node used for searching for path. *)
 type node =
   {
@@ -111,9 +113,6 @@ type node =
     prev: node option;
   }
 
-(** [direction_to board cpos fpos max_dist] is [Some dir] if dir is the 
-    direction that one would move to get from [cpos] to [fpos] on the board 
-    [board]. Returns [None] if there is no parth within max_dist] moves. *)
 let direction_to board cpos fpos max_dist =
   let queue = Queue.create () in 
   let (x, y) = cpos in 
@@ -165,7 +164,9 @@ let direction_to board cpos fpos max_dist =
   done;
   !dir
 
-(*
+(* Path finding algorithm 2. *)
+
+
 type distance = 
   | Int of int
   | Infinity
@@ -246,4 +247,3 @@ let path_to board c_pos t_pos =
         list := (x, y) :: !list;
       done;
       Some !list
-*)
