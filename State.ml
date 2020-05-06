@@ -11,8 +11,6 @@ let rest_gain = 1
 (** The energy cost of executing a break action. *)
 let break_cost = 10
 
-type floor = int
-
 type player_level = int
 
 type coordinate = (int * int)
@@ -46,7 +44,6 @@ type floor = {
 }
 
 type t = {
-  floor : floor;
   board : Board.t;
   messages : Messages.msgs;
   player : player;
@@ -216,7 +213,6 @@ let init_game floor_num =
   let board = fst player_and_board in 
   let player_loc = snd player_and_board in
   {
-    floor = 1;
     board = board;
     messages = [];
     player = {
