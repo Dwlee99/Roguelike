@@ -28,3 +28,7 @@ val tile_board : t -> tile array array
 (** [gen_board width height] is a randomly generated board with dimensions 
     [width] and [height]. *)
 val gen_board : int -> int -> t
+
+(** [path_to_player board c_pos t_pos] is the shortest path to n_pos from m_pos.
+    If there is no path, it returns [None]. *)
+val path_to : t -> (int * int) -> (int * int) -> (int * int) list option

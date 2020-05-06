@@ -19,6 +19,8 @@ module Swordsman : Edit_Monster = Make_Monster (
       m with health = min (m.health + 1) m.max_health 
     }
 
+    let move_function move_to m _ _ = m
+
     let edit_queue monster board p_pos = [Wait wait_function]
 
   end

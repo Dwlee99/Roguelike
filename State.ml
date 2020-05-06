@@ -1,6 +1,5 @@
 open Action
 open Random
-open Board
 
 (** The energy cost of moving one tile. *)
 let move_cost = 1
@@ -165,7 +164,7 @@ let rec spawn_location board =
   let suitable = ref true in 
   for ox = -1 to 1 do
     for oy = -1 to 1 do
-      suitable := (board.(x + ox).(y + oy) = Empty) && !suitable
+      suitable := (board.(x + ox).(y + oy) = Board.Empty) && !suitable
     done
   done;
   if !suitable then (x,y) else spawn_location board
