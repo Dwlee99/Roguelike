@@ -10,6 +10,12 @@ type monster
 (** Type representing the floor, which holds important stats. *)
 type floor 
 
+(** Represents the current player's level. *)
+type player_level = int
+
+(** Represents the coordinate system for the board. *)
+type coordinate = (int * int)
+
 (** The current data in the game. *)
 type t
 
