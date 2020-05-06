@@ -1,4 +1,5 @@
-
+open Yojson.Basic.Util
+open Random
 
 (** The json file from which we will pull our list of names. *)
 let json_file = "name.json"
@@ -18,4 +19,8 @@ let get_names_list () =
 
 
 (** [random_monster_name ()] is a random name for a monster. *)
-let random_monster_name () = "Bob"
+let random_monster_name () = 
+  let names = get_names_list () in 
+  let num = List.length names in
+  let idx = Random.self_init (); Random.int num in
+  List.nth names idx
