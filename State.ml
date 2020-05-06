@@ -15,8 +15,10 @@ type floor = int
 
 type player_level = int
 
+type coordinate = (int * int)
+
 type player = {
-  position : (int*int);
+  position : coordinate;
   level : player_level;
   exp : int;
   max_exp : int;
@@ -29,7 +31,7 @@ type player = {
 
 type monster = {
   name : string;
-  position : int * int;
+  position : coordinate;
   health : int;
   max_health : int;
   damage : int;

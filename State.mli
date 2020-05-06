@@ -13,6 +13,9 @@ type player_level = int
 (** Represents the floor the player is on. *)
 type floor = int
 
+(** Represents the coordinate system for the board. *)
+type coordinate = (int * int)
+
 (** The current data in the game. *)
 type t
 
