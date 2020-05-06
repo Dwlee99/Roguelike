@@ -8,8 +8,8 @@ module Swordsman : Edit_Monster = Make_Monster (
 
     let create_monster floor = {
       name = "Swordsman";
-      m_type = Board.Swordsman;
       position = (-1, -1);
+      m_type = Board.Swordsman;
       max_health = max_health floor;
       health = max_health floor;
       damage = damage floor;

@@ -1,15 +1,12 @@
 
 type breakable = bool
 
-type monster_type = 
-  | Swordsman
-
-(** The things that can occupy coordinates on the board. *)
 type tile = 
   | Player
   | Wall of breakable
   | Empty
-  | Monster of monster_type
+  | Monster
+  | Stairs
 
 type t = tile array array
 
@@ -170,7 +167,6 @@ let direction_to board cpos fpos max_dist =
 
 (* Path finding algorithm 2. *)
 
-
 type distance = 
   | Int of int
   | Infinity
@@ -182,11 +178,6 @@ type node = {
   mutable dist : distance;
   weight : distance;
 }
-
-let in_bound t (x, y) =   
-  let width = Array.length t in
-  let height = Array.length t.(0) in 
-  x >= 0 && x < width && y >= 0 && y < height 
 
 let get_node nodeArray (x, y) =
   let width = Array.length nodeArray in

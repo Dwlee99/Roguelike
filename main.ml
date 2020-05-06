@@ -43,7 +43,7 @@ let init_screen_height = 720
 
 let init_floor = 0
 
-let game_state = ref (State.init_game init_floor)
+let game_state = ref (State.init_level init_floor)
 
 let get_borders player_coords map_size= 
   let llx = (fst player_coords) - 40 in
@@ -73,8 +73,9 @@ let draw_game panel game =
         let charAndCol = match board.(col).(row) with
           | Player -> ('@', pal.green)
           | Wall _ -> (Char.chr 141, pal.blue)
-          | Monster m -> (Char.chr 116, pal.red)
+          | Monster -> (Char.chr 116, pal.red)
           | Empty -> (Char.chr 183, pal.gray)
+          | Stairs -> (Char.chr 35, pal.yellow)
         in 
         ignore(Ascii_panel.draw_char (col-start_col) (row-start_row) 
                  (snd charAndCol) (fst charAndCol) panel)
