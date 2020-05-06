@@ -2,17 +2,17 @@ type damage = int
 
 type monster = {
   name : string;
-  position : State.coordinate;
+  id : int;
   health : int;
-  max_health : State.floor -> int;
-  damage : State.floor -> int;
+  max_health : int -> int;
+  damage : int -> int;
   action_queue : m_action list;
 }
 and
   m_action = 
   | Wait of (monster -> monster)
-  | Move of (monster -> Board.t -> (Board.t * monster))
-  | Attack of (monster -> Board.t -> (damage * monster))
+  | Move of (monster -> Board.t -> (monster))
+  | Attack of (monster -> Board.t -> (monster * damage))
 
 module type Monster_Type = sig
 
@@ -24,7 +24,7 @@ end
 
 module type Edit_Monster = sig
 
-  val do_turn : monster -> Board.t -> (monster * Board.t * damage)
+  val do_turn : monster -> Board.t -> (monster * damage)
 
 end
 
