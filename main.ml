@@ -101,8 +101,16 @@ let stop_game panel =
   ignore(Ascii_panel.clear_graph panel);
   print_string "Thanks for playing... \n"
 
+let get_key = (wait_next_event [Key_pressed]).Graphics.key
+
 let res_key c (panel_info : Ascii_panel.t) =
-  c |> Action.parse |> update
+  let first_action = c |> Action.parse in
+  match first_action with
+  | Display_Melee -> 
+    get_key |> Action.parse_two c |> update
+  | Display_Ranged -> 
+    get_key |> Action.parse_two c |> update
+  | _ -> first_action |> update
 
 let res_exn ex : unit = 
   failwith "Game ending..."
@@ -112,12 +120,12 @@ let game_loop f_init f_end f_key f_exn =
   try
     while true do
       try
-        let s = wait_next_event [Key_pressed] in
+        let c = get_key in
         let _ = if not (size_x () = init_screen_width) || 
                    not (size_y () = init_screen_height) 
           then resize_window init_screen_width init_screen_height 
           else () in
-        game_state := res_key s.Graphics.key panel_info;
+        game_state := res_key c panel_info;
         draw_game panel_info !game_state;
         (*if s.Graphics.keypressed 
           then ignore(f_key s.Graphics.key panel_info)*)
