@@ -34,8 +34,7 @@ let help_strings =
    "Press [spacebar] to rest; Press [e] to see inventory"; 
    "Press h to see instructions again."]
 
-(** [write_msg msg messages] adds the message [msg] to the list of messages
-    [messages]. *)
+
 let write_msg msg messages =
   match messages with
   | a :: b :: c :: d :: t -> msg :: a :: b :: c :: d :: []

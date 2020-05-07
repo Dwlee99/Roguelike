@@ -58,4 +58,8 @@ val write_inventory : inventory -> msgs -> msgs
 val draw_ui : player_stats -> msgs -> Graphics.color -> 
   Graphics.color -> Graphics.color -> unit
 
+(** [write_msg msg messages] adds the message [msg] to the list of messages
+    [messages]. *)
+val write_msg : string -> msgs -> msgs
+
 

@@ -109,8 +109,14 @@ let inc_turns t =
 let set_energy e t = 
   {t with player = {t.player with energy = e}}
 
-let take_damage t damage = 
-  {t with player = {t.player with health = t.player.health - damage}}
+let take_damage t damage =
+  {t with 
+   player = {t.player with 
+             health = t.player.health - damage
+            };
+   messages = 
+     Messages.write_msg ("You took " ^ (string_of_int damage)) t.messages
+  }
 
 (** These functions have self-documenting names. *)
 let up_one (x, y) = (x, y + 1)
