@@ -314,6 +314,11 @@ let do_player_turn t action =
     let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
     inc_turns t |> set_energy new_energy
   | Inv -> write_inventory t
+  | Display_Melee -> failwith "Unimplemented."
+  | Display_Ranged -> failwith "Unimplemented."
+  | Melee_Attack _ -> failwith "Unimplemented."
+  | Ranged_Attack _ -> failwith "Unimplemented."
+  | None -> failwith "Unimplemented."
 
 let move_monster c_pos (x, y) m_type (m : Monster.monster) t =
   if Board.get_tile t.board (x, y) = Empty then (
@@ -324,21 +329,31 @@ let move_monster c_pos (x, y) m_type (m : Monster.monster) t =
     {m with position = c_pos}
 
 let do_monster_turn t =
-  let rec turns t monsters acc =
+  let rec turns t (monsters : Monster.monster list) acc =
     match monsters with
     | h::tail -> begin
-        match Monster.get_type h with
-        | Board.Swordsman ->
-          let (new_m, damage) = Swordsman.Swordsman.do_turn h t.board t.player.position in
-          specific_turn h tail new_m damage t Board.Swordsman acc
-        | Board.Ranger ->
-          let (new_m, damage) = Ranger.Ranger.do_turn h t.board t.player.position in
-          specific_turn h tail new_m damage t Board.Ranger acc
+        if h.health < 0 
+        then (t.board.(fst h.position).(snd h.position) <- Empty;
+              let new_state = {t with monsters = tail} in 
+              let msg_state = 
+                write_msgs new_state [h.name ^ "has died. Woohoo."] in
+              turns msg_state (tail @ acc) acc)
+        else 
+          (match Monster.get_type h with
+           | Board.Swordsman ->
+             let (new_m, damage) = 
+               Swordsman.Swordsman.do_turn h t.board t.player.position in
+             specific_turn h tail new_m damage t Board.Swordsman acc
+           | Board.Ranger ->
+             let (new_m, damage) = 
+               Ranger.Ranger.do_turn h t.board t.player.position in
+             specific_turn h tail new_m damage t Board.Ranger acc )
       end
     | [] -> (t, acc)
   and specific_turn m tail new_m damage t m_type acc =
     let updated_t = take_damage t damage in
-    let final_monster = move_monster m.position new_m.position m_type new_m updated_t in
+    let final_monster = 
+      move_monster m.position new_m.position m_type new_m updated_t in
     turns updated_t tail (final_monster :: acc)
   in
   let (new_t, new_monsters) = turns t t.monsters [] in
