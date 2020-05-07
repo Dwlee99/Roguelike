@@ -12,6 +12,8 @@ type weapon = {
 
 module type Weapon_Type = sig
 
+  val create_weapon : int -> weapon
+
   val attack : weapon -> Action.direction -> (int * int * damage) list
 
 end
