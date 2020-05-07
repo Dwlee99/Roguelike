@@ -11,6 +11,7 @@ type t =
   | Break
   | Rest
   | Help
+  | Attack of direction
 
 (** [parse c] is the action to be taken when the character [c] is 
     pressed. *)
