@@ -1,5 +1,6 @@
 open Action
 open Random
+open Inventory
 
 (** The energy cost of moving one tile. *)
 let move_cost = 1
@@ -26,6 +27,7 @@ type player = {
   turns_played : int;
   attack: int;
   defense: int;
+  inventory : Inventory.t;
 }
 
 type floor = {
@@ -228,6 +230,7 @@ let init_level =
         turns_played = 0;
         attack = 3;
         defense = 3;
+        inventory = Inventory.init_inv
       };
       monsters = [];
       floor = floor;
