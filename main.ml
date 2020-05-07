@@ -101,15 +101,15 @@ let stop_game panel =
   ignore(Ascii_panel.clear_graph panel);
   print_string "Thanks for playing... \n"
 
-let get_key = (wait_next_event [Key_pressed]).Graphics.key
+let get_key () = (wait_next_event [Key_pressed]).Graphics.key
 
 let res_key c (panel_info : Ascii_panel.t) =
   let first_action = c |> Action.parse in
   match first_action with
   | Display_Melee -> 
-    get_key |> Action.parse_two c |> update
+    get_key () |> Action.parse_two c |> update
   | Display_Ranged -> 
-    get_key |> Action.parse_two c |> update
+    get_key () |> Action.parse_two c |> update
   | _ -> first_action |> update
 
 let res_exn ex : unit = 
@@ -120,7 +120,7 @@ let game_loop f_init f_end f_key f_exn =
   try
     while true do
       try
-        let c = get_key in
+        let c = get_key () in
         let _ = if not (size_x () = init_screen_width) || 
                    not (size_y () = init_screen_height) 
           then resize_window init_screen_width init_screen_height 
