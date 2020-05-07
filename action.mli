@@ -11,7 +11,8 @@ type t =
   | Break
   | Rest
   | Help
-  | Attack of direction
+  | Melee_Attack of direction
+  | Ranged_Attack of direction
 
 (** [parse c] is the action to be taken when the character [c] is 
     pressed. *)

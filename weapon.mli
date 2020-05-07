@@ -2,7 +2,8 @@ type damage = int
 
 type weapon_type = 
   | Short_Sword
-  | Battleax
+  | Battleaxe
+  | Short_Bow
 
 type attack_type = 
   | Melee
