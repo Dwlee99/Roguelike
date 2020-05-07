@@ -1,8 +1,5 @@
 type damage = int
 
-type monster_type = 
-  | Swordsman
-
 type monster = {
   name : string;
   position : (int * int);
