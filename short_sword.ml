@@ -6,6 +6,7 @@ module Short_Sword : Weapon_Type = struct
     name = "Short Sword";
     w_type = Short_Sword;
     damage = level;
+    atk_type = Melee;
   }
 
   let attack w dir = 

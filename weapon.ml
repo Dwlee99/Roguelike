@@ -4,10 +4,15 @@ type weapon_type =
   | Short_Sword
   | Battleax
 
+type attack_type = 
+  | Melee
+  | Ranged
+
 type weapon = {
   name : string;
   w_type : weapon_type;
   damage : damage;
+  atk_type : attack_type;
 }
 
 module type Weapon_Type = sig
