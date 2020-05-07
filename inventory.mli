@@ -33,5 +33,32 @@ val add_item : t -> string -> t (* change string to item when type is created*)
     with no change*)
 val remove_item : t -> string -> t (*change string to item when type is created*)
 
+(** [get_melee_name] is the name of the equipped melee weapon or "None" if
+    no melee weapon is equipped*)
+val get_melee_name : t -> string
 
+(** [get_ranged_name] is the name of the equipped ranged weapon or "None" if
+    no ranged weapon is equipped*)
+val get_ranged_name : t -> string
 
+(** [get_head_name] is the name of the equipped head protector or "None" if
+    no head protector is equipped*)
+val get_head_name : t -> string
+
+(** [get_torso_name] is the name of the equipped torso protector or "None" if
+    no head protector is equipped*)
+val get_torso_name : t -> string
+
+(** [get_legs_name] is the name of the equipped legs protector or "None" if
+    no leg protector is equipped*)
+val get_legs_name : t -> string
+
+(** [get_feet_name] is the name of the equipped feet protector or "None" if
+    no feet protector is equipped*)
+val get_feet_name : t -> string
+
+(** [get_items_names] is the name of all the items held in inventory [t]*)
+val get_items_names : t -> string list
+
+(** [get_max_items t] is the maximum number of items the inventory can hold*)
+val get_max_items : t -> int

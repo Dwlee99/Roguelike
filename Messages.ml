@@ -12,6 +12,17 @@ type player_stats = {
   floor : int;
 }
 
+type inventory = {
+  melee : string;
+  ranged : string;
+  head : string;
+  torso : string;
+  legs : string;
+  feet : string;
+  items : string list;
+  max_items : int;
+}
+
 type msgs = string list
 
 (** The strings providing helpful information on game controls. *)
@@ -20,13 +31,8 @@ let help_strings =
    "Press i,j,k,l to move up, left, down, right"; 
    "Press b to break the 4 walls near you. "^ 
    "Walk into the staircase ('#') to advance to the next level"; 
-   "Press [spacebar] to rest"; 
+   "Press [spacebar] to rest; Press [e] to see inventory"; 
    "Press h to see instructions again."]
-
-(*
-let msg_x = 400
-let msg_y = 700
-*)
 
 (** [write_msg msg messages] adds the message [msg] to the list of messages
     [messages]. *)
@@ -82,7 +88,21 @@ let write_msgs new_msgs old_msgs =
 
 let write_help msgs = write_msgs help_strings msgs
 
-let draw_ui p_stats msgs text_col div_col = 
+let print_lst lst = 
+  List.fold_left (fun acc x -> acc ^ "; " ^ x) "" lst
+
+let write_inventory inventory msgs = 
+  let inv_strings = [
+    "Melee: " ^ inventory.melee;
+    "Ranged: " ^ inventory.ranged;
+    "Head: " ^ inventory.head ^ "  Torso: " ^ inventory.torso ^ 
+    "  Legs: " ^ inventory.legs ^ "  Feet: " ^ inventory.feet;
+    "Items: " ^ print_lst inventory.items;
+    "";
+  ] in
+  write_msgs inv_strings msgs
+
+let draw_ui p_stats msgs stats_col msg_col div_col = 
   draw_divider div_col;
-  update_stats p_stats text_col;
-  ignore(show_messages msgs text_col)
+  update_stats p_stats stats_col;
+  ignore(show_messages msgs msg_col)

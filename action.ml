@@ -9,6 +9,7 @@ type t =
   | Break
   | Rest
   | Help
+  | Inv
   | Melee_Attack of direction
   | Ranged_Attack of direction
 
@@ -20,4 +21,5 @@ let parse = function
   | 'l' -> Move Right
   | 'b' -> Break
   | 'h' -> Help
+  | 'e' -> Inv
   | _ -> Rest

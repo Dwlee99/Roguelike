@@ -74,7 +74,7 @@ let draw_game panel game =
           | Player -> ('@', pal.green)
           | Wall _ -> (Char.chr 141, pal.blue)
           | Monster Board.Swordsman -> (Char.chr 116, pal.red)
-          | Monster Board.Ranger -> (Char.chr 172, pal.cyan)
+          | Monster Board.Ranger -> (Char.chr 172, pal.orange)
           | Empty -> (Char.chr 183, pal.gray)
           | Stairs -> (Char.chr 35, pal.yellow)
         in 
@@ -83,7 +83,7 @@ let draw_game panel game =
       done
     done;
     Messages.draw_ui (State.get_stats game) 
-      (State.get_msgs game) pal.white pal.light_gray;
+      (State.get_msgs game) pal.violet pal.violet pal.light_gray;
     synchronize ()
 
 let init_game () = 

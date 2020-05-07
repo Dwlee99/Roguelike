@@ -11,6 +11,7 @@ type t =
   | Break
   | Rest
   | Help
+  | Inv
   | Melee_Attack of direction
   | Ranged_Attack of direction
 

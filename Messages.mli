@@ -17,6 +17,19 @@ type player_stats = {
   floor : int;
 }
 
+(** A type representing the player's inventory that the system needs to print
+    thee player's inventory out*)
+type inventory = {
+  melee : string;
+  ranged : string;
+  head : string;
+  torso : string;
+  legs : string;
+  feet : string;
+  items : string list;
+  max_items : int;
+}
+
 (** The list of recent messages. *)
 type msgs = string list
 
@@ -36,7 +49,13 @@ val write_msgs : string list -> msgs -> msgs
     written to the current list [msgs]. *)
 val write_help : msgs -> msgs
 
+(** [write_inventory] writes the player's inventory into the messages panel
+    showing the items they carry and the equipment they are wearing*)
+val write_inventory : inventory -> msgs -> msgs
+
 (** Draws the entire top area in the game including the dividers, player stats
     and messages*)
-val draw_ui : player_stats -> msgs -> Graphics.color -> Graphics.color 
-  -> unit
+val draw_ui : player_stats -> msgs -> Graphics.color -> 
+  Graphics.color -> Graphics.color -> unit
+
+

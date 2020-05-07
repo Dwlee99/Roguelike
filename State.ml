@@ -79,6 +79,23 @@ let write_msgs t msgs =
 
 let write_help t = {t with messages = Messages.write_help t.messages}
 
+let get_printable_inv (i:Inventory.t) : Messages.inventory = 
+  {
+    melee = Inventory.get_melee_name i;
+    ranged = get_ranged_name i;
+    head = get_head_name i;
+    torso = get_torso_name i;
+    legs = get_legs_name i;
+    feet = get_feet_name i;
+    items = get_items_names i;
+    max_items = get_max_items i;
+  }
+
+let write_inventory t = {
+  t with 
+  messages = (Messages.write_inventory 
+                (get_printable_inv t.player.inventory) t.messages)}
+
 (**[move_player t (x, y)] moves the player to [(x, y)].
    Requires: [(x, y)] is empty. *)
 let move_player t (x, y) =
@@ -289,6 +306,7 @@ let do_player_turn t action =
   | Rest -> 
     let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
     inc_turns t |> set_energy new_energy
+  | Inv -> write_inventory t
 
 let move_monster c_pos (x, y) m_type (m : Monster.monster) t =
   if Board.get_tile t.board (x, y) = Empty then (

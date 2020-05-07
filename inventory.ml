@@ -52,3 +52,19 @@ let remove_item t i =
           [] t.items;
     }
   else t
+
+let get_melee_name t = match t.melee with None -> "None" | Some x -> x.name
+
+let get_ranged_name t = match t.ranged with None -> "None" | Some x -> x.name
+
+let get_head_name t = match t.head_prot with None -> "None" | Some x -> x.name
+
+let get_torso_name t = match t.torso_prot with None -> "None" | Some x -> x.name
+
+let get_legs_name t = match t.leg_prot with None -> "None" | Some x -> x.name
+
+let get_feet_name t = match t.feet_prot with None -> "None" | Some x -> x.name
+
+let get_items_names t = t.items
+
+let get_max_items t = t.max_items

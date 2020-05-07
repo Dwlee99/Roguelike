@@ -42,6 +42,10 @@ val write_msgs : t -> string list -> t
     the message board. *)
 val write_help : t -> t
 
+(** [write_inventory t] is the new state after the inventory has been 
+    displayed to the message board. *)
+val write_inventory : t -> t
+
 (** [turn t action] is the new state of the world after a full turn has been 
     executed on which the player did the action [action]. *)
 val do_turn : t -> Action.t -> t
