@@ -1,4 +1,4 @@
-MODULES=main monster name swordsman State board ranger weapon short_sword inventory armor short_bow battleaxe
+MODULES=main monster name swordsman State board ranger weapon short_sword inventory armor short_bow battleaxe math
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)

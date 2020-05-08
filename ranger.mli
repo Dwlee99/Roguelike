@@ -1,3 +1,1 @@
-open Monster
-
-module Ranger : Edit_Monster
+module Ranger : Monster.Edit_Monster

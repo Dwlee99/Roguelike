@@ -1,5 +1,6 @@
 open Monster
 open Random
+open Math
 
 let () = Random.self_init ()
 

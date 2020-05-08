@@ -14,7 +14,7 @@ type attack_type =
   | Melee
   | Ranged
 
-(** A representation of [weapons] in the game. *)
+(** A representation of weapons in the game. *)
 type weapon = {
   name : string;
   w_type : weapon_type;
@@ -22,7 +22,7 @@ type weapon = {
   atk_type : attack_type;
 }
 
-(** A module for defining a new weapon to be added to the game. *)
+(** Modules of this type define a new weapon to be added to the game. *)
 module type Weapon_Type = sig
 
   val create_weapon : int -> weapon
