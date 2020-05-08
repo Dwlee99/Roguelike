@@ -45,7 +45,8 @@ module Swordsman : Edit_Monster = Make_Monster (
         let direction = Board.direction_to board monster.position p_pos 10 in
         let c_p = monster.position in
         match direction with
-        | Some d -> move_direction d c_p
+        | Some d -> if (Random.int 5) = 0 then [Wait (wait_function)] 
+          else move_direction d c_p
         | None -> if (Random.int 5) = 0 then [Wait (wait_function)]
           else move_direction (get_roam_direction monster board 10) c_p
       else begin

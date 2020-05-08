@@ -1,4 +1,7 @@
 open Monster
+open Random
+
+let () = Random.self_init ()
 
 module Ranger : Edit_Monster = Make_Monster (
   struct
