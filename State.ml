@@ -115,7 +115,7 @@ let take_damage t damage =
              health = t.player.health - damage
             };
    messages = if damage = 0 then t.messages else
-       Messages.write_msg ("You took " ^ (string_of_int damage) ^ " damage.") 
+       Messages.write_msg ("You took " ^ (string_of_int damage) ^ " damage.")
          t.messages
   }
 
