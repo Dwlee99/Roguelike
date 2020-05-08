@@ -49,6 +49,7 @@ val write_help : t -> t
     displayed to the message board. *)
 val write_inventory : t -> t
 
+(** [do_display t d] displays information about the world based on [d]. *)
 val do_display : t -> Action.displayer -> unit
 
 (** [turn t action] is the new state of the world after a full turn has been 
