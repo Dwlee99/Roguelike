@@ -23,6 +23,7 @@ type player = {
   level : player_level;
   exp : int;
   max_exp : int;
+  unused_skill_points : int;
   health : int;
   max_health : int;
   energy : int;
@@ -123,6 +124,26 @@ let take_damage t damage m_name =
          t.messages
   }
 
+let exp_to_level_up level = 
+  if level <= 15 then 2 * level + 7 else
+  if level <= 30 then 5 * level - 38 else
+    9 * level - 158
+
+let rec add_exp t exp =
+  let n_exp = t.player.exp + exp in
+  let c_level = t.player.level in
+  let unused_points = t.player.unused_skill_points in
+  let max_exp = t.player.max_exp in
+  if n_exp < t.player.max_exp then 
+    {t with player = {t.player with exp = n_exp}}
+  else 
+    let new_l = c_level + 1 in
+    let new_t = {t with player = {t.player with exp = n_exp - max_exp; 
+                                                level = new_l;
+                                                max_exp = exp_to_level_up new_l;
+                                                unused_skill_points = 
+                                                  unused_points + 1}} in
+    add_exp new_t 0                              
 (** [spawn_location board] is a location that is surrounded by a layer of 
     empty tiles, which thus would be suitable for the player or monster to 
     spawn on. *)
@@ -232,7 +253,8 @@ let make_init_state board pLoc floor = {
     position = pLoc;
     level = 1;
     exp = 0;
-    max_exp = 10;
+    max_exp = exp_to_level_up 1;
+    unused_skill_points = 0;
     health = 10;
     max_health = 10;
     energy = 10000;
@@ -372,10 +394,11 @@ let move_monster c_pos (x, y) m_type (m : Monster.monster) t =
     monster [m] is killed*)
 let kill_monster (m:Monster.monster) t rest_of_monsters = 
   t.board.(fst m.position).(snd m.position) <- Empty;
-  {t with 
-   monsters = rest_of_monsters;
-   messages = Messages.write_msg (m.name ^ "has died. Woohoo.") t.messages;
-  }
+  let new_t = 
+    {t with 
+     monsters = rest_of_monsters;
+     messages = Messages.write_msg (m.name ^ "has died. Woohoo.") t.messages;
+    } in add_exp new_t m.exp
 
 (** [do_monster_turn t] is the state after all the monsters take their turn *)
 let do_monster_turn t =

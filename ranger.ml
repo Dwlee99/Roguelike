@@ -10,6 +10,8 @@ module Ranger : Edit_Monster = Make_Monster (
 
     let damage floor = floor / 10 + 1
 
+    let exp floor = floor / 10 + 1
+
     let create_monster floor = {
       name = Name.random_name ();
       position = (-1, -1);
@@ -17,6 +19,7 @@ module Ranger : Edit_Monster = Make_Monster (
       max_health = max_health floor;
       health = max_health floor;
       damage = damage floor;
+      exp = exp floor;
       action_queue = [];
       roaming_target = ref (-1, -1);
     }
