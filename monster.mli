@@ -8,6 +8,7 @@ type monster = {
   max_health : int;
   damage : int;
   action_queue : m_action list;
+  roaming_target : (int * int) ref;
 }
 and
   m_action = 

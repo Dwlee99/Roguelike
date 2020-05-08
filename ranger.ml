@@ -14,6 +14,7 @@ module Ranger : Edit_Monster = Make_Monster (
       health = max_health floor;
       damage = damage floor;
       action_queue = [];
+      roaming_target = ref (-1, -1);
     }
 
     let wait_function m = {
