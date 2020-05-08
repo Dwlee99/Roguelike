@@ -164,7 +164,8 @@ let rec add_monsters (monsters : Monster.monster list) (state : t) =
   match monsters with 
   | [] -> state
   | h::t -> add_monsters t 
-              (let monster_board = place_entity (Monster (Monster.get_type h)) state.board in 
+              (let monster_board = place_entity (Monster (Monster.get_type h)) 
+                   state.board in 
                let board = fst monster_board in 
                let monster_loc = snd monster_board in 
                let monster = {h with position = monster_loc} in 
@@ -340,6 +341,11 @@ let attack_melee t dir =
   | Some weapon -> attack_weapon t weapon dir
   | None -> t
 
+let attack_ranged t dir = 
+  match Inventory.get_ranged_weapon t.player.inventory with
+  | Some weapon -> attack_weapon t weapon dir
+  | None -> t
+
 (** [do_player_turn t action] is the state of the board after a player's turn
     has been executed on which the player did the action [action]. *)
 let do_player_turn t action =
@@ -353,7 +359,7 @@ let do_player_turn t action =
   | Display_Melee -> failwith "Unimplemented."
   | Display_Ranged -> failwith "Unimplemented."
   | Melee_Attack dir -> attack_melee t dir
-  | Ranged_Attack _ -> failwith "Unimplemented."
+  | Ranged_Attack dir -> attack_ranged t dir
   | None -> failwith "Unimplemented."
 
 

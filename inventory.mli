@@ -66,3 +66,7 @@ val get_max_items : t -> int
 (** [get_melee_weapon t] is [Some weapon] if [weapon] is in the melee slot
     and [None] if there is no melee weapon. *)
 val get_melee_weapon : t -> weapon option
+
+(** [get_ranged_weapon t] is [Some weapon] if [weapon] is in the ranged slot
+    and [None] if there is no ranged weapon.*)
+val get_ranged_weapon : t -> weapon option

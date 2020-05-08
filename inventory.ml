@@ -70,3 +70,5 @@ let get_items_names t = t.items
 let get_max_items t = t.max_items
 
 let get_melee_weapon t = t.melee
+
+let get_ranged_weapon t = t.ranged
