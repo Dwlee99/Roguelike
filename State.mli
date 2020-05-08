@@ -54,4 +54,4 @@ val write_inventory : t -> t
 val do_turn : t -> Action.t -> t
 
 (** [init_level width height] is a randomized world with [width] and [height]. *)
-val init_level : t
+val init_level : unit -> t

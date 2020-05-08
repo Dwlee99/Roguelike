@@ -233,7 +233,7 @@ let next_level t =
   let state_with_stairs = add_stairs state_with_monsters in
   state_with_stairs
 
-let init_level =
+let init_level () =
   let floor = get_floor 1 in
   let width = floor.board_width in 
   let height = floor.board_height in 

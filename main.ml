@@ -1,5 +1,6 @@
 open Graphics
 exception End
+exception PlayAgain
 
 
 type color_palette = {
@@ -43,7 +44,7 @@ let init_screen_height = 720
 
 let init_floor = 0
 
-let game_state = ref (State.init_level)
+let game_state = ref (State.init_level () )
 
 let get_borders player_coords map_size= 
   let llx = (fst player_coords) - 40 in
@@ -134,7 +135,7 @@ let rec game_loop f_init f_end f_key f_exn =
       with
       | End -> raise End
       | State.PlayerDeath -> raise State.PlayerDeath
-      | e -> res_exn e
+      | e -> f_exn e
     done
   with
   | End -> f_end panel_info
@@ -145,10 +146,30 @@ let rec game_loop f_init f_end f_key f_exn =
       else () in
     game_state := State.write_msgs !game_state ["You died."]; 
     draw_game panel_info !game_state;
-    let c = get_key () in 
-    ignore c;
-    play_game ()
-
+    post_death_screen !game_state panel_info
+(** [post_death_screen game] shows the stats of the player after they die and
+    offers them the opportunity to play again. *)
+and post_death_screen game panel = 
+  ignore(Ascii_panel.clear_graph panel);
+  let player_stats = State.get_stats game in
+  Graphics.set_color pal.white;
+  Graphics.moveto 610 420;
+  Graphics.draw_string "You died!";
+  Graphics.moveto 585 400;
+  Graphics.draw_string "Here's how you did:";
+  Graphics.moveto 585 380;
+  Graphics.draw_string
+    ("Turns Lived: " ^ (string_of_int player_stats.turns_played));
+  Graphics.moveto 555 300;
+  Graphics.draw_string "Press any key to play again!";
+  synchronize ();
+  try
+    let _ = get_key () in
+    game_state := State.init_level (); play_game ()
+  with 
+  | _ -> 
+    ignore(Ascii_panel.clear_graph panel);
+    print_string "Thanks for playing... \n"
 (** [play_game f] starts the game. *)
 and play_game () =
   game_loop (init_game) (stop_game) (res_key) (res_exn)
