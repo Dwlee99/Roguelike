@@ -177,7 +177,8 @@ let direction_to board cpos fpos max_dist =
 
     let dir = ref None in
     let found = ref false in
-    let visited_board = Array.map (fun a -> Array.map (fun b -> false) a) board in
+    let visited_board = Array.map (fun a -> Array.map (fun b -> 
+        not (b = Empty || b = Player)) a) board in
 
     while (not (Queue.is_empty queue)) && !found = false do
       let cur_node = Queue.pop queue in 
