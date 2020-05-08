@@ -60,7 +60,7 @@ module Swordsman : Edit_Monster = Make_Monster (
       let monster_x = fst monster.position in 
       let monster_y = snd monster.position in 
       let new_target = get_random_tile monster_x monster_y r in
-      match Board.direction_to board new_target monster.position r with
+      match Board.direction_to board monster.position new_target r with
       | Some _ -> new_target
       | None -> get_new_roaming_target monster board r
 

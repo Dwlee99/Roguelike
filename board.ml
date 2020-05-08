@@ -169,20 +169,23 @@ let add_neighbors board node queue visited_board max_dist =
     ) coordinates; ()
 
 let direction_to board cpos fpos max_dist =
-  let queue = Queue.create () in 
-  let (x, y) = cpos in 
-  let (goal_x, goal_y) = fpos in 
-  Queue.add {x = x; y = y; dist = 0; prev = None} queue;
+  if in_bound board cpos && in_bound board fpos then
+    let queue = Queue.create () in 
+    let (x, y) = cpos in 
+    let (goal_x, goal_y) = fpos in 
+    Queue.add {x = x; y = y; dist = 0; prev = None} queue;
 
-  let dir = ref None in
-  let found = ref false in
-  let visited_board = Array.map (fun a -> Array.map (fun b -> false) a) board in
+    let dir = ref None in
+    let found = ref false in
+    let visited_board = Array.map (fun a -> Array.map (fun b -> false) a) board in
 
-  while (not (Queue.is_empty queue)) && !found = false do
-    let cur_node = Queue.pop queue in 
-    visited_board.(cur_node.x).(cur_node.y) <- true;
-    if (cur_node.x = goal_x && cur_node.y = goal_y)
-    then (dir := (best_dir cur_node); found := true)
-    else add_neighbors board cur_node queue visited_board max_dist;
-  done;
-  !dir
+    while (not (Queue.is_empty queue)) && !found = false do
+      let cur_node = Queue.pop queue in 
+      visited_board.(cur_node.x).(cur_node.y) <- true;
+      if (cur_node.x = goal_x && cur_node.y = goal_y)
+      then (dir := (best_dir cur_node); found := true)
+      else add_neighbors board cur_node queue visited_board max_dist;
+    done;
+    !dir
+  else
+    None
