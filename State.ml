@@ -315,6 +315,29 @@ let rest t =
   let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
   inc_turns t |> set_energy new_energy
 
+let damage_monster t (x, y) damage = 
+  {t with monsters = List.map (
+       fun (m : Monster.monster) -> if m.position = (x, y) then 
+           {m with health = m.health - damage} else m) t.monsters}
+
+let get_attack_spots weapon dir =
+  match Weapon.get_type weapon with
+  | Short_Sword -> Short_sword.Short_Sword.attack weapon dir
+  | Short_Bow -> Short_bow.Short_Bow.attack weapon dir
+  | Battleaxe -> Battleaxe.Battleaxe.attack weapon dir
+
+let attack_weapon t weapon dir =
+  let (pX, pY) = t.player.position in
+  let attack_spots = get_attack_spots weapon dir in List.fold_left 
+    (fun t (relX, relY, damage) -> 
+       damage_monster t (pX + relX, pY + relY) damage) t attack_spots
+
+
+let attack_melee t dir = 
+  match Inventory.get_melee_weapon t.player.inventory with
+  | Some weapon -> attack_weapon t weapon dir
+  | None -> t
+
 (** [do_player_turn t action] is the state of the board after a player's turn
     has been executed on which the player did the action [action]. *)
 let do_player_turn t action =
@@ -327,7 +350,7 @@ let do_player_turn t action =
   | Inv -> write_inventory t
   | Display_Melee -> failwith "Unimplemented."
   | Display_Ranged -> failwith "Unimplemented."
-  | Melee_Attack _ -> failwith "Unimplemented."
+  | Melee_Attack dir -> attack_melee t dir
   | Ranged_Attack _ -> failwith "Unimplemented."
   | None -> failwith "Unimplemented."
 

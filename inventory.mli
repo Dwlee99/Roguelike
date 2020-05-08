@@ -62,3 +62,7 @@ val get_items_names : t -> string list
 
 (** [get_max_items t] is the maximum number of items the inventory can hold*)
 val get_max_items : t -> int
+
+(** [get_melee_weapon t] is [Some weapon] if [weapon] is in the melee slot
+    and [None] if there is no melee weapon. *)
+val get_melee_weapon : t -> weapon option

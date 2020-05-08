@@ -23,3 +23,5 @@ module type Weapon_Type = sig
   val attack : weapon -> Action.direction -> (int * int * damage) list
 
 end
+
+let get_type w = w.w_type

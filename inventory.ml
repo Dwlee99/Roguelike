@@ -13,7 +13,7 @@ type t = {
 }
 
 let init_inv = {
-  melee = None;
+  melee = Some (Short_sword.Short_Sword.create_weapon 1);
   ranged = None;
   head_prot = None;
   torso_prot = None;
@@ -68,3 +68,5 @@ let get_feet_name t = match t.feet_prot with None -> "None" | Some x -> x.name
 let get_items_names t = t.items
 
 let get_max_items t = t.max_items
+
+let get_melee_weapon t = t.melee
