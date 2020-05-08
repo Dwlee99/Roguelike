@@ -1,6 +1,7 @@
 open Action
 open Random
 open Inventory
+open Math
 
 exception PlayerDeath
 
@@ -121,16 +122,6 @@ let take_damage t damage m_name =
          (m_name ^ " did " ^ (string_of_int damage) ^ " to you!") 
          t.messages
   }
-
-(** These functions have self-documenting names. *)
-let up_one (x, y) = (x, y + 1)
-
-let down_one (x, y) = (x, y - 1)
-
-let right_one (x, y) = (x + 1, y)
-
-let left_one (x, y) = (x - 1, y)
-
 
 (** [spawn_location board] is a location that is surrounded by a layer of 
     empty tiles, which thus would be suitable for the player or monster to 
