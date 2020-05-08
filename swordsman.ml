@@ -5,7 +5,7 @@ let () = Random.self_init ()
 
 module Swordsman : Edit_Monster = Make_Monster (
   struct
-    let max_health floor = floor * 2 + 5
+    let max_health floor = 2 * floor
 
     let damage floor = floor / 10 * 2 + 1
 

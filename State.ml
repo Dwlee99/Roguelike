@@ -199,7 +199,7 @@ let rec create_monsters num strength =
 let get_floor floor_num = 
   let board_width = 80 + floor_num * 5 in 
   let board_height = 36 + floor_num * 2 in
-  let monster_strength = 10 + floor_num in 
+  let monster_strength = floor_num in 
   let num_monsters = 10 + 2 * floor_num in
   {
     floor_num = floor_num;

@@ -5,7 +5,7 @@ let () = Random.self_init ()
 
 module Ranger : Edit_Monster = Make_Monster (
   struct
-    let max_health floor = floor + 5
+    let max_health floor = floor
 
     let damage floor = floor / 10 + 1
 
@@ -20,9 +20,7 @@ module Ranger : Edit_Monster = Make_Monster (
       roaming_target = ref (-1, -1);
     }
 
-    let wait_function m = {
-      m with health = min (m.health + 1) m.max_health 
-    }
+    let wait_function m = m
 
     let move_function move_to m _ _ = 
       {m with position = move_to}
