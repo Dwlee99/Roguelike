@@ -330,6 +330,9 @@ let do_player_turn t action =
   | Ranged_Attack _ -> failwith "Unimplemented."
   | None -> failwith "Unimplemented."
 
+
+(** [move_monster c_pos (x,y) m_type m t] is the state after monster m moves
+    from c_pos to (x,y) *)
 let move_monster c_pos (x, y) m_type (m : Monster.monster) t =
   if Board.get_tile t.board (x, y) = Empty then (
     Board.set_tile t.board c_pos Empty; 
@@ -338,16 +341,20 @@ let move_monster c_pos (x, y) m_type (m : Monster.monster) t =
   else
     {m with position = c_pos}
 
+let kill_monster (m:Monster.monster) t rest_of_monsters = 
+  t.board.(fst m.position).(snd m.position) <- Empty;
+  {t with 
+   monsters = rest_of_monsters;
+   messages = Messages.write_msg (m.name ^ "has died. Woohoo.") t.messages;
+  }
+
+(** [do_monster_turn t] is the state after all the monsters take their turn *)
 let do_monster_turn t =
   let rec turns t (monsters : Monster.monster list) acc =
     match monsters with
     | h::tail -> begin
-        if h.health < 0 
-        then (t.board.(fst h.position).(snd h.position) <- Empty;
-              let new_state = {t with monsters = tail} in 
-              let msg_state = 
-                write_msgs new_state [h.name ^ "has died. Woohoo."] in
-              turns msg_state (tail @ acc) acc)
+        if h.health <= 0 
+        then turns (kill_monster h t tail) tail acc
         else 
           (match Monster.get_type h with
            | Board.Swordsman ->
