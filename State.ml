@@ -337,22 +337,24 @@ let attack_ranged t dir =
   | Some weapon -> attack_weapon t weapon dir
   | None -> t
 
+
+let do_display t display = 
+  match display with
+  | Help -> ignore(write_help t)
+  | Inv -> ignore(write_inventory t)
+  | Melee -> ()
+  | Ranged -> ()
+
 (** [do_player_turn t action] is the state of the board after a player's turn
     has been executed on which the player did the action [action]. *)
-let do_player_turn t action =
+let do_player_turn t modify =
   (* Attack if enemy present. *)
-  match action with
+  match modify with
   | Move direction -> move direction t
   | Break -> break t
-  | Help -> write_help t;
   | Rest -> rest t;
-  | Inv -> write_inventory t
-  | Display_Melee -> failwith "Unimplemented."
-  | Display_Ranged -> failwith "Unimplemented."
   | Melee_Attack dir -> attack_melee t dir
   | Ranged_Attack dir -> attack_ranged t dir
-  | None -> failwith "Unimplemented."
-
 
 (** [move_monster c_pos (x,y) m_type m t] is the state after monster m moves
     from c_pos to (x,y) *)

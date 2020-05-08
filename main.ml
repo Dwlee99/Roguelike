@@ -96,7 +96,10 @@ let init_game () =
   in draw_game t !game_state; t
 
 let update action = 
-  State.do_turn (!game_state) action
+  match action with
+  | Action.Modify m -> State.do_turn !game_state m
+  | Action.Display d -> State.do_display !game_state d; !game_state
+  | None -> !game_state
 
 let stop_game panel =
   ignore(Ascii_panel.clear_graph panel);
@@ -107,11 +110,11 @@ let get_key () = (wait_next_event [Key_pressed]).Graphics.key
 let res_key c (panel_info : Ascii_panel.t) =
   let first_action = c |> Action.parse in
   match first_action with
-  | Help -> State.write_help !game_state
-  | Inv -> State.write_inventory !game_state
-  | Display_Melee -> 
+  | Display Help -> State.write_help !game_state
+  | Display Inv -> State.write_inventory !game_state
+  | Display Melee -> 
     get_key () |> Action.parse_two c |> update
-  | Display_Ranged -> 
+  | Display Ranged -> 
     get_key () |> Action.parse_two c |> update
   | _ -> first_action |> update
 

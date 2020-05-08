@@ -7,16 +7,21 @@ type direction =
   | Right
 
 type t = 
+  | Modify of modifier
+  | Display of displayer
+  | None
+and modifier = 
   | Move of direction
   | Break
   | Rest
-  | Help
-  | Inv
-  | Display_Melee
-  | Display_Ranged
   | Melee_Attack of direction
   | Ranged_Attack of direction
-  | None
+and
+  displayer = 
+  | Help
+  | Inv
+  | Melee
+  | Ranged
 
 (** [parse c] is the action to be taken when the character [c] is 
     pressed. *)

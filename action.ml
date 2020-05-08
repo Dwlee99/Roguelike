@@ -5,31 +5,36 @@ type direction =
   | Right
 
 type t = 
+  | Modify of modifier
+  | Display of displayer
+  | None
+and modifier = 
   | Move of direction
   | Break
   | Rest
-  | Help
-  | Inv
-  | Display_Melee
-  | Display_Ranged
   | Melee_Attack of direction
   | Ranged_Attack of direction
-  | None
+and
+  displayer = 
+  | Help
+  | Inv
+  | Melee
+  | Ranged
 
 let parse = function
-  | 'i' -> Move Up
-  | 'j' -> Move Left
-  | 'k' -> Move Down
-  | 'l' -> Move Right
-  | 'b' -> Break
-  | 'h' -> Help
-  | 'a' -> Display_Melee
-  | 'r' -> Display_Ranged
-  | 'e' -> Inv
-  | _ -> Rest
+  | 'i' -> Modify (Move Up)
+  | 'j' -> Modify (Move Left)
+  | 'k' -> Modify (Move Down)
+  | 'l' -> Modify (Move Right)
+  | 'b' -> Modify Break
+  | 'h' -> Display Help
+  | 'a' -> Display Melee
+  | 'r' -> Display Ranged
+  | 'e' -> Display Inv
+  | _ -> Modify Rest
 
 let parse_two c1 c2 =
   match c1, parse c2 with
-  | 'a', Move dir -> Melee_Attack dir
-  | 'r', Move dir -> Ranged_Attack dir
+  | 'a', Modify Move dir -> Modify (Melee_Attack dir)
+  | 'r', Modify Move dir -> Modify (Ranged_Attack dir)
   | _ -> None

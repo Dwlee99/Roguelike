@@ -49,9 +49,11 @@ val write_help : t -> t
     displayed to the message board. *)
 val write_inventory : t -> t
 
+val do_display : t -> Action.displayer -> unit
+
 (** [turn t action] is the new state of the world after a full turn has been 
     executed on which the player did the action [action]. *)
-val do_turn : t -> Action.t -> t
+val do_turn : t -> Action.modifier -> t
 
 (** [init_level width height] is a randomized world with [width] and [height]. *)
 val init_level : unit -> t
