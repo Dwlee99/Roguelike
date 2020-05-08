@@ -109,13 +109,14 @@ let inc_turns t =
 let set_energy e t = 
   {t with player = {t.player with energy = e}}
 
-let take_damage t damage =
+let take_damage t damage m_name=
   {t with 
    player = {t.player with 
              health = t.player.health - damage
             };
    messages = if damage = 0 then t.messages else
-       Messages.write_msg ("You took " ^ (string_of_int damage) ^ " damage.") 
+       Messages.write_msg 
+         (m_name ^ " did " ^ (string_of_int damage) ^ " to you!") 
          t.messages
   }
 
@@ -341,6 +342,8 @@ let move_monster c_pos (x, y) m_type (m : Monster.monster) t =
   else
     {m with position = c_pos}
 
+(** [kill_monster m t rest_of_monsters] is the state of the game after 
+    monster [m] is killed*)
 let kill_monster (m:Monster.monster) t rest_of_monsters = 
   t.board.(fst m.position).(snd m.position) <- Empty;
   {t with 
@@ -353,8 +356,7 @@ let do_monster_turn t =
   let rec turns t (monsters : Monster.monster list) acc =
     match monsters with
     | h::tail -> begin
-        if h.health <= 0 
-        then turns (kill_monster h t tail) tail acc
+        if h.health <= 0 then turns (kill_monster h t tail) tail acc
         else 
           (match Monster.get_type h with
            | Board.Swordsman ->
@@ -368,9 +370,10 @@ let do_monster_turn t =
       end
     | [] -> (t, acc)
   and specific_turn m tail new_m damage t m_type acc =
-    let updated_t = take_damage t damage in
+    let updated_t = take_damage t damage m.name in
     let final_monster = 
-      move_monster m.position new_m.position m_type new_m updated_t in
+      move_monster m.position new_m.position m_type new_m updated_t 
+    in
     turns updated_t tail (final_monster :: acc)
   in
   let (new_t, new_monsters) = turns t t.monsters [] in
