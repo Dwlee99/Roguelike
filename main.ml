@@ -106,6 +106,8 @@ let get_key () = (wait_next_event [Key_pressed]).Graphics.key
 let res_key c (panel_info : Ascii_panel.t) =
   let first_action = c |> Action.parse in
   match first_action with
+  | Help -> State.write_help !game_state
+  | Inv -> State.write_inventory !game_state
   | Display_Melee -> 
     get_key () |> Action.parse_two c |> update
   | Display_Ranged -> 
