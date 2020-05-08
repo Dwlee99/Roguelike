@@ -225,6 +225,27 @@ let next_level t =
   let state_with_stairs = add_stairs state_with_monsters in
   state_with_stairs
 
+let make_init_state board pLoc floor = {
+  board = board;
+  messages = [];
+  player = {
+    position = pLoc;
+    level = 1;
+    exp = 0;
+    max_exp = 10;
+    health = 10;
+    max_health = 10;
+    energy = 10000;
+    max_energy = 10000;
+    turns_played = 0;
+    attack = 3;
+    defense = 3;
+    inventory = Inventory.init_inv
+  };
+  monsters = [];
+  floor = floor;
+}
+
 let init_level () =
   let floor = get_floor 1 in
   let width = floor.board_width in 
@@ -233,31 +254,12 @@ let init_level () =
   let player_and_board = place_entity Player raw_board in 
   let board = fst player_and_board in 
   let player_loc = snd player_and_board in
-  let init_state =
-    {
-      board = board;
-      messages = [];
-      player = {
-        position = player_loc;
-        level = 1;
-        exp = 0;
-        max_exp = 10;
-        health = 10;
-        max_health = 10;
-        energy = 10000;
-        max_energy = 10000;
-        turns_played = 0;
-        attack = 3;
-        defense = 3;
-        inventory = Inventory.init_inv
-      };
-      monsters = [];
-      floor = floor;
-    } in 
+  let init_state = make_init_state board player_loc floor in 
   let state_with_monsters = add_monsters 
       (create_monsters floor.num_monsters floor.monster_strength) init_state in 
   let state_with_stairs = add_stairs state_with_monsters in
   state_with_stairs
+
 
 (* [move t] is the state of the game after the movement of a player in a 
    given direction. 
