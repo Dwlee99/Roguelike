@@ -1,4 +1,7 @@
 open Monster
+open Random
+
+let () = Random.self_init ()
 
 module Ranger : Edit_Monster = Make_Monster (
   struct
@@ -29,19 +32,12 @@ module Ranger : Edit_Monster = Make_Monster (
         else 0 in
       (m, damage)
 
-    (** These functions have self-documenting names. *)
-    let up_one (x, y) = (x, y + 1)
-
-    let down_one (x, y) = (x, y - 1)
-
-    let right_one (x, y) = (x + 1, y)
-
-    let left_one (x, y) = (x - 1, y)
-
-    let square x = x * x
-
-    let distance_sq (x1, y1) (x2, y2) =
-      square (x2 - x1) + square (y2 - y1)
+    let move_direction d c_p = 
+      match d with
+      | Action.Up -> [Move (move_function (up_one c_p))]    
+      | Action.Down -> [Move (move_function (down_one c_p))]
+      | Action.Left -> [Move (move_function (left_one c_p))]
+      | Action.Right -> [Move (move_function (right_one c_p))]
 
     let edit_queue monster board (px, py) =
       if List.length monster.action_queue = 0 then 
@@ -52,14 +48,9 @@ module Ranger : Edit_Monster = Make_Monster (
           let direction = Board.direction_to board monster.position p_pos 10 in
           let c_p = monster.position in
           match direction with
-          | Some d -> begin
-              match d with
-              | Up -> [Move (move_function (up_one c_p))]    
-              | Down -> [Move (move_function (down_one c_p))]
-              | Left -> [Move (move_function (left_one c_p))]
-              | Right -> [Move (move_function (right_one c_p))]
-            end
-          | None -> [Wait (wait_function)]
+          | Some d -> move_direction d c_p
+          | None -> if (Random.int 5) = 0 then [Wait (wait_function)]
+            else move_direction (get_roam_direction monster board 10) c_p
         else begin
           [Wait (wait_function); Attack (attack_function p_pos)]
         end

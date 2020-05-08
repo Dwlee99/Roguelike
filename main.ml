@@ -117,7 +117,7 @@ let res_key c (panel_info : Ascii_panel.t) =
 let res_exn ex : unit = 
   failwith "Game ending..."
 
-let game_loop f_init f_end f_key f_exn = 
+let rec game_loop f_init f_end f_key f_exn = 
   let panel_info = f_init () in
   try
     while true do
@@ -133,13 +133,24 @@ let game_loop f_init f_end f_key f_exn =
           then ignore(f_key s.Graphics.key panel_info)*)
       with
       | End -> raise End
+      | State.PlayerDeath -> raise State.PlayerDeath
       | e -> res_exn e
     done
   with
   | End -> f_end panel_info
+  | State.PlayerDeath -> 
+    let _ = if not (size_x () = init_screen_width) || 
+               not (size_y () = init_screen_height) 
+      then resize_window init_screen_width init_screen_height 
+      else () in
+    game_state := State.write_msgs !game_state ["You died."]; 
+    draw_game panel_info !game_state;
+    let c = get_key () in 
+    ignore c;
+    play_game ()
 
 (** [play_game f] starts the game. *)
-let play_game () =
+and play_game () =
   game_loop (init_game) (stop_game) (res_key) (res_exn)
 
 (* Execute the game engine. *)

@@ -55,4 +55,38 @@ end
 
 let get_type m = m.m_type
 
+(** These functions have self-documenting names. *)
+let up_one (x, y) = (x, y + 1)
 
+let down_one (x, y) = (x, y - 1)
+
+let right_one (x, y) = (x + 1, y)
+
+let left_one (x, y) = (x - 1, y)
+
+let square x = x * x
+
+let distance_sq (x1, y1) (x2, y2) =
+  square (x2 - x1) + square (y2 - y1)
+
+let get_random_tile x y r =
+  let x_rel = Random.int (2 * r) in 
+  let y_rel = Random.int (2 * r) in 
+  (x + x_rel - r, y + y_rel - r)
+
+let rec get_new_roaming_target monster board r =
+  let monster_x = fst monster.position in 
+  let monster_y = snd monster.position in 
+  let new_target = get_random_tile monster_x monster_y r in
+  match Board.direction_to board monster.position new_target r with
+  | Some _ -> new_target
+  | None -> get_new_roaming_target monster board r
+
+let rec get_roam_direction monster board r = 
+  let direction_to_roam = 
+    Board.direction_to board monster.position !(monster.roaming_target) r in 
+  match direction_to_roam with
+  | Some d -> d
+  | None -> 
+    monster.roaming_target := get_new_roaming_target monster board r; 
+    get_roam_direction monster board r

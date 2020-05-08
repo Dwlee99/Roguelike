@@ -2,6 +2,8 @@ open Action
 open Random
 open Inventory
 
+exception PlayerDeath
+
 (** The energy cost of moving one tile. *)
 let move_cost = 1
 
@@ -403,4 +405,5 @@ let do_monster_turn t =
   {new_t with monsters = new_monsters}
 
 let do_turn t action = 
-  (do_player_turn t action) |> do_monster_turn
+  let new_state = (do_player_turn t action) |> do_monster_turn in 
+  if new_state.player.health <= 0 then raise PlayerDeath else new_state
