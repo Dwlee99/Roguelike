@@ -1,3 +1,5 @@
+(** Holds math functions commonly used throughout our code. *)
+
 (** [up_one (x, y)] is [(x, y + 1)] *)
 val up_one : int * int -> int * int
 

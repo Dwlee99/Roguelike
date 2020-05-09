@@ -1,9 +1,9 @@
-open Weapon
-open Armor
-
 (** This module contains all the functions that manage the inventory of the
     player. This includes their inventory, their equipped weapon(s) and any 
     armor they are wearing.*)
+
+open Weapon
+open Armor
 
 (** The type of the inventory. This is a record containing the fields that
     represent the inventory as a whole*)

@@ -1,3 +1,6 @@
+(** This module organizes and executes the main functions of the game,
+    including drawing the board and executing turns. *)
+
 open Graphics
 
 (** Represents colors used for drawing the board. *)
