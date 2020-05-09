@@ -293,7 +293,10 @@ let next_level t =
   let state_with_monsters = add_monsters 
       (create_monsters floor.num_monsters floor.monster_strength) new_state in 
   let state_with_stairs = add_stairs state_with_monsters in
-  state_with_stairs
+  let state_with_weapons = 
+    add_weapons (create_weapons floor.num_weapons 
+                   floor.weapon_strength) state_with_stairs in 
+  state_with_weapons
 
 let make_init_state board pLoc floor = {
   board = board;

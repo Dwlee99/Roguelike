@@ -7,6 +7,7 @@ type direction =
 type t = 
   | Modify of modifier
   | Display of displayer
+  | Quit
   | None
 and modifier = 
   | Move of direction
@@ -31,6 +32,7 @@ let parse = function
   | 'a' -> Display Melee
   | 'r' -> Display Ranged
   | 'e' -> Display Inv
+  | 'q' -> Quit
   | _ -> Modify Rest
 
 let parse_two c1 c2 =

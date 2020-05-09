@@ -9,6 +9,7 @@ type direction =
 type t = 
   | Modify of modifier
   | Display of displayer
+  | Quit
   | None
 and modifier = 
   | Move of direction

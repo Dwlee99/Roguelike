@@ -29,10 +29,10 @@ type msgs = string list
 let help_strings = 
   ["INSTRUCTIONS/CONTROLS:"; 
    "Press i,j,k,l to move up, left, down, right"; 
-   "Press b to break the 4 walls near you. "^ 
-   "Walk into the staircase ('#') to advance to the next level"; 
-   "Press [spacebar] to rest; Press [e] to see inventory"; 
-   "Press h to see instructions again."]
+   "Press a or r to select melee or ranged attack and then select direction using i,j,k,l.";
+   "Walk into the staircase ('#') to advance levels, or weapons ('D', 'Y', 't') to equip.";
+   "Press b to break the 4 walls near you, [spacebar] to rest, and [e] to see inventory"; 
+   "Press q to quit, and h to see instructions again."]
 
 
 let write_msg msg messages =

@@ -106,6 +106,7 @@ let update pan action =
   | Action.Modify m -> State.do_turn !game_state m
   | Action.Display d -> 
     delayed_draw := (fun h -> State.do_display !game_state d pan h); !game_state
+  | Quit -> raise End
   | None -> !game_state
 
 let stop_game panel =
@@ -125,6 +126,7 @@ let res_key c (panel_info : Ascii_panel.t) =
   | Display Ranged -> ignore ((update panel_info) (Display Ranged));
     draw_game panel_info !game_state; 
     get_key () |> Action.parse_two c |> (update panel_info)
+  | Quit -> raise End
   | _ -> first_action |> (update panel_info)
 
 let res_exn ex : unit = 
