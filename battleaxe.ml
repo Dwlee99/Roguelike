@@ -15,15 +15,15 @@ module Battleaxe : Weapon_Type = struct
     match dir with
     | Action.Up ->    List.init 6 (fun x ->
         ((x mod 3) - 1, (x / 3) + 1, 
-         if (x mod 3) - 1 = 0 then 2 * w.damage else 0))
+         if (x mod 3) - 1 = 0 then 2 * w.damage else w.damage))
     | Action.Down ->  List.init 6 (fun x ->
         ((x mod 3) - 1, (-x / 3) - 1, 
-         if (x mod 3) - 1 = 0 then 2 * w.damage else 0))
+         if (x mod 3) - 1 = 0 then 2 * w.damage else w.damage))
     | Action.Left ->  List.init 6 (fun x ->
         ((-x / 3) - 1, (x mod 3) - 1, 
-         if (x mod 3) - 1 = 0 then 2 * w.damage else 0))
+         if (x mod 3) - 1 = 0 then 2 * w.damage else w.damage))
     | Action.Right -> List.init 6 (fun x ->
         ((x / 3) + 1, (x mod 3) - 1, 
-         if (x mod 3) - 1 = 0 then 2 * w.damage else 0))
+         if (x mod 3) - 1 = 0 then 2 * w.damage else w.damage))
 
 end
