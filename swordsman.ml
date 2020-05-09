@@ -6,10 +6,13 @@ let () = Random.self_init ()
 
 module Swordsman : Edit_Monster = Make_Monster (
   struct
+    (** [max_health f] is the max health of a swordsmen on floor [f]. *)
     let max_health floor = 2 * floor
 
+    (** [damage f] is the swordman's damage on floor [f]. *)
     let damage floor = floor / 10 * 2 + 1
 
+    (** [exp f] is the amount of exp a swordsman gives on floor [f]. *)
     let exp floor = floor / 5 + 1
 
     let create_monster floor = {
@@ -24,16 +27,21 @@ module Swordsman : Edit_Monster = Make_Monster (
       roaming_target = ref (-1, -1);
     }
 
+    (** [wait_function m] is what the swordsman does when it waits. *)
     let wait_function m = {
       m with health = min (m.health + 1) m.max_health 
     }
 
+    (** [move_function m mons] is what the swordsman does when it moves. *)
     let move_function move_to m _ _ = 
       {m with position = move_to}
 
+    (** [attack_function m] is what the swordsman does when it attacks. *)
     let attack_function m _ _ =
       (m, m.damage)
 
+    (** [move_direction dir cur_pos] is the [m_action] that moves the monster 
+        in [dir]. *)
     let move_direction d c_p =
       match d with
       | Action.Up -> [Move (move_function (up_one c_p))]    
