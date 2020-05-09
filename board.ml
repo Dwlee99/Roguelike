@@ -5,12 +5,18 @@ type monster_type =
   | Swordsman
   | Ranger
 
+type weapon_type =
+  | ShortSword
+  | ShortBow
+  | BattleAxe
+
 type tile = 
   | Player
   | Wall of breakable
   | Empty
   | Monster of monster_type
   | Stairs
+  | Weapon of weapon_type
 
 type t = tile array array
 

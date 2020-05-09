@@ -40,6 +40,8 @@ type floor = {
   board_height : int;
   monster_strength: int;
   num_monsters: int;
+  weapon_strength: int;
+  num_weapons: int;
 }
 
 type t = {
@@ -48,8 +50,8 @@ type t = {
   player : player;
   monsters : Monster.monster list;
   floor : floor;
+  weapons : Weapon.weapon list;
 }
-
 
 
 let get_stats t : Messages.player_stats = {
@@ -63,6 +65,13 @@ let get_stats t : Messages.player_stats = {
   turns_played = t.player.turns_played;
   floor = t.floor.floor_num
 }
+
+let types_of_weapons = 
+  Array.of_list [
+    Board.ShortSword; 
+    Board.ShortBow;
+    Board.BattleAxe
+  ]
 
 let types_of_monsters = 
   Array.of_list [
@@ -170,7 +179,7 @@ let place_entity tile_type board =
   board.(x).(y) <- tile_type;
   (board, (x,y))
 
-(** [add_monsters monsters t] is the state [t] updated with the monsters 
+(** [add_monsters monsters state] is the state [state] updated with the monsters 
     [monsters] added to the game. *)
 let rec add_monsters (monsters : Monster.monster list) (state : t) =
   match monsters with 
@@ -189,7 +198,7 @@ let rec add_monsters (monsters : Monster.monster list) (state : t) =
 let random_element arr =
   Array.get arr (Random.int (Array.length arr))
 
-(** [create_monsters num strength] is a list of [num] monsters with level 
+(** [create_monsters num strength] is a list of [num] monsters with 
     strength parameter [strength]. *)
 let rec create_monsters num strength =
   if num < 0 then failwith "Cannot have a negative number of monsters!"
@@ -206,6 +215,41 @@ let rec create_monsters num strength =
           monster :: (create_monsters (num - 1) strength)
       end
 
+(** [add_weapons weapons state] is the state [state] with the weapons 
+    [weapons] added to the game. *)
+let rec add_weapons weapons state =
+  match weapons with 
+  | [] -> state
+  | h :: t -> 
+    add_weapons t
+      (let weapon_board = place_entity (Weapon (Weapon.get_type h)) 
+           state.board in 
+       let board = fst weapon_board in 
+       let weapon_loc = snd weapon_board in 
+       let weapon = {h with position = Some weapon_loc} in 
+       let new_state =
+         {state with board = board; weapons = weapon::(state.weapons)} in 
+       new_state)
+
+(** [create_weapons num strength] is a list o f[num] weapons with strength 
+    parameter [strength]. *)
+let rec create_weapons num strength =
+  if num < 0 then failwith "Cannot have a negative number of weapons."
+  else match num with
+    | 0 -> []
+    | k ->
+      (let weapon_type = random_element types_of_weapons in 
+       match weapon_type with
+       | Board.ShortSword -> 
+         let weapon = Short_sword.Short_Sword.create_weapon strength in 
+         weapon :: (create_weapons (num - 1) strength)
+       | Board.ShortBow -> 
+         let weapon = Short_bow.Short_Bow.create_weapon strength in 
+         weapon :: (create_weapons (num - 1) strength)
+       | Board.BattleAxe -> 
+         let weapon = Battleaxe.Battleaxe.create_weapon strength in 
+         weapon :: (create_weapons (num - 1) strength))
+
 (** [get_floor floor_num] is the floor corresponding to the floor number
     [floor_num]. *)
 let get_floor floor_num = 
@@ -213,12 +257,16 @@ let get_floor floor_num =
   let board_height = 36 + floor_num * 2 in
   let monster_strength = floor_num in 
   let num_monsters = 10 + 2 * floor_num in
+  let num_weapons = 4 + (floor_num / 2) in
+  let weapon_strength = floor_num in
   {
     floor_num = floor_num;
     board_width = board_width;
     board_height = board_height;
     monster_strength = monster_strength;
     num_monsters = num_monsters;
+    num_weapons = num_weapons;
+    weapon_strength = weapon_strength;
   }
 
 let add_stairs t =
@@ -240,6 +288,7 @@ let next_level t =
     messages = [];
     floor = floor;
     monsters = [];
+    weapons = [];
   } in
   let state_with_monsters = add_monsters 
       (create_monsters floor.num_monsters floor.monster_strength) new_state in 
@@ -266,6 +315,7 @@ let make_init_state board pLoc floor = {
   };
   monsters = [];
   floor = floor;
+  weapons = [];
 }
 
 let init_level () =
@@ -280,8 +330,40 @@ let init_level () =
   let state_with_monsters = add_monsters 
       (create_monsters floor.num_monsters floor.monster_strength) init_state in 
   let state_with_stairs = add_stairs state_with_monsters in
-  state_with_stairs
+  let state_with_weapons = add_weapons 
+      (create_weapons floor.num_weapons floor.monster_strength) 
+      state_with_stairs in 
+  state_with_weapons
 
+(** [equipd_weapon state weapon] is the state [state] with the weapon 
+    [weapon] equipped and removed from the board. *)
+let equip_weapon state (weapon : Weapon.weapon) =
+  let weapon_loc = (match weapon.position with 
+      | Some (x, y) -> (x, y) 
+      | None -> failwith "Weapon must be on the board.") in
+  let new_weapon = {weapon with position = None} in
+  state.board.(fst weapon_loc).(snd weapon_loc) <- Empty;
+  {state with player = {state.player with inventory = Inventory.equip_weapon 
+                                              state.player.inventory 
+                                              new_weapon}}
+
+(** [pop_weapon loc weapons] is a tuple with the first element being the weapon 
+    at location [loc] in weapons and the second being the list [weapons] with 
+    that element removed. Requires: There is a weapon in [weapons] at the 
+    location [loc]. *)
+let rec pop_weapon loc (weapons : Weapon.weapon list) =
+  match weapons with 
+  | [] -> print_endline "oh no"; failwith "Weapon not in list."
+  | h::t when (h.position = Some loc) -> (h, t)
+  | h::t -> let x = pop_weapon loc t in 
+    (fst x, h :: snd x)
+
+(** [get_name weapon] is the name of the weapon [weapon]. *)
+let get_name (weapon : Weapon.weapon) = 
+  match weapon.w_type with
+  | BattleAxe -> "battle axe"
+  | ShortSword -> "short sword"
+  | ShortBow -> "short bow"
 
 (* [move t] is the state of the game after the movement of a player in a 
    given direction. 
@@ -301,6 +383,15 @@ let move dir t =
     match attempt_tile with
     | Empty -> move_player t new_pos |> inc_turns |> set_energy new_energy
     | Stairs -> next_level t
+    | Weapon w -> let new_weapon_config = pop_weapon new_pos t.weapons in 
+      let new_weapon = fst new_weapon_config in 
+      let other_weapons = snd new_weapon_config in
+      let equipped_state = equip_weapon {t with weapons = other_weapons} 
+          new_weapon in 
+      let msg_st = write_msgs equipped_state 
+          ["You have picked up a new level " ^ (string_of_int new_weapon.level) 
+           ^ " " ^ (get_name new_weapon)  ^ "." ] in
+      move_player msg_st new_pos |> inc_turns |> set_energy new_energy
     | _ -> t
   )
 
@@ -340,9 +431,9 @@ let damage_monster t (x, y) damage =
 
 let get_attack_spots weapon dir =
   match Weapon.get_type weapon with
-  | Short_Sword -> Short_sword.Short_Sword.attack weapon dir
-  | Short_Bow -> Short_bow.Short_Bow.attack weapon dir
-  | Battleaxe -> Battleaxe.Battleaxe.attack weapon dir
+  | ShortSword -> Short_sword.Short_Sword.attack weapon dir
+  | ShortBow -> Short_bow.Short_Bow.attack weapon dir
+  | BattleAxe -> Battleaxe.Battleaxe.attack weapon dir
 
 let attack_weapon t weapon dir =
   let (pX, pY) = t.player.position in

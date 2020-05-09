@@ -1,19 +1,16 @@
 type damage = int
 
-type weapon_type = 
-  | Short_Sword
-  | Battleaxe
-  | Short_Bow
-
 type attack_type = 
   | Melee
   | Ranged
 
 type weapon = {
   name : string;
-  w_type : weapon_type;
+  position : (int * int) option;
+  w_type : Board.weapon_type;
   damage : damage;
   atk_type : attack_type;
+  level : int;
 }
 
 module type Weapon_Type = sig

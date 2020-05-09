@@ -4,9 +4,11 @@ module Battleaxe : Weapon_Type = struct
 
   let create_weapon level = {
     name = "Battleaxe";
-    w_type = Battleaxe;
+    position = Some (-1, -1);
+    w_type = BattleAxe;
     damage = level;
     atk_type = Melee;
+    level = level;
   }
 
   let attack w dir = 

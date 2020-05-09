@@ -4,9 +4,11 @@ module Short_Sword : Weapon_Type = struct
 
   let create_weapon level = {
     name = "Short Sword";
-    w_type = Short_Sword;
+    position = Some (-1, -1);
+    w_type = ShortSword;
     damage = level;
     atk_type = Melee;
+    level = level;
   }
 
   let attack w dir = 

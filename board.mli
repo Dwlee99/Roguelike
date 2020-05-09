@@ -8,6 +8,12 @@ type monster_type =
   | Swordsman
   | Ranger
 
+(** The type of a weapon. *)
+type weapon_type =
+  | ShortSword
+  | ShortBow
+  | BattleAxe
+
 (** The things that can occupy coordinates on the board. *)
 type tile = 
   | Player
@@ -15,6 +21,7 @@ type tile =
   | Empty
   | Monster of monster_type
   | Stairs
+  | Weapon of weapon_type
 
 (** The game board. *)
 type t = tile array array
