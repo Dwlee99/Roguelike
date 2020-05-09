@@ -22,7 +22,7 @@ type inventory = {
 
 type msgs = string list
 
-(** The strings providing helpful information on game controls. *)
+(** The strings providing helpful information on general game controls. *)
 let help_strings = 
   ["INSTRUCTIONS/CONTROLS:"; 
    "Press i,j,k,l to move up, left, down, right"; 
@@ -31,6 +31,7 @@ let help_strings =
    "Press f for fighting controls, and p for player controls.";
    "Press h to see instructions again."]
 
+(** The strings providing information on controls related to fighting. *)
 let fighting_help =
   ["FIGHTING CONTROLS:";
    "Press 'a' or 'r' to select melee or ranged attack, respectively.";
@@ -40,6 +41,7 @@ let fighting_help =
    "Press f to see these controls again."
   ]
 
+(** The strings providing information on controls related to the player. *)
 let player_help = 
   ["PLAYER CONTROLS:";
    "Walk into the staircase ('#') to advance floors.";
