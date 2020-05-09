@@ -68,6 +68,23 @@ let get_borders player_coords map_size=
     be returned to its default function. *)
 let delayed_draw = ref (fun (x, y) -> ())
 
+(** [draw_tile col row tile panel] draws a single tile at [(col, row)] on
+    [panel]. *)
+let draw_tile col row tile panel =
+  let (chr, color) = match tile with
+    | Board.Player -> ('@', pal.green)
+    | Wall _ -> (Char.chr 141, pal.blue)
+    | Monster Board.Swordsman -> ('m', pal.red)
+    | Monster Board.Ranger -> (Char.chr 172, pal.orange)
+    | Empty -> (Char.chr 183, pal.gray)
+    | Stairs -> (Char.chr 35, pal.yellow)
+    | Weapon Board.BattleAxe -> ('Y', pal.magenta)
+    | Weapon Board.ShortBow -> ('D', pal.magenta)
+    | Weapon Board.ShortSword -> ('t', pal.magenta)
+    | Armor _ -> ('H', pal.light_gray)
+  in 
+  ignore(Ascii_panel.draw_char (col) (row) color chr panel)
+
 (** [draw_game panel game] draws the current state of [game] on [panel]. *)
 let draw_game panel game =
   let board = State.tile_board game in
@@ -77,20 +94,7 @@ let draw_game panel game =
     ignore(panel |> Ascii_panel.clear_graph);
     for col = start_col to start_col + 79 do
       for row = start_row to start_row + 35 do
-        let charAndCol = match board.(col).(row) with
-          | Player -> ('@', pal.green)
-          | Wall _ -> (Char.chr 141, pal.blue)
-          | Monster Board.Swordsman -> ('m', pal.red)
-          | Monster Board.Ranger -> (Char.chr 172, pal.orange)
-          | Empty -> (Char.chr 183, pal.gray)
-          | Stairs -> (Char.chr 35, pal.yellow)
-          | Weapon Board.BattleAxe -> ('Y', pal.magenta)
-          | Weapon Board.ShortBow -> ('D', pal.magenta)
-          | Weapon Board.ShortSword -> ('t', pal.magenta)
-          | Armor _ -> ('H', pal.light_gray)
-        in 
-        ignore(Ascii_panel.draw_char (col-start_col) (row-start_row) 
-                 (snd charAndCol) (fst charAndCol) panel)
+        draw_tile (col - start_col) (row - start_row) board.(col).(row) panel
       done
     done;
     !delayed_draw (start_col, start_row);
