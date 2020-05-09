@@ -11,6 +11,7 @@ type t =
   | Display of displayer
   | Quit
   | None
+
 and modifier = 
   | Move of direction
   | Break
@@ -20,6 +21,8 @@ and modifier =
 and
   displayer = 
   | Help
+  | PlayerHelp
+  | FightingHelp
   | Inv
   | Melee
   | Ranged

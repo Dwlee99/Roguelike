@@ -105,7 +105,8 @@ let update pan action =
   match action with
   | Action.Modify m -> State.do_turn !game_state m
   | Action.Display d -> 
-    delayed_draw := (fun h -> State.do_display !game_state d pan h); !game_state
+    delayed_draw := (fun h -> State.do_display !game_state d pan h); 
+    State.display_update !game_state d
   | Quit -> raise End
   | None -> !game_state
 
@@ -119,6 +120,8 @@ let res_key c (panel_info : Ascii_panel.t) =
   let first_action = c |> Action.parse in
   match first_action with
   | Display Help -> State.write_help !game_state
+  | Display PlayerHelp -> State.write_player_help !game_state
+  | Display FightingHelp -> State.write_fighting_help !game_state
   | Display Inv -> State.write_inventory !game_state
   | Display Melee -> ignore ((update panel_info) (Display Melee));
     draw_game panel_info !game_state; 

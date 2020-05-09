@@ -41,9 +41,17 @@ val get_msgs : t -> Messages.msgs
     been appended to [t.messages]. *)
 val write_msgs : t -> string list -> t
 
-(** [write_help t] is the new state after help instructions has been written to 
-    the message board. *)
+(** [write_help t] is the new state after the help instructions have been 
+    written to the message board. *)
 val write_help : t -> t
+
+(** [write_player_help t] is the new state after the player help instructions
+    have been written to the message board. *)
+val write_player_help: t -> t
+
+(** [write_fighting_help t] is the new state after the fighting help
+    instructions have been written to the message board. *)
+val write_fighting_help: t -> t
 
 (** [write_inventory t] is the new state after the inventory has been 
     displayed to the message board. *)
@@ -53,9 +61,14 @@ val write_inventory : t -> t
     based on [d] and offset by [(x, y)] coordinates. *)
 val do_display : t -> Action.displayer -> Ascii_panel.t -> (int * int) -> unit
 
+(** [display_update t display] is the updated state [t] after the display 
+    [display] has been displayed. *)
+val display_update: t -> Action.displayer -> t
+
 (** [turn t action] is the new state of the world after a full turn has been 
     executed on which the player did the action [action]. *)
 val do_turn : t -> Action.modifier -> t
 
-(** [init_level width height] is a randomized world with [width] and [height]. *)
+(** [init_level width height] is a randomized world with [width] and 
+    [height]. *)
 val init_level : unit -> t

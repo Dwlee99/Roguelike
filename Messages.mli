@@ -49,6 +49,14 @@ val write_msgs : string list -> msgs -> msgs
     written to the current list [msgs]. *)
 val write_help : msgs -> msgs
 
+(** [write_player_help msgs] is the new list of messages with the player
+    help messages written to the current list [msgs]. *)
+val write_player_help: msgs -> msgs
+
+(** [write_fighting_help msgs] is the new list of messages with the fighting
+    help messages written to the current list [msgs]. *)
+val write_fighting_help: msgs -> msgs
+
 (** [write_inventory] writes the player's inventory into the messages panel
     showing the items they carry and the equipment they are wearing*)
 val write_inventory : inventory -> msgs -> msgs

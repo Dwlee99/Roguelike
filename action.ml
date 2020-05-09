@@ -18,6 +18,8 @@ and modifier =
 and
   displayer = 
   | Help
+  | PlayerHelp
+  | FightingHelp
   | Inv
   | Melee
   | Ranged
@@ -33,6 +35,8 @@ let parse = function
   | 'r' -> Display Ranged
   | 'e' -> Display Inv
   | 'q' -> Quit
+  | 'p' -> Display PlayerHelp
+  | 'f' -> Display FightingHelp
   | _ -> Modify Rest
 
 let parse_two c1 c2 =

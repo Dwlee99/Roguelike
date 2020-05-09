@@ -29,10 +29,27 @@ type msgs = string list
 let help_strings = 
   ["INSTRUCTIONS/CONTROLS:"; 
    "Press i,j,k,l to move up, left, down, right"; 
-   "Press a or r to select melee or ranged attack and then select direction using i,j,k,l.";
-   "Walk into the staircase ('#') to advance levels, or weapons ('D', 'Y', 't') to equip.";
-   "Press b to break the 4 walls near you, [spacebar] to rest, and [e] to see inventory"; 
-   "Press q to quit, and h to see instructions again."]
+   "Press b to break the 4 walls near you."; 
+   "Press q to quit.";
+   "Press f for fighting controls, and p for player controls.";
+   "Press h to see instructions again."]
+
+let fighting_help =
+  ["FIGHTING CONTROLS:";
+   "Press 'a' or 'r' to select melee or ranged attack, respectively.";
+   "Then, use i,j,k,l to select direction.";
+   "Walk into weapons to equip.";
+   "('D' - short bow, 'Y' - battleaxe, 't' - short sword).";
+   "Press f to see these controls again."
+  ]
+
+let player_help = 
+  ["PLAYER CONTROLS:";
+   "Walk into the staircase ('#') to advance floors.";
+   "Kill monsters to gain experience.";
+   "Leveling up increases health and energy.";
+   "Press [spacebar] to rest, and [e] to see inventory";
+   "Press p to see these controls again."]
 
 
 let write_msg msg messages =
@@ -86,6 +103,10 @@ let write_msgs new_msgs old_msgs =
   in helper new_msgs old_msgs
 
 let write_help msgs = write_msgs help_strings msgs
+
+let write_player_help msgs = write_msgs player_help msgs
+
+let write_fighting_help msgs = write_msgs fighting_help msgs
 
 let print_lst lst = 
   List.fold_left (fun acc x -> acc ^ "; " ^ x) "" lst

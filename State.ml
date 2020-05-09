@@ -92,6 +92,12 @@ let write_msgs t msgs =
 
 let write_help t = {t with messages = Messages.write_help t.messages}
 
+let write_player_help t = 
+  {t with messages = Messages.write_player_help t.messages}
+
+let write_fighting_help t =
+  {t with messages = Messages.write_fighting_help t.messages}
+
 let get_printable_inv (i:Inventory.t) : Messages.inventory = 
   {
     melee = Inventory.get_melee_name i;
@@ -491,9 +497,19 @@ let display_ranged t panel coord =
 let do_display t display panel coord = 
   match display with
   | Help -> ignore(write_help t)
+  | PlayerHelp -> ignore(write_player_help t)
+  | FightingHelp -> ignore(write_fighting_help t)
   | Inv -> ignore(write_inventory t)
   | Melee -> display_melee t panel coord
   | Ranged -> display_ranged t panel coord
+
+let display_update t display =
+  match display with
+  | Help -> write_help t
+  | PlayerHelp -> write_player_help t
+  | FightingHelp -> write_fighting_help t
+  | Inv -> write_inventory t
+  | _ -> t
 
 (** [do_player_turn t action] is the state of the board after a player's turn
     has been executed on which the player did the action [action]. *)
