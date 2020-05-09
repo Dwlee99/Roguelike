@@ -327,6 +327,18 @@ let add_stairs t =
   let new_board = fst stairs_board in 
   {t with board = new_board}
 
+(** [blank_state t b f player_loc] is a state with board [b], at floor [f], and
+    the player at [player_loc] but no monsters, messages, or weapons on the map.
+*)
+let blank_state t b f player_loc = {
+  player = {t.player with position = player_loc};
+  board = b;
+  messages = [];
+  floor = f;
+  monsters = [];
+  weapons = [];
+} 
+
 (** [next_level t] is the state [t] advanced to the next floor (or level) of
     of the game. *)
 let next_level t =
@@ -337,14 +349,7 @@ let next_level t =
   let player_and_board = place_entity Player raw_board in 
   let board = fst player_and_board in 
   let player_loc = snd player_and_board in
-  let new_state = {
-    player = {t.player with position = player_loc};
-    board = board;
-    messages = [];
-    floor = floor;
-    monsters = [];
-    weapons = [];
-  } in
+  let new_state = blank_state t board floor player_loc in
   let state_with_monsters = add_monsters 
       (create_monsters floor.num_monsters floor.monster_strength) new_state in 
   let state_with_stairs = add_stairs state_with_monsters in
@@ -427,6 +432,33 @@ let get_name (weapon : Weapon.weapon) =
   | ShortSword -> "short sword"
   | ShortBow -> "short bow"
 
+(** [pickup_weapon t new_pos new_energy] is the state after the weapon at
+    [new_pos] is picked up. *)
+let pickup_weapon t new_pos new_energy = 
+  let new_weapon_config = pop_weapon new_pos t.weapons in 
+  let new_weapon = fst new_weapon_config in 
+  let other_weapons = snd new_weapon_config in
+  let equipped_state = equip_weapon {t with weapons = other_weapons} 
+      new_weapon in 
+  let msg_st = write_msgs equipped_state 
+      ["You have picked up a new level " ^ (string_of_int new_weapon.level) 
+       ^ " " ^ (get_name new_weapon)  ^ "." ] in
+  move_player msg_st new_pos |> inc_turns |> set_energy new_energy
+
+(** [pickup_armor t level new_pos new_energy] is the state after a level
+    [level] piece of armor is equipped on the player.  *)
+let pickup_armor t level new_pos new_energy =
+  let level = level in 
+  let armor = Armor.create_armor level in
+  let equipped_state = 
+    {t with player = {t.player with inventory = equip_armor 
+                                        t.player.inventory armor}} in
+  let msg_st = write_msgs equipped_state 
+      ["You have picked up " ^ (armor.name) 
+       ^ "."] in 
+  move_player msg_st new_pos |> inc_turns |> set_energy 
+    new_energy
+
 (* [move t] is the state of the game after the movement of a player in a 
    given direction. 
    It prevents movement if the player lacks the energy to do so.*)
@@ -445,25 +477,8 @@ let move dir t =
     match attempt_tile with
     | Empty -> move_player t new_pos |> inc_turns |> set_energy new_energy
     | Stairs -> next_level t
-    | Weapon w -> let new_weapon_config = pop_weapon new_pos t.weapons in 
-      let new_weapon = fst new_weapon_config in 
-      let other_weapons = snd new_weapon_config in
-      let equipped_state = equip_weapon {t with weapons = other_weapons} 
-          new_weapon in 
-      let msg_st = write_msgs equipped_state 
-          ["You have picked up a new level " ^ (string_of_int new_weapon.level) 
-           ^ " " ^ (get_name new_weapon)  ^ "." ] in
-      move_player msg_st new_pos |> inc_turns |> set_energy new_energy
-    | Armor a -> let level = a in 
-      let armor = Armor.create_armor level in
-      let equipped_state = 
-        {t with player = {t.player with inventory = equip_armor 
-                                            t.player.inventory armor}} in
-      let msg_st = write_msgs equipped_state 
-          ["You have picked up " ^ (armor.name) 
-           ^ "."] in 
-      move_player msg_st new_pos |> inc_turns |> set_energy 
-        new_energy
+    | Weapon _ -> pickup_weapon t new_pos new_energy
+    | Armor level -> pickup_armor t level new_pos new_energy
 
     | _ -> t
   )
