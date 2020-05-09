@@ -82,6 +82,7 @@ let draw_game panel game =
           | Weapon Board.BattleAxe -> ('Y', pal.magenta)
           | Weapon Board.ShortBow -> ('D', pal.magenta)
           | Weapon Board.ShortSword -> ('t', pal.magenta)
+          | Armor _ -> ('H', pal.light_gray)
         in 
         ignore(Ascii_panel.draw_char (col-start_col) (row-start_row) 
                  (snd charAndCol) (fst charAndCol) panel)

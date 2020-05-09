@@ -1,13 +1,14 @@
 type protection = int
 
-type armor_type = 
-  | Head
-  | Torso
-  | Legs
-  | Feet
-
 type armor = {
   name : string;
-  a_type : armor_type;
   protection: protection;
+  level: int;
 }
+
+let create_armor level =
+  {
+    name = ("level " ^ (string_of_int level) ^ " armor");
+    protection = level;
+    level = level;
+  }

@@ -41,21 +41,9 @@ val get_melee_name : t -> string
     no ranged weapon is equipped*)
 val get_ranged_name : t -> string
 
-(** [get_head_name] is the name of the equipped head protector or "None" if
-    no head protector is equipped*)
-val get_head_name : t -> string
-
-(** [get_torso_name] is the name of the equipped torso protector or "None" if
-    no head protector is equipped*)
-val get_torso_name : t -> string
-
-(** [get_legs_name] is the name of the equipped legs protector or "None" if
-    no leg protector is equipped*)
-val get_legs_name : t -> string
-
-(** [get_feet_name] is the name of the equipped feet protector or "None" if
-    no feet protector is equipped*)
-val get_feet_name : t -> string
+(** [get_armor_name] is the name of the equipped armor or "None" if
+    no armor is equipped*)
+val get_armor_name : t -> string
 
 (** [get_items_names] is the name of all the items held in inventory [t]*)
 val get_items_names : t -> string list
@@ -70,3 +58,7 @@ val get_melee_weapon : t -> weapon option
 (** [get_ranged_weapon t] is [Some weapon] if [weapon] is in the ranged slot
     and [None] if there is no ranged weapon.*)
 val get_ranged_weapon : t -> weapon option
+
+(** [get_armor_protection t] is the proection provided by the armor [t]. 
+    This is zero if the player has no armor. *)
+val get_armor_protection : t -> protection

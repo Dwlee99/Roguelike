@@ -22,6 +22,7 @@ type tile =
   | Monster of monster_type
   | Stairs
   | Weapon of weapon_type
+  | Armor of int
 
 (** The game board. *)
 type t = tile array array

@@ -15,10 +15,7 @@ type player_stats = {
 type inventory = {
   melee : string;
   ranged : string;
-  head : string;
-  torso : string;
-  legs : string;
-  feet : string;
+  armor : string;
   items : string list;
   max_items : int;
 }
@@ -114,9 +111,8 @@ let print_lst lst =
 let write_inventory inventory msgs = 
   let inv_strings = [
     "Melee: " ^ inventory.melee;
+    "Armor: " ^ inventory.armor;
     "Ranged: " ^ inventory.ranged;
-    "Head: " ^ inventory.head ^ "  Torso: " ^ inventory.torso ^ 
-    "  Legs: " ^ inventory.legs ^ "  Feet: " ^ inventory.feet;
     "Items: " ^ print_lst inventory.items;
     "";
   ] in

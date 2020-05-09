@@ -22,10 +22,7 @@ type player_stats = {
 type inventory = {
   melee : string;
   ranged : string;
-  head : string;
-  torso : string;
-  legs : string;
-  feet : string;
+  armor : string;
   items : string list;
   max_items : int;
 }

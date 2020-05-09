@@ -5,6 +5,8 @@ open Math
 
 exception PlayerDeath
 
+let () = Random.self_init ()
+
 (** The energy cost of moving one tile. *)
 let move_cost = 1
 
@@ -42,6 +44,8 @@ type floor = {
   num_monsters: int;
   weapon_strength: int;
   num_weapons: int;
+  num_armor: int;
+  armor_strength: int;
 }
 
 type t = {
@@ -102,10 +106,7 @@ let get_printable_inv (i:Inventory.t) : Messages.inventory =
   {
     melee = Inventory.get_melee_name i;
     ranged = get_ranged_name i;
-    head = get_head_name i;
-    torso = get_torso_name i;
-    legs = get_legs_name i;
-    feet = get_feet_name i;
+    armor = get_armor_name i;
     items = get_items_names i;
     max_items = get_max_items i;
   }
@@ -129,15 +130,21 @@ let set_energy e t =
   {t with player = {t.player with energy = e}}
 
 let take_damage t damage m_name =
-  {t with 
-   player = {t.player with 
-             health = t.player.health - damage
-            };
-   messages = if damage = 0 then t.messages else
-       Messages.write_msg 
-         (m_name ^ " did " ^ (string_of_int damage) ^ " to you!") 
-         t.messages
-  }
+  if damage = 0 then t
+  else 
+    let p = float_of_int (Inventory.get_armor_protection t.player.inventory) in 
+    if (Random.float 1.0) < (p /. (7.0 +. (3.0 *. p))) then write_msgs t 
+        ["Your armor has blocked " ^ (string_of_int damage) ^ " damage."]
+    else 
+      {t with 
+       player = {t.player with 
+                 health = t.player.health - damage
+                };
+       messages =
+         Messages.write_msg 
+           (m_name ^ " did " ^ (string_of_int damage) ^ " to you!") 
+           t.messages
+      }
 
 let exp_to_level_up level = 
   if level <= 15 then 2 * level + 7 else
@@ -163,7 +170,6 @@ let rec add_exp t exp =
     empty tiles, which thus would be suitable for the player or monster to 
     spawn on. *)
 let rec spawn_location board =
-  Random.self_init ();
   let width = Array.length board in
   let height = Array.length board.(0) in
   let x = 1 + (Random.int (width - 2)) in 
@@ -256,23 +262,32 @@ let rec create_weapons num strength =
          let weapon = Battleaxe.Battleaxe.create_weapon strength in 
          weapon :: (create_weapons (num - 1) strength))
 
+let rec add_armor num state =
+  if num < 0 then failwith "cannot have a negative number of armor pieces."
+  else match num with
+    | 0 -> state
+    | k -> add_armor (num - 1) 
+             (let armor_board = place_entity (Armor (state.floor.floor_num)) 
+                  state.board in 
+              let board = fst armor_board in 
+              let new_state = {state with board = board} in 
+              new_state)
+
 (** [get_floor floor_num] is the floor corresponding to the floor number
     [floor_num]. *)
 let get_floor floor_num = 
   let board_width = 80 + floor_num * 5 in 
   let board_height = 36 + floor_num * 2 in
-  let monster_strength = floor_num in 
-  let num_monsters = 10 + 2 * floor_num in
-  let num_weapons = 4 + (floor_num / 2) in
-  let weapon_strength = floor_num in
   {
     floor_num = floor_num;
     board_width = board_width;
     board_height = board_height;
-    monster_strength = monster_strength;
-    num_monsters = num_monsters;
-    num_weapons = num_weapons;
-    weapon_strength = weapon_strength;
+    monster_strength = floor_num;
+    num_monsters = 10 + 2 * floor_num;
+    num_weapons = 4 + (floor_num / 2);
+    weapon_strength = 3 + floor_num;
+    num_armor = 2 + (floor_num / 3);
+    armor_strength = 1 + floor_num;
   }
 
 let add_stairs t =
@@ -302,7 +317,8 @@ let next_level t =
   let state_with_weapons = 
     add_weapons (create_weapons floor.num_weapons 
                    floor.weapon_strength) state_with_stairs in 
-  state_with_weapons
+  let state_with_armor = add_armor floor.num_armor state_with_weapons in 
+  state_with_armor
 
 let make_init_state board pLoc floor = {
   board = board;
@@ -342,7 +358,8 @@ let init_level () =
   let state_with_weapons = add_weapons 
       (create_weapons floor.num_weapons floor.monster_strength) 
       state_with_stairs in 
-  state_with_weapons
+  let state_with_armor = add_armor (floor.num_armor) state_with_weapons in 
+  state_with_armor
 
 (** [equipd_weapon state weapon] is the state [state] with the weapon 
     [weapon] equipped and removed from the board. *)
@@ -401,6 +418,17 @@ let move dir t =
           ["You have picked up a new level " ^ (string_of_int new_weapon.level) 
            ^ " " ^ (get_name new_weapon)  ^ "." ] in
       move_player msg_st new_pos |> inc_turns |> set_energy new_energy
+    | Armor a -> let level = a in 
+      let armor = Armor.create_armor level in
+      let equipped_state = 
+        {t with player = {t.player with inventory = equip_armor 
+                                            t.player.inventory armor}} in
+      let msg_st = write_msgs equipped_state 
+          ["You have picked up " ^ (armor.name) 
+           ^ "."] in 
+      move_player msg_st new_pos |> inc_turns |> set_energy 
+        new_energy
+
     | _ -> t
   )
 

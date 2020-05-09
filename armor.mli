@@ -1,13 +1,9 @@
 type protection = int
 
-type armor_type = 
-  | Head
-  | Torso
-  | Legs
-  | Feet
-
 type armor = {
   name : string;
-  a_type : armor_type;
-  protection: protection;
+  protection : protection;
+  level : int;
 }
+
+val create_armor: int -> armor

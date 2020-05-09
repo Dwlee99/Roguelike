@@ -17,6 +17,7 @@ type tile =
   | Monster of monster_type
   | Stairs
   | Weapon of weapon_type
+  | Armor of int
 
 type t = tile array array
 
