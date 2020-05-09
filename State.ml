@@ -615,7 +615,7 @@ let kill_monster (m:Monster.monster) t rest_of_monsters =
   let new_t = 
     {t with 
      monsters = rest_of_monsters;
-     messages = Messages.write_msg (m.name ^ "has died. Woohoo.") t.messages;
+     messages = Messages.write_msg (m.name ^ " has died. Woohoo.") t.messages;
     } in add_exp new_t m.exp
 
 (** [do_monster_turn t] is the state after all the monsters take their turn *)
