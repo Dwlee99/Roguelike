@@ -16,6 +16,9 @@ let rest_gain = 1
 (** The energy cost of executing a break action. *)
 let break_cost = 10
 
+(** The energy cost of executing an attack action. *)
+let attack_cost = 3
+
 type player_level = int
 
 type coordinate = (int * int)
@@ -513,10 +516,17 @@ let get_attack_spots weapon dir =
 (** [attack_weapon t weapon dir] is the state [t] with the weapon [weapon]
     having attacked in the direction [dir]. *)
 let attack_weapon t weapon dir =
-  let (pX, pY) = t.player.position in
-  let attack_spots = get_attack_spots weapon dir in List.fold_left 
-    (fun t (relX, relY, damage) -> 
-       damage_monster t (pX + relX, pY + relY) damage) t attack_spots
+  if t.player.energy < attack_cost
+  then 
+    write_msgs t 
+      ["You do not have enough energy to attack. Try resting."]
+  else
+    let new_energy = t.player.energy - attack_cost in
+    let (pX, pY) = t.player.position in
+    let attack_spots = get_attack_spots weapon dir in List.fold_left 
+      (fun t (relX, relY, damage) -> 
+         damage_monster t (pX + relX, pY + relY) damage) t attack_spots
+                                                      |> set_energy new_energy
 
 (** [attack_melee t dir] is the state [t] with a melee attack having been 
     executed in the direction [dir]. *)
@@ -615,7 +625,7 @@ let kill_monster (m:Monster.monster) t rest_of_monsters =
   let new_t = 
     {t with 
      monsters = rest_of_monsters;
-     messages = Messages.write_msg (m.name ^ " has died. Woohoo.") t.messages;
+     messages = Messages.write_msg (m.name ^ "has died. Woohoo.") t.messages;
     } in add_exp new_t m.exp
 
 (** [do_monster_turn t] is the state after all the monsters take their turn *)
