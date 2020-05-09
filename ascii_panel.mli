@@ -1,6 +1,6 @@
-open Graphics
-
 (** Controls the window opened and controlled by the Graphics library. *) 
+
+open Graphics
 
 (** The units by which characters will be drawn on the panel. *)
 type game_unit = {

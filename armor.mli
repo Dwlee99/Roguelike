@@ -1,3 +1,5 @@
+(** Represents armor in the game. *)
+
 (** The way protection values are represented. *)
 type protection = int
 

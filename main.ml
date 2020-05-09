@@ -173,6 +173,7 @@ let rec game_loop f_init f_end f_key f_exn =
     game_state := State.write_msgs !game_state ["You died."]; 
     draw_game panel_info !game_state;
     post_death_screen !game_state panel_info
+
 (** [post_death_screen game] shows the stats of the player after they die and
     offers them the opportunity to play again. *)
 and post_death_screen game panel = 

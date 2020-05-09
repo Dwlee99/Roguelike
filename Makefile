@@ -1,7 +1,9 @@
-MODULES=main
-OBJECTS=$(MODULES:=.cmo)
-MLS=$(MODULES:=.ml)
-MLIS=$(MODULES:=.mli)
+UNITS=action armor ascii_panel authors battleaxe board inventory main math Messages monster name ranger short_bow short_sword State swordsman weapon
+MLS_WITHOUT_MLIS=test
+MLS=$(UNITS:=.ml) $(MLS_WITHOUT_MLIS:=.ml)
+OBJECTS=$(UNITS:=.cmo) $(MLS_WITHOUT_MLIS:=.cmo)
+MLS=$(UNITS:=.ml) $(MLS_WITHOUT_MLIS:=.ml)
+MLIS=$(UNITS:=.mli)
 TEST=test.byte
 MAIN=main.byte
 OCAMLBUILD=ocamlbuild -use-ocamlfind
@@ -29,7 +31,7 @@ finalcheck: check
 	bash finalcheck.sh
 
 zip:
-	zip game.zip *.ml*  _tags Makefile INSTALL.txt
+	zip roguelike.zip *.ml* _tags Makefile INSTALL.txt
 	
 docs: docs-public docs-private
 	

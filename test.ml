@@ -31,11 +31,11 @@ let state_tests = [
 
   "Player starts with correct energy" >:: (fun _ ->
       assert_equal (State.get_stats state_2).energy 
-        10000 ~printer:string_of_int);
+        200 ~printer:string_of_int);
 
   "Player starts with correct max energy" >:: (fun _ ->
       assert_equal (State.get_stats state_2).max_energy 
-        10000 ~printer:string_of_int);
+        200 ~printer:string_of_int);
 
   "Player starts with correct level" >:: (fun _ ->
       assert_equal (State.get_stats state_2).level 

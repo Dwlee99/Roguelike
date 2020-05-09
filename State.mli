@@ -1,5 +1,6 @@
-open Board
 (** Represents the state of the game. *)
+
+open Board
 
 (** Called when the player dies. *)
 exception PlayerDeath

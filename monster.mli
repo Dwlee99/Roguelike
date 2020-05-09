@@ -25,9 +25,11 @@ and
 
 (** Modules of this type define a new monster to be added to the game. *)
 module type Monster_Type = sig
-
+  (** [create_monster l] creates a monster with level [l]. *)
   val create_monster : int -> monster
 
+  (** [edit_queue m b (pX, pY)] returns a list of actions to be taken by the
+      monster. The head of the list is the first action that will be taken.*)
   val edit_queue : monster -> Board.t -> (int * int) -> m_action list
 
 end
@@ -35,9 +37,12 @@ end
 (** Modules of this type are complete monsters that can be created and have
     turns. *)
 module type Edit_Monster = sig
-
+  (** [create_monster l] creates a monster with level [l]. *)
   val create_monster : int -> monster
 
+  (** [do_turn m b (pX, pY)] performs the monster's head action and returns
+      the new monster representation and the amount of damage done to the 
+      player. *)
   val do_turn : monster -> Board.t -> (int * int) -> (monster * damage)
 
 end

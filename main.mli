@@ -1,7 +1,12 @@
+(** This module organizes and executes the main functions of the game,
+    including drawing the board and executing turns. *)
+
 open Graphics
 
+(** Represents colors used for drawing the board. *)
 type color_palette
 
+(** Raised when the game ends. *)
 exception End
 
 (** [init s] initializes the game and contains all the actions that need to

@@ -25,7 +25,6 @@ type player = {
   level : player_level;
   exp : int;
   max_exp : int;
-  unused_skill_points : int;
   health : int;
   max_health : int;
   energy : int;
@@ -70,6 +69,7 @@ let get_stats t : Messages.player_stats = {
   floor = t.floor.floor_num
 }
 
+(** A list of the types of weapons in the game. *)
 let types_of_weapons = 
   Array.of_list [
     Board.ShortSword; 
@@ -77,6 +77,7 @@ let types_of_weapons =
     Board.BattleAxe
   ]
 
+(** A list of the types of monsters in the game. *)
 let types_of_monsters = 
   Array.of_list [
     Board.Swordsman; 
@@ -102,6 +103,7 @@ let write_player_help t =
 let write_fighting_help t =
   {t with messages = Messages.write_fighting_help t.messages}
 
+(** [get_printable_inv i] is a printable version of the inventory [i]. *)
 let get_printable_inv (i:Inventory.t) : Messages.inventory = 
   {
     melee = Inventory.get_melee_name i;
@@ -123,12 +125,16 @@ let move_player t (x, y) =
   Board.set_tile t.board (x, y) Player;
   {t with player = {t.player with position = (x, y)}}
 
+(** [inc_turns t] is [t] with turns_played increased by 1. *)
 let inc_turns t =
   {t with player = {t.player with turns_played = t.player.turns_played + 1}}
 
+(** [set_energy e t] is the state [t] with the player's energy set to [e]. *)
 let set_energy e t = 
   {t with player = {t.player with energy = e}}
 
+(** [take_damage t damage m_name] is the state [t] with the player taking 
+    [damage] damage from the monster of name [m_name]. *)
 let take_damage t damage m_name =
   if damage = 0 then t
   else 
@@ -146,26 +152,45 @@ let take_damage t damage m_name =
            t.messages
       }
 
+(** [exp_to_level_up level] is the amount of experience needed to level up
+    for the level [level]. *)
 let exp_to_level_up level = 
   if level <= 15 then 2 * level + 7 else
   if level <= 30 then 5 * level - 38 else
     9 * level - 158
 
+(** [max_hp p_level] is the max health of a player at level [p_level]. *)
+let max_hp p_level = 2 * (p_level - 1) + 10
+
+(** [max_energy p_level] is the max energy of a player at level [p_level]. *)
+let max_energy p_level = 40 * (p_level - 1) + 200
+
+(** [level_up t exp] is t with [t.player] having leveled up and had [t.exp] set
+    to [exp].*)
+let level_up t exp = 
+  let new_l = t.player.level + 1 in
+  let max_hp = max_hp new_l in
+  let max_energy = max_energy new_l in
+  { t with player = 
+             {t.player with exp = exp;
+                            level = new_l;
+                            max_exp = exp_to_level_up new_l;
+                            max_health = max_hp;
+                            health = max_hp;
+                            max_energy = max_energy;
+                            energy = max_energy;
+             }
+  }
+
+(** [add_exp t exp] is the state [t] with [exp] exp added to the player's 
+    experience. *)
 let rec add_exp t exp =
   let n_exp = t.player.exp + exp in
-  let c_level = t.player.level in
-  let unused_points = t.player.unused_skill_points in
   let max_exp = t.player.max_exp in
   if n_exp < t.player.max_exp then 
     {t with player = {t.player with exp = n_exp}}
-  else 
-    let new_l = c_level + 1 in
-    let new_t = {t with player = {t.player with exp = n_exp - max_exp; 
-                                                level = new_l;
-                                                max_exp = exp_to_level_up new_l;
-                                                unused_skill_points = 
-                                                  unused_points + 1}} in
-    add_exp new_t 0                              
+  else let new_t = level_up t (n_exp - max_exp) in add_exp new_t 0    
+
 (** [spawn_location board] is a location that is surrounded by a layer of 
     empty tiles, which thus would be suitable for the player or monster to 
     spawn on. *)
@@ -207,6 +232,7 @@ let rec add_monsters (monsters : Monster.monster list) (state : t) =
                              monsters = monster::(state.monsters)} in 
                new_state)
 
+(** [random_element arr] is a random element of array [arr]. *)
 let random_element arr =
   Array.get arr (Random.int (Array.length arr))
 
@@ -262,6 +288,8 @@ let rec create_weapons num strength =
          let weapon = Battleaxe.Battleaxe.create_weapon strength in 
          weapon :: (create_weapons (num - 1) strength))
 
+(** [add_armor num state] is the state [state] with [num] pieces of armor
+    added to the board. *)
 let rec add_armor num state =
   if num < 0 then failwith "cannot have a negative number of armor pieces."
   else match num with
@@ -290,11 +318,14 @@ let get_floor floor_num =
     armor_strength = 1 + floor_num;
   }
 
+(** [add_stairs t] is the state [t] with the stairs added to the board. *)
 let add_stairs t =
   let stairs_board = place_entity Stairs t.board in 
   let new_board = fst stairs_board in 
   {t with board = new_board}
 
+(** [next_level t] is the state [t] advanced to the next floor (or level) of
+    of the game. *)
 let next_level t =
   let floor = get_floor (t.floor.floor_num + 1) in
   let width = floor.board_width in 
@@ -320,6 +351,9 @@ let next_level t =
   let state_with_armor = add_armor floor.num_armor state_with_weapons in 
   state_with_armor
 
+(** [make_init_state board pLoc floor] is the initial state of the game with 
+    the baord being [board], the player being at the location [pLoc], and the 
+    floor being [floor]. *)
 let make_init_state board pLoc floor = {
   board = board;
   messages = [];
@@ -328,11 +362,10 @@ let make_init_state board pLoc floor = {
     level = 1;
     exp = 0;
     max_exp = exp_to_level_up 1;
-    unused_skill_points = 0;
     health = 10;
     max_health = 10;
-    energy = 10000;
-    max_energy = 10000;
+    energy = 200;
+    max_energy = 200;
     turns_played = 0;
     attack = 3;
     defense = 3;
@@ -461,40 +494,55 @@ let rest t =
   let new_energy = min (t.player.energy + rest_gain) t.player.max_energy in
   inc_turns t |> set_energy new_energy
 
+(** [damage_monster t (x, y) damage] is the state [t] with the monster at
+    coordinate [(x, y)] dealth [damage] damage. *)
 let damage_monster t (x, y) damage = 
   {t with monsters = List.map (
        fun (m : Monster.monster) -> if m.position = (x, y) then 
            {m with health = m.health - damage} else m) t.monsters}
 
+(** [get_attact_spots weapon dir] is the list of tile locations affected when 
+    the weapon [weapon] is used to attack in the direction [dir] and the damage 
+    dealth to each of those tiles. *)
 let get_attack_spots weapon dir =
   match Weapon.get_type weapon with
   | ShortSword -> Short_sword.Short_Sword.attack weapon dir
   | ShortBow -> Short_bow.Short_Bow.attack weapon dir
   | BattleAxe -> Battleaxe.Battleaxe.attack weapon dir
 
+(** [attack_weapon t weapon dir] is the state [t] with the weapon [weapon]
+    having attacked in the direction [dir]. *)
 let attack_weapon t weapon dir =
   let (pX, pY) = t.player.position in
   let attack_spots = get_attack_spots weapon dir in List.fold_left 
     (fun t (relX, relY, damage) -> 
        damage_monster t (pX + relX, pY + relY) damage) t attack_spots
 
-
+(** [attack_melee t dir] is the state [t] with a melee attack having been 
+    executed in the direction [dir]. *)
 let attack_melee t dir = 
   match Inventory.get_melee_weapon t.player.inventory with
   | Some weapon -> attack_weapon t weapon dir
   | None -> t
 
+(** [attack_ranged t dir] is state [t] with a ranged attack having been 
+    executed in teh direction [dir]. *)
 let attack_ranged t dir = 
   match Inventory.get_ranged_weapon t.player.inventory with
   | Some weapon -> attack_weapon t weapon dir
   | None -> t
 
+(** A list of directions. *)
 let d_list = [Up; Down; Left; Right]
 
+(** [display_weapon t w panel (offX, offY)] displays the potential attack 
+    zones of the weapon [w] in state [t] and on panel [panel] given the offset 
+    [(offX, offY)]. *)
 let display_weapon t w panel (offX, offY) =
   let d_coords = match Weapon.get_type w with
     | ShortSword ->
-      List.fold_left (fun lst dir -> lst @ (Short_sword.Short_Sword.attack w dir))
+      List.fold_left 
+        (fun lst dir -> lst @ (Short_sword.Short_Sword.attack w dir))
         [] d_list
     | ShortBow ->
       List.fold_left (fun lst dir -> lst @ (Short_bow.Short_Bow.attack w dir))
