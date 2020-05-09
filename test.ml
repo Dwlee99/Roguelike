@@ -181,6 +181,36 @@ let weapon_tests = [
 ]
 
 let board_tests = [
+  "set tile and get tile" >:: (fun _ -> 
+      let coords = (20, 73) in
+      let board = cleared_board in 
+      Board.set_tile board coords Stairs;
+      assert_equal (Board.Stairs) (Board.get_tile board coords));
+
+  "in bounds - false" >:: (fun _ ->
+      assert_equal false (Board.in_bound cleared_board (100, 70)));
+
+  "in bounds - true" >:: (fun _ ->
+      assert_equal true (Board.in_bound cleared_board (99, 70)));
+
+  "direction_to test 1" >:: (fun _ ->
+      assert_equal (Some Action.Left) 
+        (Board.direction_to cleared_board (5, 5) (2, 5) 10));
+
+  "direction_to test 2" >:: (fun _ -> 
+      let direction = (Board.direction_to cleared_board (5, 5) (7, 7) 10) in
+      assert_equal true (((Some Action.Right) = direction) || 
+                         ((Some Action.Up) = direction)));
+
+  "direction_to test 3" >:: (fun _ -> 
+      let board = cleared_board in 
+      Board.set_tile board (8, 10) (Board.Wall true); 
+      let direction = (Board.direction_to board (8, 9) (8, 11) 10) in 
+      assert_equal true (((Some Action.Right) = direction) || 
+                         ((Some Action.Left) = direction)));
+
+  "direction_to test 4" >:: (fun _ -> 
+      assert_equal None (Board.direction_to cleared_board (1, 1) (20, 20) 10));
 
 ]
 

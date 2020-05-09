@@ -159,10 +159,11 @@ let add_node queue x y dist prev =
     node with elements [x], [y], [distance], [prev], would be a viable node in 
     our path and false otherwise. *)
 let viable_node board visited_board x y distance prev max_dist =
-  let tile = get_tile board (x, y) in
-  let already_visited = visited_board.(x).(y) in 
-  not(already_visited) && not(tile = Wall true) && not(tile = Wall false) 
-  && (distance < max_dist)
+  if not (in_bound board (x, y)) then false else
+    let tile = get_tile board (x, y) in
+    let already_visited = visited_board.(x).(y) in 
+    not(already_visited) && not(tile = Wall true) && not(tile = Wall false) 
+    && (distance < max_dist)
 
 (** [add_neighbords board node queue visited_board max_dist] adds the nodes 
     adjacent to the node [node] to the queue [queue] if they are viable nodes 
@@ -184,7 +185,6 @@ let direction_to board cpos fpos max_dist =
     let (x, y) = cpos in 
     let (goal_x, goal_y) = fpos in 
     Queue.add {x = x; y = y; dist = 0; prev = None} queue;
-
     let dir = ref None in
     let found = ref false in
     let visited_board = Array.map (fun a -> Array.map (fun b -> 
