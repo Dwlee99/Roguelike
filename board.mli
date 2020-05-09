@@ -47,8 +47,12 @@ val in_bound : t -> (int * int) -> bool
     [width] and [height]. *)
 val gen_board : int -> int -> t
 
+(** [empty_board width height] is an empty board with dimensions 
+    [width] and [height]. *)
+val empty_board : int -> int -> t
+
 (** [direction_to board cpos fpos [max_dist] is [Some dir] if dir is the 
     direction that one would move to get from [cpos] to [fpos] on the board 
-    [board]. Returns [None] if there is no parth within max_dist] moves. *)
+    [board]. Returns [None] if there is no path within max_dist] moves. *)
 val direction_to : t -> (int * int) -> (int * int) -> int -> 
   Action.direction option

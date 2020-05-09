@@ -49,8 +49,6 @@ let add_outer_walls board =
   done;
   board
 
-(** [empty_board width height] is an empty board with dimensions 
-    [width] and [height]. *)
 let empty_board width height =
   Array.make_matrix width height Empty
 

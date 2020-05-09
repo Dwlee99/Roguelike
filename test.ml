@@ -6,6 +6,8 @@ open Graphics
 let tuple_print (w, z) =
   "(" ^ string_of_int w ^ ", " ^ string_of_int z ^ ") "
 
+let cleared_board = Board.empty_board 100 100
+
 let state_1 = State.init_level ()
 let state_2 = State.init_level ()
 
@@ -135,10 +137,43 @@ let action_tests = [
 
   "Parse inventory" >:: (fun _ ->
       assert_equal (Action.Display Inv) (Action.parse 'e'));
+
+  "Parse melee attack with direction" >:: (fun _ -> 
+      assert_equal (Action.Modify (Melee_Attack Up)) 
+        (Action.parse_two 'a' 'i'));
+
+  "Parse melee attack with direction2" >:: (fun _ -> 
+      assert_equal (Action.Modify (Melee_Attack Left)) 
+        (Action.parse_two 'a' 'j'));
+
+  "Parse ranged attack with direction" >:: (fun _ -> 
+      assert_equal (Action.Modify (Ranged_Attack Up)) 
+        (Action.parse_two 'r' 'i'));
+
+  "Parse ranged attack with direction2" >:: (fun _ -> 
+      assert_equal (Action.Modify (Ranged_Attack Left)) 
+        (Action.parse_two 'r' 'j'));
 ]
 
-let monster_tests = [
+let test_monster : Monster.monster = {
+  name = "test_monster";
+  position = (10, 10);
+  m_type = Board.Swordsman;
+  health = 5;
+  max_health = 10;
+  damage = 4;
+  exp = 0;
+  action_queue = [];
+  roaming_target = ref (11,10)
+}
 
+let monster_tests = [
+  "get monster type test" >:: (fun _ -> 
+      assert_equal (Board.Swordsman) (Monster.get_type test_monster));
+
+  "get roaming direction test" >:: (fun _ -> 
+      assert_equal (Action.Right) 
+        (Monster.get_roam_direction test_monster cleared_board 10 ));
 ]
 
 let weapon_tests = [
