@@ -1,5 +1,4 @@
 #require "oUnit";;
 #require "yojson";;
-#require "ANSITerminal";;
 #require "graphics";;
 #directory "_build";;

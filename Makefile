@@ -1,4 +1,4 @@
-MODULES=main monster name swordsman State board ranger weapon short_sword inventory armor short_bow battleaxe math
+MODULES=main monster name swordsman State board ranger weapon short_sword inventory armor short_bow battleaxe math test
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
@@ -35,12 +35,12 @@ docs: docs-public docs-private
 	
 docs-public: build
 	mkdir -p doc.public
-	ocamlfind ocamldoc -I _build -package ,graphics, yojson \
+	ocamlfind ocamldoc -I _build -package graphics,yojson \
 		-html -stars -d doc.public $(MLIS)
 
 docs-private: build
 	mkdir -p doc.private
-	ocamlfind ocamldoc -I _build -package ,graphics, yojson \
+	ocamlfind ocamldoc -I _build -package graphics,yojson \
 		-html -stars -d doc.private \
 		-inv-merge-ml-mli -m A $(MLIS) $(MLS)
 
