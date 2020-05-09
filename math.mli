@@ -3,13 +3,13 @@
 (** [up_one (x, y)] is [(x, y + 1)] *)
 val up_one : int * int -> int * int
 
-(** [up_one (x, y)] is [(x, y - 1)] *)
+(** [down_one (x, y)] is [(x, y - 1)] *)
 val down_one : int * int -> int * int
 
-(** [up_one (x, y)] is [(x + 1, y)] *)
+(** [right_one (x, y)] is [(x + 1, y)] *)
 val right_one : int * int -> int * int
 
-(** [up_one (x, y)] is [(x - 1, y)] *)
+(** [left_one (x, y)] is [(x - 1, y)] *)
 val left_one : int * int -> int * int
 
 (** [square x] is [x * x] *)
