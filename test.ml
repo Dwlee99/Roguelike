@@ -1,7 +1,7 @@
 open OUnit2
 open State
 open Messages
-
+open Graphics
 
 let tuple_print (w, z) =
   "(" ^ string_of_int w ^ ", " ^ string_of_int z ^ ") "
@@ -9,43 +9,13 @@ let tuple_print (w, z) =
 let state_1 = State.init_level ()
 let state_2 = State.init_level ()
 
+let state_3 = State.next_level state_1
+
 let player = State.get_stats state_1
-
-let (x, y) = State.get_player_pos state_1
-let pos_up = (x, y + 1)
-let pos_down = (x, y - 1)
-let pos_left = (x - 1, y)
-let pos_right = (x + 1, y)
-
-let state_up = State.do_turn state_1 (Move Up)
-let player_up = State.get_player_pos state_up
-
-let state_down = State.do_turn state_1 (Move Down)
-let player_down = State.get_player_pos state_down
-
-let state_right = State.do_turn state_1 (Move Right)
-let player_right = State.get_player_pos state_right
-
-let state_left = State.do_turn state_1 (Move Left)
-let player_left = State.get_player_pos state_left
-
-
 
 
 let state_tests = [
-  (* This should almost always, if not always, work. *)
-  "Worlds are randomized." >:: (fun _ -> 
-      assert_equal false (state_1 = state_2));
-
-  "Move Up works" >:: (fun _ ->
-      assert_equal pos_up player_up ~printer:tuple_print);
-  "Move Down works" >:: (fun _ ->
-      assert_equal pos_down player_down ~printer:tuple_print); 
-  "Move Right works" >:: (fun _ ->
-      assert_equal pos_right player_right ~printer:tuple_print);
-  "Move Left works" >:: (fun _ ->
-      assert_equal pos_left player_left ~printer:tuple_print);
-
+  (* These tests ensure the correct state of the player in a new game *)
   "Player starts with correct health" >:: (fun _ ->
       assert_equal (State.get_stats state_2).health 10 ~printer:string_of_int);
 
@@ -56,9 +26,41 @@ let state_tests = [
   "Player starts with correct xp" >:: (fun _ ->
       assert_equal (State.get_stats state_2).exp 0 ~printer:string_of_int);
 
-  "Player starts with correct xp" >:: (fun _ ->
-      assert_equal (State.get_stats state_2).exp 0 ~printer:string_of_int);
+  "Player starts with correct max xp" >:: (fun _ ->
+      assert_equal (State.get_stats state_2).max_exp 9 ~printer:string_of_int);
 
+  "Player starts with correct energy" >:: (fun _ ->
+      assert_equal (State.get_stats state_2).energy 
+        10000 ~printer:string_of_int);
+
+  "Player starts with correct max energy" >:: (fun _ ->
+      assert_equal (State.get_stats state_2).max_energy 
+        10000 ~printer:string_of_int);
+
+  "Player starts with correct level" >:: (fun _ ->
+      assert_equal (State.get_stats state_2).level 
+        1 ~printer:string_of_int);
+
+  "Player starts with correct turns played" >:: (fun _ ->
+      assert_equal (State.get_stats state_2).turns_played 
+        0 ~printer:string_of_int);
+
+  "Player starts at the correct floor" >:: (fun _ ->
+      assert_equal (State.get_stats state_2).floor 
+        1 ~printer:string_of_int);
+
+  (* These tests deal with map generation *)
+
+  (* If this next test fails, it was a very lucky coincedence! s_1 and s_2
+     are supposedly randomized! *)
+  "Worlds are randomized." >:: (fun _ -> 
+      assert_equal false (state_1 = state_2));
+
+  "World size is initially correct." >:: (fun _ -> 
+      assert_equal (85,38) (get_board_size state_1) ~printer:tuple_print);
+
+  "World size increases correctly after next_level is run" >:: (fun _ -> 
+      assert_equal (90,40) (get_board_size state_3) ~printer:tuple_print);
 ]
 
 let tests = [

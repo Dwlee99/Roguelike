@@ -72,3 +72,7 @@ val do_turn : t -> Action.modifier -> t
 (** [init_level width height] is a randomized world with [width] and 
     [height]. *)
 val init_level : unit -> t
+
+(** [next_level t] generates a new board that is bigger and contains slightly
+    stronger monsters and better weapons/armor*)
+val next_level : t -> t
