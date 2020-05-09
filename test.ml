@@ -63,7 +63,7 @@ let state_tests = [
       assert_equal (90,40) (get_board_size state_3) ~printer:tuple_print);
 ]
 
-let math_test = [
+let math_tests = [
 
 ]
 
@@ -72,14 +72,48 @@ let messages_test = [
 ]
 
 let action_tests = [
+  "Parse up" >:: (fun _ ->
+      assert_equal (Action.Modify (Move Up)) (Action.parse 'i'));
 
+  "Parse down" >:: (fun _ ->
+      assert_equal (Action.Modify (Move Down)) (Action.parse 'k'));
+
+  "Parse left" >:: (fun _ ->
+      assert_equal (Action.Modify (Move Left)) (Action.parse 'j'));
+
+  "Parse right" >:: (fun _ ->
+      assert_equal (Action.Modify (Move Right)) (Action.parse 'l'));
+
+  "Parse break" >:: (fun _ ->
+      assert_equal (Action.Modify Break) (Action.parse 'b'));
+
+  "Parse help" >:: (fun _ ->
+      assert_equal (Action.Display Help) (Action.parse 'h'));
+
+  "Parse player help" >:: (fun _ ->
+      assert_equal (Action.Display PlayerHelp) (Action.parse 'p'));
+
+  "Parse combat help" >:: (fun _ ->
+      assert_equal (Action.Display FightingHelp) (Action.parse 'f'));
+
+  "Parse quit" >:: (fun _ ->
+      assert_equal (Action.Quit) (Action.parse 'q'));
+
+  "Parse ranged attack" >:: (fun _ ->
+      assert_equal (Action.Display Ranged) (Action.parse 'r'));
+
+  "Parse melee attack" >:: (fun _ ->
+      assert_equal (Action.Display Melee) (Action.parse 'a'));
+
+  "Parse inventory" >:: (fun _ ->
+      assert_equal (Action.Display Inv) (Action.parse 'e'));
 ]
 
 let monster_tests = [
 
 ]
 
-let weapon_test = [
+let weapon_tests = [
 
 ]
 
@@ -99,14 +133,18 @@ let name_tests = [
 
 ]
 
-let tests = [
-
-]
-
 let suite =
   "test suite for our project"  >::: List.flatten [
-    tests;
     state_tests;
+    math_tests;
+    messages_test;
+    action_tests;
+    monster_tests;
+    weapon_tests;
+    board_tests;
+    inventory_tests;
+    main_tests;
+    name_tests;
   ]
 
 let _ = run_test_tt_main suite
