@@ -148,20 +148,28 @@ let res_key c (panel_info : Ascii_panel.t) =
 let res_exn ex : unit = 
   failwith "Game ending..."
 
+(** [resize_to_proper ()] resizes the window to its initial screen size. *)
+let resize_to_proper () = 
+  if not (size_x () = init_screen_width) || 
+     not (size_y () = init_screen_height) 
+  then resize_window init_screen_width init_screen_height 
+  else () 
+
+(** [run_turn res_key panel_info] gets the next keypressed and resolves it to
+    an action using [res_key]. It then draws the game with the new info onto
+    [panel_info]. *)
+let run_turn res_key panel_info =
+  let c = get_key () in
+  resize_to_proper ();
+  game_state := res_key c panel_info;
+  draw_game panel_info !game_state
+
 let rec game_loop f_init f_end f_key f_exn = 
   let panel_info = f_init () in
   try
     while true do
       try
-        let c = get_key () in
-        let _ = if not (size_x () = init_screen_width) || 
-                   not (size_y () = init_screen_height) 
-          then resize_window init_screen_width init_screen_height 
-          else () in
-        game_state := res_key c panel_info;
-        draw_game panel_info !game_state;
-        (*if s.Graphics.keypressed 
-          then ignore(f_key s.Graphics.key panel_info)*)
+        run_turn f_key panel_info;
       with
       | End -> raise End
       | State.PlayerDeath -> raise State.PlayerDeath
@@ -169,14 +177,14 @@ let rec game_loop f_init f_end f_key f_exn =
     done
   with
   | End -> f_end panel_info
-  | State.PlayerDeath -> 
-    let _ = if not (size_x () = init_screen_width) || 
-               not (size_y () = init_screen_height) 
-      then resize_window init_screen_width init_screen_height 
-      else () in
-    game_state := State.write_msgs !game_state ["You died."]; 
-    draw_game panel_info !game_state;
-    post_death_screen !game_state panel_info
+  | State.PlayerDeath -> initiate_death panel_info
+
+(** [initiate_death panel_info] begins the death screen. *)
+and initiate_death panel_info =
+  resize_to_proper ();
+  game_state := State.write_msgs !game_state ["You died."]; 
+  draw_game panel_info !game_state;
+  post_death_screen !game_state panel_info
 
 (** [post_death_screen game] shows the stats of the player after they die and
     offers them the opportunity to play again. *)
