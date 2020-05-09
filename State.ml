@@ -452,13 +452,45 @@ let attack_ranged t dir =
   | Some weapon -> attack_weapon t weapon dir
   | None -> t
 
+let d_list = [Up; Down; Left; Right]
 
-let do_display t display = 
+let display_weapon t w panel (offX, offY) =
+  let d_coords = match Weapon.get_type w with
+    | ShortSword ->
+      List.fold_left (fun lst dir -> lst @ (Short_sword.Short_Sword.attack w dir))
+        [] d_list
+    | ShortBow ->
+      List.fold_left (fun lst dir -> lst @ (Short_bow.Short_Bow.attack w dir))
+        [] d_list
+    | BattleAxe ->
+      List.fold_left (fun lst dir -> lst @ (Battleaxe.Battleaxe.attack w dir))
+        [] d_list
+  in
+  let (pX, pY) = t.player.position in
+  let prop_coords = List.map (fun (x, y, _) -> (pX + x - offX, pY + y - offY)) 
+      d_coords in
+  ignore(Ascii_panel.outline_coords prop_coords Graphics.red panel)
+
+(** [display_melee t panel] uses [panel] to display the coordinates that are 
+    able to be attacked by the player's melee weapon. *)
+let display_melee t panel coord = 
+  match Inventory.get_melee_weapon t.player.inventory with
+  | Some w -> display_weapon t w panel coord
+  | None -> ()
+
+(** [display_ranged t panel] uses [panel] to display the coordinates that are 
+    able to be attacked by the player's ranged weapon. *)
+let display_ranged t panel coord = 
+  match Inventory.get_ranged_weapon t.player.inventory with
+  | Some w -> display_weapon t w panel coord
+  | None -> ()
+
+let do_display t display panel coord = 
   match display with
   | Help -> ignore(write_help t)
   | Inv -> ignore(write_inventory t)
-  | Melee -> ()
-  | Ranged -> ()
+  | Melee -> display_melee t panel coord
+  | Ranged -> display_ranged t panel coord
 
 (** [do_player_turn t action] is the state of the board after a player's turn
     has been executed on which the player did the action [action]. *)

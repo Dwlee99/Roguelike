@@ -62,6 +62,7 @@ let get_borders player_coords map_size=
     | y -> y
   in (final_x, final_y)
 
+let delayed_draw = ref (fun (x, y) -> ())
 
 let draw_game panel game =
   let board = State.tile_board game in
@@ -86,6 +87,8 @@ let draw_game panel game =
                  (snd charAndCol) (fst charAndCol) panel)
       done
     done;
+    !delayed_draw (start_col, start_row);
+    delayed_draw := (fun h -> ());
     Messages.draw_ui (State.get_stats game) 
       (State.get_msgs game) pal.violet pal.violet pal.light_gray;
     synchronize ()
@@ -98,10 +101,11 @@ let init_game () =
           |> Ascii_panel.draw_point 0 0 pal.white 
   in draw_game t !game_state; t
 
-let update action = 
+let update pan action = 
   match action with
   | Action.Modify m -> State.do_turn !game_state m
-  | Action.Display d -> State.do_display !game_state d; !game_state
+  | Action.Display d -> 
+    delayed_draw := (fun h -> State.do_display !game_state d pan h); !game_state
   | None -> !game_state
 
 let stop_game panel =
@@ -115,11 +119,13 @@ let res_key c (panel_info : Ascii_panel.t) =
   match first_action with
   | Display Help -> State.write_help !game_state
   | Display Inv -> State.write_inventory !game_state
-  | Display Melee -> 
-    get_key () |> Action.parse_two c |> update
-  | Display Ranged -> 
-    get_key () |> Action.parse_two c |> update
-  | _ -> first_action |> update
+  | Display Melee -> ignore ((update panel_info) (Display Melee));
+    draw_game panel_info !game_state; 
+    get_key () |> Action.parse_two c |> (update panel_info)
+  | Display Ranged -> ignore ((update panel_info) (Display Ranged));
+    draw_game panel_info !game_state; 
+    get_key () |> Action.parse_two c |> (update panel_info)
+  | _ -> first_action |> (update panel_info)
 
 let res_exn ex : unit = 
   failwith "Game ending..."

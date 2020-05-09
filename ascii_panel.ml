@@ -47,5 +47,17 @@ let fill_rect x y w h c t =
     (t.sizes.char_width * w) (t.sizes.char_width * h);
   t
 
+let rec outline_coords list c t =
+  set_color c;
+  match list with
+  | [] -> t
+  | (x, y) :: tail ->   
+    let (f1, f2) = 
+      ((float_of_int t.sizes.char_width) *. ((float_of_int x) -. 0.35),
+       (float_of_int t.sizes.char_height) *. ((float_of_int y) -. 0.1)) in
+    let (x1, y1) = (int_of_float f1, int_of_float f2) in
+    draw_rect x1 y1 t.sizes.char_width t.sizes.char_height; 
+    outline_coords tail c t
+
 let clear_graph t =
   fill_rect 0 0 t.screen_width t.screen_height t.background_color t

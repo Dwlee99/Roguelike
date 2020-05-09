@@ -30,5 +30,9 @@ val draw_char : int -> int -> color -> char -> t -> t
     [game_unit]s, not pixels.*)
 val fill_rect : int -> int -> int -> int -> color -> t -> t
 
+(** [outline_coords coord_list color t] draws a rectangle around the coords in
+    [coord_list] in [color]. Then provides t.*)
+val outline_coords : (int * int) list -> color -> t -> t
+
 (** [clear_graph t] clears the screen of all things drawn. *)
 val clear_graph : t -> t
