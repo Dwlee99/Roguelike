@@ -63,6 +63,42 @@ let state_tests = [
       assert_equal (90,40) (get_board_size state_3) ~printer:tuple_print);
 ]
 
+let math_test = [
+
+]
+
+let messages_test = [
+
+]
+
+let action_tests = [
+
+]
+
+let monster_tests = [
+
+]
+
+let weapon_test = [
+
+]
+
+let board_tests = [
+
+]
+
+let inventory_tests = [
+
+]
+
+let main_tests = [
+
+]
+
+let name_tests = [
+
+]
+
 let tests = [
 
 ]
