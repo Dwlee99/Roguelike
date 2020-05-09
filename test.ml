@@ -63,11 +63,27 @@ let state_tests = [
       assert_equal (90,40) (get_board_size state_3) ~printer:tuple_print);
 ]
 
-let math_test = [
+let math_tests = [
+  "Up one test" >:: 
+  (fun _ -> assert_equal (5, 3) (Math.up_one (5, 2)));
 
+  "Down one test" >:: 
+  (fun _ -> assert_equal (-5, -4) (Math.down_one (-5, -3)));
+
+  "Right one test" >::
+  (fun _ -> assert_equal (7, -5) (Math.right_one (6, -5)));
+
+  "Left one test" >::
+  (fun _ -> assert_equal (3, 2) (Math.left_one (4, 2)));
+
+  "Square test" >::
+  (fun _ -> assert_equal 16 (Math.square 4));
+
+  "Distance squared test" >::
+  (fun _ -> assert_equal 25 (Math.distance_sq (2, 1) (5, 5)))
 ]
 
-let messages_test = [
+let messages_tests = [
 
 ]
 
@@ -79,7 +95,7 @@ let monster_tests = [
 
 ]
 
-let weapon_test = [
+let weapon_tests = [
 
 ]
 
@@ -107,6 +123,15 @@ let suite =
   "test suite for our project"  >::: List.flatten [
     tests;
     state_tests;
+    math_tests;
+    messages_tests;
+    action_tests;
+    monster_tests;
+    weapon_tests;
+    board_tests;
+    inventory_tests;
+    main_tests;
+    name_tests
   ]
 
 let _ = run_test_tt_main suite
