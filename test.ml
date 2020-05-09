@@ -84,7 +84,19 @@ let math_tests = [
 ]
 
 let messages_tests = [
+  "Writing a message" >::
+  (fun _ -> assert_equal "hello" 
+      (let init_msgs = ["Playing game."; "Game started."] in 
+       List.nth (Messages.write_msg "hello" init_msgs) 0
+      ));
 
+  "Writing multiple messages" >::
+  (fun _ -> assert_equal ("hello 1", "hello 2")
+      (let init_msgs = ["Playing game."; "Game started."] in 
+       let added_msgs = ["hello 1"; "hello 2"] in 
+       let new_msgs = Messages.write_msgs added_msgs init_msgs in
+       (List.nth new_msgs 1, List.nth new_msgs 0)
+      ));
 ]
 
 let action_tests = [
