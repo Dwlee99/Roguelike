@@ -46,6 +46,8 @@ let init_floor = 0
 
 let game_state = ref (State.init_level () )
 
+(** [get_borders pc m_size] is [(start_col, start_row)] where these values are
+    the first column and row to be drawn on the ascii_panel. *)
 let get_borders player_coords map_size= 
   let llx = (fst player_coords) - 40 in
   let lly = (snd player_coords) - 18 in
@@ -62,8 +64,11 @@ let get_borders player_coords map_size=
     | y -> y
   in (final_x, final_y)
 
+(** A function that will draw at the end of each call to [draw_game] and then
+    be returned to its default function. *)
 let delayed_draw = ref (fun (x, y) -> ())
 
+(** [draw_game panel game] draws the current state of [game] on [panel]. *)
 let draw_game panel game =
   let board = State.tile_board game in
   match get_borders (State.get_player_pos game) (State.get_board_size game) 
@@ -102,6 +107,7 @@ let init_game () =
           |> Ascii_panel.draw_point 0 0 pal.white 
   in draw_game t !game_state; t
 
+(** [update pan action] updates [game_state] with the execution of [action]. *)
 let update pan action = 
   match action with
   | Action.Modify m -> State.do_turn !game_state m
@@ -115,6 +121,8 @@ let stop_game panel =
   ignore(Ascii_panel.clear_graph panel);
   print_string "Thanks for playing... \n"
 
+(** [get_key] waits for a key press and returns the character once one is
+    pressed. *)
 let get_key () = (wait_next_event [Key_pressed]).Graphics.key
 
 let res_key c (panel_info : Ascii_panel.t) =

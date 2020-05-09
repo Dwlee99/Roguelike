@@ -56,11 +56,13 @@ end
 
 let get_type m = m.m_type
 
+(** [get_random_tile x y r] gets a random tile within [r] units of [(x, y)] *)
 let get_random_tile x y r =
   let x_rel = Random.int (2 * r) in 
   let y_rel = Random.int (2 * r) in 
   (x + x_rel - r, y + y_rel - r)
 
+(** [get_new_roaming_target m b r] gets a new roaming target for [m]. *)
 let rec get_new_roaming_target monster board r =
   let monster_x = fst monster.position in 
   let monster_y = snd monster.position in 

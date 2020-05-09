@@ -1,4 +1,3 @@
-
 type breakable = bool
 
 type monster_type = 
@@ -34,7 +33,6 @@ let get_tile board (x, y) =
   let height = Array.length board.(0) in 
   if x >= 0 && x < width && y >= 0 && y < height 
   then board.(x).(y) else Wall false
-
 
 (** [add_outer_walls board] is a board identical to [board] except with
     each of the tiles that form the outer loop of the board being a wall. *)
@@ -103,6 +101,8 @@ let smooth board =
   done;
   new_board
 
+(** [in_bound t (x, y)] is [true] if (x, y) is a valid coordinate on t.
+    [false] otherwise. *)
 let in_bound t (x, y) =   
   let width = Array.length t in
   let height = Array.length t.(0) in 

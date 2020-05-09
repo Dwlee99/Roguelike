@@ -1,4 +1,3 @@
-(** These functions have self-documenting names. *)
 let up_one (x, y) = (x, y + 1)
 
 let down_one (x, y) = (x, y - 1)
