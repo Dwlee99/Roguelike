@@ -70,6 +70,23 @@ let randomize_tiles board =
   done;
   board
 
+(** [smooth_coord b n_board (x, y) w h] smooths a single coordinate by becoming 
+    the same as the majority of adjacent coordinates.*)
+let smooth_coord board n_board (x, y) w h = 
+  let empties = ref 0 in
+  let walls = ref 0 in
+  for ox = -1 to 1 do
+    for oy = -1 to 1 do
+      if x + ox < 0 || x + ox >= w || y + oy < 0 
+         || y + oy >= h
+      then ()
+      else if (board.(x + ox).(y + oy) = Empty)
+      then empties := 1 + !empties
+      else walls := 1 + !walls
+    done
+  done;
+  n_board.(x).(y) <- if empties >= walls then Empty else Wall true; ()
+
 (** [smooth board] is the board [board] after undergoing one iteration of a 
     wall-smoothing algorithm. 
 
@@ -82,19 +99,7 @@ let smooth board =
   let new_board = empty_board width height in
   for x = 0 to width - 1 do
     for y = 0 to height - 1 do
-      let empties = ref 0 in
-      let walls = ref 0 in
-      for ox = -1 to 1 do
-        for oy = -1 to 1 do
-          if x + ox < 0 || x + ox >= width || y + oy < 0 
-             || y + oy >= height
-          then ()
-          else if (board.(x + ox).(y + oy) = Empty)
-          then empties := 1 + !empties
-          else walls := 1 + !walls
-        done
-      done;
-      new_board.(x).(y) <- if empties >= walls then Empty else Wall true;
+      smooth_coord board new_board (x, y) width height;
     done
   done;
   new_board
