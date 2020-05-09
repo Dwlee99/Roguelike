@@ -7,10 +7,10 @@ let () = Random.self_init ()
 module Swordsman : Edit_Monster = Make_Monster (
   struct
     (** [max_health f] is the max health of a swordsmen on floor [f]. *)
-    let max_health floor = 2 * floor
+    let max_health floor = 7 * floor - 5
 
     (** [damage f] is the swordman's damage on floor [f]. *)
-    let damage floor = floor / 10 * 2 + 1
+    let damage floor = 2 * floor / 3 + 1
 
     (** [exp f] is the amount of exp a swordsman gives on floor [f]. *)
     let exp floor = floor / 5 + 1

@@ -10,7 +10,7 @@ type t = {
 }
 
 let init_inv = {
-  melee = Some (Short_sword.Short_Sword.create_weapon 3);
+  melee = Some (Short_sword.Short_Sword.create_weapon 1);
   ranged = None;
   armor = None;
   items = [];
