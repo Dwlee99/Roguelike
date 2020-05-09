@@ -313,7 +313,7 @@ let get_floor floor_num =
     monster_strength = floor_num;
     num_monsters = 10 + 2 * floor_num;
     num_weapons = 4 + (floor_num / 2);
-    weapon_strength = 3 + floor_num;
+    weapon_strength = floor_num;
     num_armor = 2 + (floor_num / 3);
     armor_strength = 1 + floor_num;
   }

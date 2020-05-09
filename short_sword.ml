@@ -13,9 +13,9 @@ module Short_Sword : Weapon_Type = struct
 
   let attack w dir = 
     match dir with
-    | Action.Up ->    [(0, 1, w.damage)]
-    | Action.Down ->  [(0, -1, w.damage)]
-    | Action.Left ->  [(-1, 0, w.damage)]
-    | Action.Right -> [(1, 0, w.damage)]
+    | Action.Up ->    [(0, 1, 3 * w.damage)]
+    | Action.Down ->  [(0, -1, 3 * w.damage)]
+    | Action.Left ->  [(-1, 0, 3 * w.damage)]
+    | Action.Right -> [(1, 0, 3 * w.damage)]
 
 end
