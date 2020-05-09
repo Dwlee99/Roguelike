@@ -40,6 +40,8 @@ module Make_Monster (M : Monster_Type) : Edit_Monster = struct
 
   let create_monster = M.create_monster
 
+  (** [do_action a m b (pX, pY)] is the new monster and the damage dealt by
+      performing [a].*)
   let do_action action monster board p_pos = 
     match action with
     | Wait f -> (f monster, 0)
