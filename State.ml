@@ -25,7 +25,6 @@ type player = {
   level : player_level;
   exp : int;
   max_exp : int;
-  unused_skill_points : int;
   health : int;
   max_health : int;
   energy : int;
@@ -160,23 +159,37 @@ let exp_to_level_up level =
   if level <= 30 then 5 * level - 38 else
     9 * level - 158
 
+(** [max_hp p_level] is the max health of a player at level [p_level]. *)
+let max_hp p_level = 2 * (p_level - 1) + 10
+
+(** [max_energy p_level] is the max energy of a player at level [p_level]. *)
+let max_energy p_level = 40 * (p_level - 1) + 200
+
+(** [level_up t exp] is t with [t.player] having leveled up and had [t.exp] set
+    to [exp].*)
+let level_up t exp = 
+  let new_l = t.player.level + 1 in
+  let max_hp = max_hp new_l in
+  let max_energy = max_energy new_l in
+  { t with player = 
+             {t.player with exp = exp;
+                            level = new_l;
+                            max_exp = exp_to_level_up new_l;
+                            max_health = max_hp;
+                            health = max_hp;
+                            max_energy = max_energy;
+                            energy = max_energy;
+             }
+  }
+
 (** [add_exp t exp] is the state [t] with [exp] exp added to the player's 
     experience. *)
 let rec add_exp t exp =
   let n_exp = t.player.exp + exp in
-  let c_level = t.player.level in
-  let unused_points = t.player.unused_skill_points in
   let max_exp = t.player.max_exp in
   if n_exp < t.player.max_exp then 
     {t with player = {t.player with exp = n_exp}}
-  else 
-    let new_l = c_level + 1 in
-    let new_t = {t with player = {t.player with exp = n_exp - max_exp; 
-                                                level = new_l;
-                                                max_exp = exp_to_level_up new_l;
-                                                unused_skill_points = 
-                                                  unused_points + 1}} in
-    add_exp new_t 0    
+  else let new_t = level_up t (n_exp - max_exp) in add_exp new_t 0    
 
 (** [spawn_location board] is a location that is surrounded by a layer of 
     empty tiles, which thus would be suitable for the player or monster to 
@@ -349,11 +362,10 @@ let make_init_state board pLoc floor = {
     level = 1;
     exp = 0;
     max_exp = exp_to_level_up 1;
-    unused_skill_points = 0;
     health = 10;
     max_health = 10;
-    energy = 10000;
-    max_energy = 10000;
+    energy = 200;
+    max_energy = 200;
     turns_played = 0;
     attack = 3;
     defense = 3;
