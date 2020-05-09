@@ -7,7 +7,7 @@ let () = Random.self_init ()
 module Ranger : Edit_Monster = Make_Monster (
   struct
     (** [max_health f] is the max health of a ranger on floor [f]. *)
-    let max_health floor = 5 * floor - 3
+    let max_health floor = 4 * floor - 3
 
     (** [damage f] is the ranger's damage on floor [f]. *)
     let damage floor = (2 * floor) + 1
