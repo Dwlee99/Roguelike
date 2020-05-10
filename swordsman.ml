@@ -53,7 +53,7 @@ module Swordsman : Edit_Monster = Make_Monster (
       let p_pos = (px, py) in
       let m_pos = monster.position in
       let dist_sq = distance_sq p_pos m_pos in
-      if dist_sq > 1 then
+      if dist_sq > 2 then
         let direction = Board.direction_to board monster.position p_pos 10 in
         let c_p = monster.position in
         match direction with
