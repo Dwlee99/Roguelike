@@ -9,6 +9,8 @@ open Armor
     represent the inventory as a whole*)
 type t
 
+(** An exception that occurs if the inventory is full and [add_item] is called. 
+*)
 exception MaxItemsReached
 
 (** [init_inv] is a completely empty inventory with a starting value for
@@ -24,8 +26,8 @@ val equip_weapon : t -> weapon -> t
 val equip_armor : t -> armor -> t
 
 (** [add_item t i] adds an item into the item list in t if the total
-    number of items is less than 10. Otherwise, it raises a 
-    MaxItemsReached exception*)
+    number of items is less than 10. Otherwise, it raises [MaxItemsReached].
+*)
 val add_item : t -> string -> t (* change string to item when type is created*)
 
 (** [remove_item t i] removes the item i from inventory t if it exists
