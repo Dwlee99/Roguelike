@@ -59,10 +59,10 @@ let state_tests = [
       assert_equal false (state_1 = state_2));
 
   "World size is initially correct." >:: (fun _ -> 
-      assert_equal (85,38) (get_board_size state_1) ~printer:tuple_print);
+      assert_equal (85,38) (State.get_board_size state_1) ~printer:tuple_print);
 
   "World size increases correctly after next_level is run" >:: (fun _ -> 
-      assert_equal (90,40) (get_board_size state_3) ~printer:tuple_print);
+      assert_equal (90,40) (State.get_board_size state_3) ~printer:tuple_print);
 ]
 
 let math_tests = [
@@ -176,10 +176,6 @@ let monster_tests = [
         (Monster.get_roam_direction test_monster cleared_board 10 ));
 ]
 
-let weapon_tests = [
-
-]
-
 let board_tests = [
   "set tile and get tile" >:: (fun _ -> 
       let coords = (20, 73) in
@@ -215,15 +211,39 @@ let board_tests = [
 ]
 
 let inventory_tests = [
+  "init inventory test 1" >:: (fun _ ->
+      assert_equal "Short Sword" (Inventory.get_melee_name Inventory.init_inv));
 
-]
+  "init inventory test 2" >:: (fun _ ->
+      assert_equal "None" (Inventory.get_ranged_name Inventory.init_inv));
 
-let main_tests = [
+  "init inventory test 3" >:: (fun _ ->
+      assert_equal "None" (Inventory.get_armor_name Inventory.init_inv));
 
+  "equip armor test 1" >:: (fun _ ->
+      let armor = Armor.create_armor 4 in
+      let inv = Inventory.equip_armor Inventory.init_inv armor in
+      assert_equal "level 4 armor" (Inventory.get_armor_name inv));
+
+  "equip armor test 2" >:: (fun _ ->
+      let armor = Armor.create_armor 4 in
+      let inv = Inventory.equip_armor Inventory.init_inv armor in
+      assert_equal 4 (Inventory.get_armor_protection inv));
+
+  "equip weapon test 1" >:: (fun _ ->
+      let weapon = Battleaxe.Battleaxe.create_weapon 2 in
+      let inv = Inventory.equip_weapon Inventory.init_inv weapon in
+      assert_equal "Battleaxe" (Inventory.get_melee_name inv));
+
+  "equip weapon test 2" >:: (fun _ ->
+      let weapon = Battleaxe.Battleaxe.create_weapon 2 in
+      let inv = Inventory.equip_weapon Inventory.init_inv weapon in
+      assert_equal (Some weapon) (Inventory.get_melee_weapon inv));
 ]
 
 let name_tests = [
-
+  "make sure random name isn't empty" >:: (fun _ -> 
+      assert_equal true ((String.length (Name.random_name ())) > 0))
 ]
 
 let suite =
@@ -233,10 +253,8 @@ let suite =
     messages_tests;
     action_tests;
     monster_tests;
-    weapon_tests;
     board_tests;
     inventory_tests;
-    main_tests;
     name_tests
   ]
 

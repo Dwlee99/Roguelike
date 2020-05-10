@@ -115,7 +115,7 @@ let write_inventory inventory msgs =
     "Melee: " ^ inventory.melee;
     "Armor: " ^ inventory.armor;
     "Ranged: " ^ inventory.ranged;
-    "Items: " ^ print_lst inventory.items;
+    "";
     "";
   ] in
   write_msgs inv_strings msgs
