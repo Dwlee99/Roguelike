@@ -10,7 +10,7 @@ module Ranger : Edit_Monster = Make_Monster (
     let max_health floor = 4 * floor - 3
 
     (** [damage f] is the ranger's damage on floor [f]. *)
-    let damage floor = (2 * floor) + 1
+    let damage floor = floor + 1
 
     (** [exp f] is the amount of exp a ranger gives on floor [f]. *)
     let exp floor = floor / 10 + 1

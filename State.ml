@@ -137,12 +137,21 @@ let inc_turns t =
 let set_energy e t = 
   {t with player = {t.player with energy = e}}
 
+(** [get_m_type_string m] is the string version of the type of monster [m] is.
+*)
+let get_m_type_string m = 
+  match Monster.get_type m with
+  | Swordsman -> "Swordsman"
+  | Sniper -> "Sniper"
+  | Ranger -> "Ranger"
+
 (** [take_damage t damage m_name] is the state [t] with the player taking 
-    [damage] damage from the monster of name [m_name]. *)
-let take_damage t damage m_name =
+    [damage] damage from the monster [m]. *)
+let take_damage t damage m =
   if damage = 0 then t
   else 
     let p = float_of_int (Inventory.get_armor_protection t.player.inventory) in 
+    let type_string = get_m_type_string m in
     if (Random.float 1.0) < (p /. (7.0 +. (3.0 *. p))) then write_msgs t 
         ["Your armor has blocked " ^ (string_of_int damage) ^ " damage."]
     else 
@@ -152,8 +161,8 @@ let take_damage t damage m_name =
                 };
        messages =
          Messages.write_msg 
-           (m_name ^ " did " ^ (string_of_int damage) ^ " to you!") 
-           t.messages
+           (type_string ^ " " ^ m.name ^ " did " ^ (string_of_int damage) ^ 
+            " to you!") t.messages
       }
 
 (** [exp_to_level_up level] is the amount of experience needed to level up
@@ -670,7 +679,7 @@ let do_monster_turn t =
       end
     | [] -> (t, acc)
   and specific_turn m tail new_m damage t m_type acc =
-    let updated_t = take_damage t damage m.name in
+    let updated_t = take_damage t damage m in
     let final_monster = 
       move_monster m.position new_m.position m_type new_m updated_t 
     in
