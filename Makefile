@@ -32,7 +32,7 @@ finalcheck: check
 	bash finalcheck.sh
 
 zip:
-	zip roguelike.zip *.ml* _tags Makefile INSTALL.txt
+	zip roguelike.zip *.ml* _tags Makefile INSTALL.txt *.json
 	
 docs: docs-public docs-private
 	
