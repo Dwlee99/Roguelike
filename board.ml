@@ -3,6 +3,7 @@ type breakable = bool
 type monster_type = 
   | Swordsman
   | Ranger
+  | Sniper
 
 type weapon_type =
   | ShortSword

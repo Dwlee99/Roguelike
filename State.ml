@@ -84,7 +84,8 @@ let types_of_weapons =
 let types_of_monsters = 
   Array.of_list [
     Board.Swordsman; 
-    Board.Ranger
+    Board.Ranger;
+    Board.Sniper;
   ]
 
 let get_player_pos t = t.player.position
@@ -253,6 +254,9 @@ let rec create_monsters num strength =
           monster :: (create_monsters (num - 1) strength)
         | Board.Ranger ->
           let monster = Ranger.Ranger.create_monster strength in 
+          monster :: (create_monsters (num - 1) strength)
+        | Board.Sniper ->
+          let monster = Sniper.Sniper.create_monster strength in 
           monster :: (create_monsters (num - 1) strength)
       end
 
@@ -658,7 +662,11 @@ let do_monster_turn t =
            | Board.Ranger ->
              let (new_m, damage) = 
                Ranger.Ranger.do_turn h t.board t.player.position in
-             specific_turn h tail new_m damage t Board.Ranger acc )
+             specific_turn h tail new_m damage t Board.Ranger acc 
+           | Board.Sniper ->
+             let (new_m, damage) = 
+               Sniper.Sniper.do_turn h t.board t.player.position in
+             specific_turn h tail new_m damage t Board.Sniper acc )
       end
     | [] -> (t, acc)
   and specific_turn m tail new_m damage t m_type acc =

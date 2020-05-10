@@ -76,6 +76,7 @@ let draw_tile col row tile panel =
     | Wall _ -> (Char.chr 141, pal.blue)
     | Monster Board.Swordsman -> ('m', pal.red)
     | Monster Board.Ranger -> (Char.chr 172, pal.orange)
+    | Monster Board.Sniper -> ('s', pal.violet)
     | Empty -> (Char.chr 183, pal.gray)
     | Stairs -> (Char.chr 35, pal.yellow)
     | Weapon Board.BattleAxe -> ('Y', pal.magenta)

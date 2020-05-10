@@ -37,8 +37,8 @@ module Ranger : Edit_Monster = Make_Monster (
     (** [attack_function (x, y) m b] is what the ranger does when it attacks. 
         It sees if the player is still at [(x, y)] and if so damages
         the player.*)
-    let attack_function (targetX, targetY) m b _ =
-      let damage = if Board.get_tile b (targetX, targetY) = Board.Player then 
+    let attack_function (target_x, target_y) m b _ =
+      let damage = if Board.get_tile b (target_x, target_y) = Board.Player then 
           m.damage else 0 in (m, damage)
 
     (** [move_direction dir cur_pos] is the [m_action] that moves the monster 
