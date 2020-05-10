@@ -3,7 +3,9 @@
 (** Represents the way damage is computed. *)
 type damage = int
 
-(** A representation of monsters in the game and the info they need. *)
+(** A representation of monsters in the game and the info they need.
+    An [m_action] is a representation of an action that can be taken by a 
+    monster. *)
 type monster = {
   name : string;
   position : (int * int);
@@ -15,10 +17,7 @@ type monster = {
   action_queue : m_action list;
   roaming_target : (int * int) ref;
 }
-and
-  (** An [m_action] is a representation of an action that can be taken by a 
-      monster. *)
-  m_action = 
+and m_action = 
   | Wait of (monster -> monster)
   | Move of (monster -> Board.t -> (int * int) -> (monster))
   | Attack of (monster -> Board.t -> (int * int) -> (monster * damage))
