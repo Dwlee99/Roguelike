@@ -1,3 +1,45 @@
+(** TEST PLAN
+
+    Throughout our project, we attempted to use unit testing as much as 
+    possible. When we were able to, we used test driven development to build 
+    some tests and then write functions using these tests to check them.
+    However, as our project is a game, some elements of our project, such as 
+    graphics and turn mechancis, were notable to be tested using unit testing. 
+
+    We were able to write unit tests in OUnit for parts of state, the math 
+    module, parts of the messaging system (Messages module), actions, monsters,
+    weapons, inventory (also tested parts of weapons and armor), name, 
+    and parts of board. We were able to test functions in all of these modules/
+    parts of the project primarily because they had functions that did not
+    rely on randomness and did not require an unreasonable amount of set up
+    (testing a the turn function on a real game board, for example, would 
+    have been impossible using unit testing). All of the other parts of the
+    system (main, ascii_panel, parts of state, parts of messages, and overall
+    integaration testing) we tested primarily through user testing. We have 
+    played the game extensively to test these sections, carefully making sure
+    that observed behavior matches what we ahd intended. 
+
+    For the oUnit tests, we used the modules listed above (when describing what
+    we were able to unit test) and we used a mix of black box and glass box 
+    testing for this. This largely depended on the particular function that we 
+    were testing. For the unit tests that we wrote when expanding our test suite
+    after writing specific pieces of code, we largely used black box testing,
+    making sure that the function did what it should based on its function in
+    the game. 
+
+    Through our combination of unit testing and extensive user testing, we are
+    confident that our system is coded correctly. We tested everything that
+    we were able to through unit testing, and all of our unit tests are passing.
+    We have also played the game quite a bit. In the final version of our game,
+    there have been no crashes, and throughout our time playing and thus
+    integration testing, we have always observed expected behavior. Just playing
+    the game should achieve a large degree of coverage because players do 
+    different things every time and testing the whole system like this
+    should cover all of the functions and parts of the system. Therefore,
+    we are confident based on this testing strategy that our system is 
+    correct. *)
+
+
 open OUnit2
 open State
 open Messages
