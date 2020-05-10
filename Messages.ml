@@ -36,7 +36,7 @@ let fighting_help =
   ["FIGHTING CONTROLS:";
    "Press 'a' or 'r' to select melee or ranged attack, respectively.";
    "Then, use i,j,k,l to select direction.";
-   "Walk into weapons armor to equip.";
+   "Walk into weapons and armor to equip.";
    "('D' - short bow, 'Y' - battleaxe, 't' - short sword, 'H' - armor).";
    "Press f to see these controls again."
   ]
