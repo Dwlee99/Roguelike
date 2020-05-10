@@ -12,6 +12,8 @@ type t = {
   sizes : game_unit;
 }
 
+let board_font = "consolas"
+
 let open_window w h bcolor = 
   open_graph (" " ^ (string_of_int w) ^ "x" ^ (string_of_int h));
   set_window_title "CS 3110 Project : Roguelike";
