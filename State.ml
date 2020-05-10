@@ -689,5 +689,6 @@ let do_monster_turn t =
   {new_t with monsters = new_monsters}
 
 let do_turn t action = 
-  let new_state = (do_player_turn t action) |> do_monster_turn in 
-  if new_state.player.health <= 0 then raise PlayerDeath else new_state
+  if t.player.health <= 0 
+  then raise PlayerDeath 
+  else (do_player_turn t action) |> do_monster_turn
