@@ -10,7 +10,7 @@ module Swordsman : Edit_Monster = Make_Monster (
     let max_health floor = 4 * floor - 1
 
     (** [damage f] is the swordman's damage on floor [f]. *)
-    let damage floor = 2 * floor / 3 + 1
+    let damage floor = floor / 3 + 1
 
     (** [exp f] is the amount of exp a swordsman gives on floor [f]. *)
     let exp floor = floor / 5 + 1
