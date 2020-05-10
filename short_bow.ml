@@ -40,8 +40,8 @@ module Short_Bow : Weapon_Type = struct
     n_mid < n_end
 
   (** [in_radius coord inr outr lowthet highthet] is true if the coordinate is 
-      within [or] units of the origin and greater than [ir] units of the origin and
-      within the angles [lowthet] and [highthet]*)
+      within [or] units of the origin and greater than [ir] units of the origin 
+      and within the angles [lowthet] and [highthet]*)
   let in_radius coord inr outr lowthet highthet =
     let (x, y) = (float_of_int (fst coord), float_of_int (snd coord)) in
     let angle = atan2 y x in
