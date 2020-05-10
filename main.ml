@@ -189,16 +189,10 @@ and initiate_death panel_info =
   ignore(get_key ());
   post_death_screen !game_state panel_info
 
-(** [post_death_screen game] shows the stats of the player after they die and
-    offers them the opportunity to play again. *)
-and post_death_screen game panel = 
-  ignore(Ascii_panel.clear_graph panel);
+(** [draw_stats g p] draws the player's stats from [g] onto the death screen for
+    panel [p]. *)
+and draw_stats game panel = 
   let player_stats = State.get_stats game in
-  Graphics.set_color pal.white;
-  Graphics.moveto 610 420;
-  Graphics.draw_string "You died!";
-  Graphics.moveto 585 400;
-  Graphics.draw_string "Here's how you did:";
   Graphics.moveto 585 380;
   Graphics.draw_string
     ("Turns Lived: " ^ (string_of_int player_stats.turns_played));
@@ -208,6 +202,17 @@ and post_death_screen game panel =
   Graphics.moveto 585 340;
   Graphics.draw_string
     ("Level: " ^ (string_of_int player_stats.level));
+
+  (** [post_death_screen game] shows the stats of the player after they die and
+      offers them the opportunity to play again. *)
+and post_death_screen game panel = 
+  ignore(Ascii_panel.clear_graph panel);
+  Graphics.set_color pal.white;
+  Graphics.moveto 610 420;
+  Graphics.draw_string "You died!";
+  Graphics.moveto 585 400;
+  Graphics.draw_string "Here's how you did:";
+  draw_stats game panel;
   Graphics.moveto 555 260;
   Graphics.draw_string "Press any key to play again!";
   synchronize ();
