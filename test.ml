@@ -4,7 +4,7 @@
     possible. When we were able to, we used test driven development to build 
     some tests and then write functions using these tests to check them.
     However, as our project is a game, some elements of our project, such as 
-    graphics and turn mechancis, were notable to be tested using unit testing. 
+    graphics and turn mechanichs, were not able to be tested using unit testing. 
 
     We were able to write unit tests in OUnit for parts of state, the math 
     module, parts of the messaging system (Messages module), actions, monsters,
@@ -17,7 +17,9 @@
     system (main, ascii_panel, parts of state, parts of messages, and overall
     integration testing) we tested primarily through user testing. We have 
     played the game extensively to test these sections, carefully making sure
-    that observed behavior matches what we ahd intended. 
+    that observed behavior matches what we ahd intended. In addition, we had
+    friends of ours play the game in order to see if they encountered anything
+    unexpected in the gameplay.
 
     For the oUnit tests, we used the modules listed above (when describing what
     we were able to unit test) and we used a mix of black box and glass box 
