@@ -15,7 +15,7 @@
     (testing a the turn function on a real game board, for example, would 
     have been impossible using unit testing). All of the other parts of the
     system (main, ascii_panel, parts of state, parts of messages, and overall
-    integaration testing) we tested primarily through user testing. We have 
+    integration testing) we tested primarily through user testing. We have 
     played the game extensively to test these sections, carefully making sure
     that observed behavior matches what we ahd intended. 
 
@@ -218,10 +218,6 @@ let monster_tests = [
         (Monster.get_roam_direction test_monster cleared_board 10 ));
 ]
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 71e4ba1badd4a240206363f71c49ee9f6ca758ef
 let sword : Weapon.weapon = {
   name = "Excalibur";
   position = None;

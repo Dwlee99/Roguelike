@@ -199,7 +199,13 @@ and post_death_screen game panel =
   Graphics.moveto 585 380;
   Graphics.draw_string
     ("Turns Lived: " ^ (string_of_int player_stats.turns_played));
-  Graphics.moveto 555 300;
+  Graphics.moveto 585 360;
+  Graphics.draw_string
+    ("Last Floor: " ^ (string_of_int player_stats.floor));
+  Graphics.moveto 585 340;
+  Graphics.draw_string
+    ("Level: " ^ (string_of_int player_stats.level));
+  Graphics.moveto 555 260;
   Graphics.draw_string "Press any key to play again!";
   synchronize ();
   try
