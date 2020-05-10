@@ -36,6 +36,7 @@ module Short_Bow : Weapon_Type = struct
       distance_sq coord (0,0) < (square outr)
       && distance_sq coord (0, 0) > (square inr)
     in print_string (string_of_bool b); b
+
   (** [filter_in_radius lst] is the list [lst] filtered to only include 
       coordinates within the inner and outer bow radius'. *)
   let filter_in_radius lst = 
