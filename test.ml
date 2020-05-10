@@ -218,10 +218,6 @@ let monster_tests = [
         (Monster.get_roam_direction test_monster cleared_board 10 ));
 ]
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 71e4ba1badd4a240206363f71c49ee9f6ca758ef
 let sword : Weapon.weapon = {
   name = "Excalibur";
   position = None;
