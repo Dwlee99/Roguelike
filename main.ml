@@ -76,7 +76,7 @@ let draw_tile col row tile panel =
     | Wall _ -> (Char.chr 141, pal.blue)
     | Monster Board.Swordsman -> ('m', pal.red)
     | Monster Board.Ranger -> (Char.chr 172, pal.orange)
-    | Monster Board.Sniper -> ('s', pal.violet)
+    | Monster Board.Sniper -> ('S', pal.violet)
     | Empty -> (Char.chr 183, pal.gray)
     | Stairs -> (Char.chr 35, pal.yellow)
     | Weapon Board.BattleAxe -> ('Y', pal.magenta)
@@ -183,8 +183,10 @@ let rec game_loop f_init f_end f_key f_exn =
 (** [initiate_death panel_info] begins the death screen. *)
 and initiate_death panel_info =
   resize_to_proper ();
-  game_state := State.write_msgs !game_state ["You died."]; 
+  game_state := State.write_msgs !game_state 
+      ["You died. Press any key to continue"]; 
   draw_game panel_info !game_state;
+  ignore(get_key ());
   post_death_screen !game_state panel_info
 
 (** [post_death_screen game] shows the stats of the player after they die and
