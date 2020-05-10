@@ -59,7 +59,7 @@ let empty_board width height =
 
     NOTE: This function was inspired by the roguelike board generating algorithm
     described on a blog post in Trystan's Blog 
-    (http://trystans.blogspot.com/2011/08/roguelike-tutorial-03-scrolling-through.html). *)
+    (https://tinyurl.com/y7vjkmvu). *)
 let randomize_tiles board = 
   Random.self_init ();
   let width = Array.length board in
@@ -93,7 +93,7 @@ let smooth_coord board n_board (x, y) w h =
 
     NOTE: This function was inspired by the cave generating algorithm
     described on a blog post in Trystan's Blog 
-    (http://trystans.blogspot.com/2011/08/roguelike-tutorial-03-scrolling-through.html). *)
+    (https://tinyurl.com/y7vjkmvu). *)
 let smooth board = 
   let width = Array.length board in
   let height = Array.length board.(0) in
