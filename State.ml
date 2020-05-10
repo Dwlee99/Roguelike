@@ -145,6 +145,14 @@ let get_m_type_string m =
   | Sniper -> "Sniper"
   | Ranger -> "Ranger"
 
+(* [check_death t] checks if the player has <= 0 health. If they do, the 
+   player death exception is raised. *)
+
+let check_death t = 
+  if t.player.health <= 0 
+  then raise PlayerDeath 
+  else ()
+
 (** [take_damage t damage m_name] is the state [t] with the player taking 
     [damage] damage from the monster [m]. *)
 let take_damage t damage m =
@@ -618,6 +626,7 @@ let do_display t display panel coord =
   | Ranged -> display_ranged t panel coord
 
 let display_update t display =
+  check_death t;
   match display with
   | Help -> write_help t
   | PlayerHelp -> write_player_help t
@@ -689,6 +698,5 @@ let do_monster_turn t =
   {new_t with monsters = new_monsters}
 
 let do_turn t action = 
-  if t.player.health <= 0 
-  then raise PlayerDeath 
-  else (do_player_turn t action) |> do_monster_turn
+  check_death t;
+  (do_player_turn t action) |> do_monster_turn
