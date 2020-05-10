@@ -29,6 +29,7 @@ module Short_Bow : Weapon_Type = struct
       done
     done;
     !lst
+
   (** [angle_btwn angle lt ht] is true if [angle] lies between the smallest path
       from lt to ht. *)
   let angle_btwn angle lt ht = 
