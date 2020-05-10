@@ -176,6 +176,33 @@ let monster_tests = [
         (Monster.get_roam_direction test_monster cleared_board 10 ));
 ]
 
+
+let sword : Weapon.weapon = {
+  name = "Excalibur";
+  position = None;
+  w_type = Board.ShortSword;
+  damage = 9000;
+  atk_type = Weapon.Melee;
+  level = 100;
+}
+
+let bow : Weapon.weapon = {
+  name = "Fafnir's Bane";
+  position = None;
+  w_type = Board.ShortBow;
+  damage = 15;
+  atk_type = Weapon.Ranged;
+  level = 5;
+}
+
+let weapon_tests = [
+  "Get weapon type for melee" >:: (fun _ -> 
+      assert_equal (Board.ShortSword) (Weapon.get_type sword));
+
+  "Get weapon type for Ranged" >:: (fun _ -> 
+      assert_equal (Board.ShortBow) (Weapon.get_type bow));
+]
+
 let board_tests = [
   "set tile and get tile" >:: (fun _ -> 
       let coords = (20, 73) in
@@ -255,7 +282,8 @@ let suite =
     monster_tests;
     board_tests;
     inventory_tests;
-    name_tests
+    name_tests;
+    weapon_tests
   ]
 
 let _ = run_test_tt_main suite
