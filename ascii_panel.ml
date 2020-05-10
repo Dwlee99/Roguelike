@@ -49,10 +49,10 @@ let fill_rect x y w h c t =
 
 (** The ratios to which a rectangle's bottom left corner need to be shifted
     to the left. *)
-let rectXOffset = 0.35
+let rect_x_offset = 0.35
 (** The ratios to which a rectangle's bottom left corner need to be shifted
     down. *)
-let rectYOffset = 0.1 
+let rect_y_offset = 0.1 
 
 let rec outline_coords list c t =
   set_color c;
@@ -60,8 +60,8 @@ let rec outline_coords list c t =
   | [] -> t
   | (x, y) :: tail ->   
     let (f1, f2) = 
-      (float_of_int t.sizes.char_width *. (float_of_int x -. rectXOffset),
-       float_of_int t.sizes.char_height *. (float_of_int y -. rectYOffset))
+      (float_of_int t.sizes.char_width *. (float_of_int x -. rect_x_offset),
+       float_of_int t.sizes.char_height *. (float_of_int y -. rect_y_offset))
     in
     let (x1, y1) = (int_of_float f1, int_of_float f2) in
     draw_rect x1 y1 t.sizes.char_width t.sizes.char_height; 
