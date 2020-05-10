@@ -14,7 +14,7 @@ module Short_Bow : Weapon_Type = struct
   }
 
   (** The outer radius with which the bow can shoot. *)
-  let bow_or = 7
+  let bow_or = 6
 
   (** The inner radius with which the bow cannot shoot. *)
   let bow_ir = 2
