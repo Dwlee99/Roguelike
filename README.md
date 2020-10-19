@@ -1,4 +1,4 @@
-# 3110Project
+# Roguelike
 A roguelike game written in OCaml. Requires an XServer to run the game on MacOS and WSL. 
 
 Installation instructions are as follows:
